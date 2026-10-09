@@ -13,12 +13,20 @@ Legend: [x] done · [ ] pending
 - [ ] Lint/format configuration
 
 ## Phase 1 — DS2 loader (data MVP)
-- [ ] PRS1 chunk parser (header, types, CRC)
-- [ ] Map `.B01`/`.B02`/`.B05` to sessions, events, waveforms
-- [ ] Map `D/*.B03` (settings) and `E/*.B04` (device events)
+- [x] Chunk framing with header checksum and CRC32 validation (24 154 chunks, 0 errors) — `chunk.ts`, `crc.ts`
+- [x] Summary parser: slices, settings, device statistics — `summary.ts`
+- [x] Event parser and statistics series — `events.ts`
+- [x] Flow waveform decoder and segment assembly — `waveform.ts`, `index.ts`
+- [x] `DeviceLoader` for DS2 (`detect` + `load`) producing canonical sessions
+- [x] Automated cross-check against the device's own statistics (333 sessions, 0 mismatches)
+- [x] Synthetic-fixture tests for every parser; real-card integration test (skipped without `fixtures/raw`)
+- [ ] Cross-validation vs OSCAR output (usage hours, AHI, P95 pressure/leak) — needs OSCAR's daily report for the same card
+- [ ] Interpret `D/*.B03` (device settings log) and `E/*.B04` (device events)
 - [ ] Browser `VirtualFS` implementations (directory handle, FileList, ZIP)
-- [ ] Cross-validation vs OSCAR (AHI, hours, P95 pressure/leak)
+- [ ] Web Worker wrapper and progress reporting
 - [ ] SD anonymizer tool for sharing samples
+- [ ] Zero-tag GCM recovery and other firmware variants (410/520/521 models)
+- [ ] Night grouping (several device sessions per night) — design in Phase 2
 
 ## Phase 2 — Basic visualization
 Dashboard, daily view with waveforms, local persistence, PWA, i18n (ca/es/en), accessibility.
