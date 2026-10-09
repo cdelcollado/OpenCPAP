@@ -4,6 +4,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 ### Added
+- `scripts/compare-oscar.ts`: compares an OSCAR "Sessions" CSV export with OpenCPAP's decoding (usage, AHI, event counts, clock offset); `docs/oscar-comparison.md`.
 - `@opencpap/browser`: `FileListFS`, `DirectoryHandleFS` (File System Access API) and `ZipFS` card sources with marker-folder re-rooting and size limits; import worker, message protocol and `importCard` client with progress, error propagation and cancellation.
 - `@opencpap/core`: `detectLoader`, `loadCard`, `UnsupportedCardError`.
 - `docs/browser-import.md`, ADR-0005.

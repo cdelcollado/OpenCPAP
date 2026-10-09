@@ -50,6 +50,7 @@ Requires Node.js 20+ (developed on Node 24). See [docs/development.md](docs/deve
 
 - [Architecture](docs/architecture.md)
 - [Browser import (card sources, worker protocol)](docs/browser-import.md)
+- [Comparing with OSCAR](docs/oscar-comparison.md)
 - [Canonical data model](docs/data-model.md)
 - [DreamStation 2 file format](docs/formats/ds2.md)
 - [Roadmap](docs/roadmap.md)
