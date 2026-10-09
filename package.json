@@ -11,9 +11,16 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -b",
-    "compare-oscar": "tsx scripts/compare-oscar.ts"
+    "compare-oscar": "tsx scripts/compare-oscar.ts",
+    "dev": "npm run dev -w @opencpap/web",
+    "build": "npm run build -w @opencpap/web",
+    "preview": "npm run preview -w @opencpap/web",
+    "e2e": "playwright test"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
+    "fake-indexeddb": "^6.2.5",
     "tsx": "^4.23.15",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"

@@ -3,3 +3,6 @@ dist
 *.tsbuildinfo
 # Real SD card samples: never version health data unless anonymized
 fixtures/raw/
+dist-types
+playwright-report
+test-results

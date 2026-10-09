@@ -32,8 +32,24 @@ Legend: [x] done · [ ] pending
 - [ ] Zero-tag GCM recovery and other firmware variants (410/520/521 models)
 - [ ] Night grouping (several device sessions per night) — design in Phase 2
 
-## Phase 2 — Basic visualization
-Dashboard, daily view with waveforms, local persistence, PWA, i18n (ca/es/en), accessibility.
+## Phase 2 — Basic visualization (web app)
+- [x] Vite + React + TypeScript app with hash routing ([web-app.md](web-app.md), [ADR-0006](decisions/0006-web-stack.md))
+- [x] Import screen: folder picker, folder input, ZIP, drag & drop, progress, cancel, errors
+- [x] Local persistence in IndexedDB with idempotent re-import ([storage.md](storage.md))
+- [x] Dashboard: last night, compliance, averages, trend charts (use, AHI, leak), nights table
+- [x] Night view: summary, event timeline, flow/leak/pressure/snore charts with linked zoom, event table
+- [x] Night grouping and analytics definitions ([analytics.md](analytics.md), [ADR-0007](decisions/0007-night-definition-and-pressure.md))
+- [x] Contextual metric explainers (feature #29) and demo mode (feature #31)
+- [x] PWA: installable, offline precache
+- [x] i18n: English, Català, Español, with parity tests
+- [x] Accessibility: axe checks (WCAG 2.1 A/AA) in light and dark themes
+- [x] Dark mode and responsive layout (desktop and 390 px mobile checked)
+- [x] End-to-end tests in real Chrome, including the real card ([testing.md](testing.md))
+- [ ] Manual accessibility pass with a screen reader; keyboard walkthrough of the charts
+- [ ] Firefox and Safari smoke tests; iOS file access
+- [ ] Request persistent storage; surface quota problems
+- [ ] Dashboard "pressure/leak distribution" for auto-titrating modes
+- [ ] Performance budget for large histories (virtualise the nights table, decimate waveforms on zoom)
 
 ## Phase 3 — Analysis and trends
 Trends, compliance, period comparison, notes/tags, PDF report, backup/restore, mask/consumables tracking.

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist-types", "rootDir": "src", "jsx": "react-jsx", "noEmit": false,
+    "types": ["vite/client", "vite-plugin-pwa/client"], "resolveJsonModule": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"]
+  },
+  "include": ["src", "src/**/*.json"],
+  "references": [{ "path": "../../packages/core" }, { "path": "../../packages/browser" }]
+}

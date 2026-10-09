@@ -17,7 +17,8 @@ The DreamStation 2 encrypts files with AES-256-GCM, but the key material is deri
 - Malicious SD card or ZIP contents: file sizes are capped (`MAX_FILE_BYTES`), ZIP entries are inflated one at a time after checking their declared size, and paths are only used as map keys. Parsing runs in a Web Worker, isolated from the page.
 - Malicious SD card contents: parsers must bounds-check every length field, cap allocations, and never `eval` or interpolate file content into HTML.
 - Supply chain: pin dependency versions, prefer audited crypto (`@noble/*`), review lockfile changes.
-- Local storage: data in IndexedDB is unencrypted at rest by default; document this and offer export/wipe.
+- Local storage: data in IndexedDB is unencrypted at rest (see [storage.md](storage.md)); the browser profile is the trust boundary. Settings offers per-device and full deletion. The service worker caches only the app's static files, never user data.
+- The web app loads no third-party scripts, fonts or analytics; the content security of the build relies on that (no CDN requests at runtime).
 
 ## Regulatory note
 Informational software; not a medical device. If a backend or clinician features are added, revisit GDPR and applicable medical-device rules.

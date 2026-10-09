@@ -40,3 +40,21 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 34 | External context correlation (position, noise, temperature) | Original | 6 |
 | 35 | Loader catalog with per-model support matrix | Original (OSCAR keeps a device list) | 5 |
 | 36 | Accessibility (WCAG AA), dark mode, screen readers | Original | 2 |
+
+## Implemented so far
+| # | Feature | Where |
+|---|---|---|
+| 1 | Import SD card folder/ZIP in the browser | [browser-import.md](browser-import.md) |
+| 2 | 100 % local processing | [privacy-and-security.md](privacy-and-security.md) |
+| 3 | DreamStation 2 support | [formats/ds2.md](formats/ds2.md) |
+| 4 | Multi-device plugin architecture + canonical model | [architecture.md](architecture.md), [data-model.md](data-model.md) |
+| 5 | Automated cross-validation (against the device's own statistics; OSCAR tooling ready) | [oscar-comparison.md](oscar-comparison.md) |
+| 6 | Dashboard (use, AHI, leak, pressure) | [web-app.md](web-app.md) |
+| 7 | Zoomable waveforms with event overlay (timeline + linked charts) | [web-app.md](web-app.md) |
+| 8 | Event breakdown (OA/CA/H/RERA…) | [web-app.md](web-app.md) |
+| 9 | Trends (7/30/90 nights, all) | [web-app.md](web-app.md) |
+| 10 | Compliance (≥ 4 h on ≥ 70 % of 30 nights) | [analytics.md](analytics.md) |
+| 24 | Installable PWA, offline use | [web-app.md](web-app.md) |
+| 29 | Contextual metric explainers | [web-app.md](web-app.md) |
+| 31 | Demo mode with synthetic data | [web-app.md](web-app.md) |
+| 36 | Accessibility (axe-verified WCAG 2.1 AA), dark mode — screen-reader pass pending | [web-app.md](web-app.md) |

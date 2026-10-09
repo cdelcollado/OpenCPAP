@@ -64,6 +64,16 @@ describe.each(sources)('%s', (_name, make) => {
   });
 });
 
+describe('createFs with explicit paths (dropped folders)', () => {
+  it('uses the provided paths instead of webkitRelativePath', async () => {
+    const { createFs } = await import('./source');
+    const paths = [...card.keys()].map((p) => `NO NAME/${p}`);
+    const files = [...card.values()].map((d, i) => new File([d as BlobPart], paths[i]!.split('/').pop()!));
+    const fs = await createFs({ kind: 'files', files, paths });
+    expect(await fs.list()).toEqual(expectedPaths);
+  });
+});
+
 describe('ZipFS limits', () => {
   it('refuses oversized entries without decompressing them', async () => {
     const zip = zipSync({ 'P-SERIES/D/big.bin': new Uint8Array(1024) });

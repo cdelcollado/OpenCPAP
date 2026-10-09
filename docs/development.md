@@ -4,13 +4,16 @@
 Node.js 20+ (developed on 24), npm 10+. (pnpm is not required.)
 
 ## Packages
-`core` (model, interfaces, stats) · `loaders/*` (one per device family) · `browser` (card sources, worker) · `apps/web` (planned). Test helpers for synthetic DS2 data are exported as `@opencpap/loader-philips-ds2/testing`.
+`core` (model, interfaces, stats, night analytics, demo data) · `loaders/*` (one per device family) · `browser` (card sources, worker) · `apps/web` (the React app) · `e2e` (Playwright) · `scripts` (developer tools). Test helpers for synthetic DS2 data are exported as `@opencpap/loader-philips-ds2/testing`.
 
 ## Commands
 ```bash
 npm install         # install all workspaces
 npx tsc -b          # type-check with project references
-npx vitest run      # run all tests
+npx vitest run      # run all unit/integration tests
+npm run dev         # web app with hot reload
+npm run build       # production build of the web app
+npm run e2e         # build + Playwright E2E and accessibility tests (needs Google Chrome)
 ```
 
 ## Layout and conventions
@@ -34,3 +37,11 @@ npx vitest run      # run all tests
 
 ## Commits
 English messages, imperative mood, explain the why. Documentation updates ship in the same commit as the code they describe.
+
+## Working on the web app
+- Start with `npm run dev`; use **Import → Load demo data** for data without a card, or import `fixtures/raw` through the folder input.
+- Pure logic belongs in `@opencpap/core` (unit-tested); React components stay thin. Database access only through `db/repository.ts`.
+- User-visible strings go in `apps/web/src/i18n/locales/*.json` (all three languages; the parity test fails otherwise). Never hard-code text in components.
+- Colours come from the CSS variables in `styles.css`; charts read them via `readColors()`. Check both themes.
+- Add or change a screen → update [web-app.md](web-app.md), the E2E tests, and run the axe checks.
+- E2E details and conventions: [testing.md](testing.md).

@@ -4,6 +4,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 ### Added
+- **Web app (Phase 2)**: `apps/web` React/Vite PWA with dashboard, night view (timeline, flow/leak/pressure/snore charts, linked zoom), import screen (folder, ZIP, drag & drop, progress, cancel), settings (language, theme, delete data), demo mode, metric explainers, English/Català/Español, light/dark themes, offline precache.
+- IndexedDB storage layer (`Repository`, Dexie) with idempotent re-import.
+- `@opencpap/core`: `summarizeNight`, `groupNights`, `nightOf`, `compliance`, `percentile`, `configuredPressure`, `generateDemoSessions`.
+- Playwright E2E suite (12 tests incl. real-card import and axe accessibility checks) and `vitest.config.ts`.
+- Docs: `web-app.md`, `storage.md`, `analytics.md`, `testing.md`, ADR-0006/0007, screenshots in `docs/img`.
+- `CardSource.files` accepts explicit `paths` (dropped folders lose `webkitRelativePath` when cloned to the worker).
 - `scripts/compare-oscar.ts`: compares an OSCAR "Sessions" CSV export with OpenCPAP's decoding (usage, AHI, event counts, clock offset); `docs/oscar-comparison.md`.
 - `@opencpap/browser`: `FileListFS`, `DirectoryHandleFS` (File System Access API) and `ZipFS` card sources with marker-folder re-rooting and size limits; import worker, message protocol and `importCard` client with progress, error propagation and cancellation.
 - `@opencpap/core`: `detectLoader`, `loadCard`, `UnsupportedCardError`.

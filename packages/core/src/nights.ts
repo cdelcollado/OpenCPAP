@@ -1,0 +1,155 @@
+import type { EventType, Session, TimeSeries } from './model';
+import { usageSeconds } from './stats';
+
+/** A session without its bulky waveforms: what the dashboard and the database list work with. */
+export type SessionLite = Omit<Session, 'waveforms'>;
+
+/** Linear-interpolation percentile (p in 0..100) of a numeric list; NaN for an empty list. */
+export function percentile(values: ArrayLike<number>, p: number): number {
+  const n = values.length;
+  if (n === 0) return NaN;
+  const sorted = Float64Array.from(values as ArrayLike<number>).sort();
+  const pos = (Math.min(100, Math.max(0, p)) / 100) * (n - 1);
+  const lo = Math.floor(pos);
+  const hi = Math.ceil(pos);
+  return sorted[lo]! + (sorted[hi]! - sorted[lo]!) * (pos - lo);
+}
+
+const HALF_DAY_MS = 12 * 3600_000;
+
+/**
+ * The "night" a session belongs to, as YYYY-MM-DD: the calendar date of (start − 12 h), so a session that begins
+ * at 23:00 on the 5th and one that begins at 03:00 on the 6th are both night 2026-xx-05 (OSCAR uses the same
+ * noon-to-noon split). Timestamps are read as wall-clock fields (UTC accessors), see `Session.clock`.
+ */
+export function nightOf(startMs: number): string {
+  return new Date(startMs - HALF_DAY_MS).toISOString().slice(0, 10);
+}
+
+/**
+ * Therapy pressure the device was configured for, ignoring the ramp: a fixed value, or the min/max of an
+ * auto-titrating or bi-level mode. Returns undefined when the settings do not say.
+ */
+export function configuredPressure(settings: SessionLite['settings']): { min: number; max: number } | undefined {
+  const n = (k: string) => (typeof settings[k] === 'number' ? (settings[k] as number) : undefined);
+  const pairs: [string, string][] = [['pressureMin', 'pressureMax'], ['epap', 'ipap'], ['epapMin', 'ipapMax']];
+  for (const [a, b] of pairs) {
+    const lo = n(a), hi = n(b);
+    if (lo !== undefined && hi !== undefined) return { min: Math.min(lo, hi), max: Math.max(lo, hi) };
+  }
+  const fixed = n('pressure');
+  return fixed === undefined ? undefined : { min: fixed, max: fixed };
+}
+
+const seriesOf = (s: SessionLite, channel: TimeSeries['channel']) => s.statistics.find((t) => t.channel === channel);
+
+export interface NightSummary {
+  /** YYYY-MM-DD, see `nightOf` */
+  date: string;
+  sessionIds: number[];
+  /** first mask-on to last session end (ms) */
+  start: number;
+  end: number;
+  usageHours: number;
+  counts: Partial<Record<EventType, number>>;
+  /** (OA + CA + H + UA) / usageHours */
+  ahi?: number;
+  /** RERA per hour (not part of the AHI) */
+  reraIndex?: number;
+  /** total leak statistics, L/min */
+  leak?: { median: number; p95: number; max: number };
+  /** therapy pressure in cmH2O: the configured pressure (min/max for auto and bi-level modes), without the ramp */
+  pressure?: { min: number; max: number; median: number };
+  /** snore events reported per hour */
+  snoreIndex?: number;
+  /** device mode of the first session */
+  mode?: string;
+  hasWaveforms: boolean;
+}
+
+function mergeCounts(sessions: SessionLite[]) {
+  const counts: Partial<Record<EventType, number>> = {};
+  for (const s of sessions) for (const e of s.events) counts[e.type] = (counts[e.type] ?? 0) + 1;
+  return counts;
+}
+
+export function summarizeNight(date: string, sessions: SessionLite[], opts: { hasWaveforms?: boolean } = {}): NightSummary {
+  const usage = sessions.reduce((a, s) => a + usageSeconds(s), 0) / 3600;
+  const counts = mergeCounts(sessions);
+  const apneas = (counts.obstructive ?? 0) + (counts.central ?? 0) + (counts.hypopnea ?? 0) + (counts['unclassified-apnea'] ?? 0);
+
+  const leaks: number[] = [];
+  const pressures: number[] = [];
+  let snores = 0;
+  for (const s of sessions) {
+    const leak = seriesOf(s, 'leak-total');
+    if (leak) leaks.push(...leak.values);
+    const sn = seriesOf(s, 'snore-count');
+    if (sn) for (const v of sn.values) snores += v;
+    const cfg = configuredPressure(s.settings);
+    if (cfg) pressures.push(cfg.min, cfg.max);
+    else {
+      // no settings: fall back to the pressure changes the device logged (includes the ramp)
+      const set = seriesOf(s, 'pressure-set') ?? seriesOf(s, 'epap-set');
+      if (set) pressures.push(...set.values);
+    }
+  }
+  const sorted = [...sessions].sort((a, b) => a.start - b.start);
+  return {
+    date,
+    sessionIds: sorted.map((s) => s.id),
+    start: sorted[0]?.start ?? 0,
+    end: Math.max(...sorted.map((s) => s.end)),
+    usageHours: usage,
+    counts,
+    ahi: usage > 0 ? apneas / usage : undefined,
+    reraIndex: usage > 0 ? (counts.rera ?? 0) / usage : undefined,
+    leak: leaks.length ? { median: percentile(leaks, 50), p95: percentile(leaks, 95), max: Math.max(...leaks) } : undefined,
+    pressure: pressures.length ? { min: Math.min(...pressures), max: Math.max(...pressures), median: percentile(pressures, 50) } : undefined,
+    snoreIndex: usage > 0 && snores > 0 ? snores / usage : undefined,
+    mode: typeof sorted[0]?.settings.mode === 'string' ? sorted[0].settings.mode : undefined,
+    hasWaveforms: opts.hasWaveforms ?? false,
+  };
+}
+
+/** Groups sessions into nights (ascending by date). */
+export function groupNights(sessions: SessionLite[], waveformSessionIds: ReadonlySet<number> = new Set()): NightSummary[] {
+  const by = new Map<string, SessionLite[]>();
+  for (const s of sessions) {
+    const k = nightOf(s.start);
+    (by.get(k) ?? by.set(k, []).get(k)!).push(s);
+  }
+  return [...by]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([date, list]) => summarizeNight(date, list, { hasWaveforms: list.some((s) => waveformSessionIds.has(s.id)) }));
+}
+
+export interface Compliance {
+  /** calendar nights in the window */
+  nights: number;
+  /** nights with at least `minHours` of use */
+  compliantNights: number;
+  /** compliantNights / nights, 0..1 */
+  ratio: number;
+  averageHours: number;
+  /** meets the common "≥ 4 h on ≥ 70 % of nights" rule */
+  meetsCommonRule: boolean;
+}
+
+const DAY_MS = 86400_000;
+
+/**
+ * Compliance over the `days` calendar nights ending at `endDate` (inclusive). Nights without data count as 0 h.
+ */
+export function compliance(nights: NightSummary[], endDate: string, days = 30, minHours = 4): Compliance {
+  const end = Date.parse(`${endDate}T00:00:00Z`);
+  const byDate = new Map(nights.map((n) => [n.date, n]));
+  let ok = 0, total = 0;
+  for (let i = 0; i < days; i++) {
+    const d = new Date(end - i * DAY_MS).toISOString().slice(0, 10);
+    total += byDate.get(d)?.usageHours ?? 0;
+    if ((byDate.get(d)?.usageHours ?? 0) >= minHours) ok++;
+  }
+  const ratio = days > 0 ? ok / days : 0;
+  return { nights: days, compliantNights: ok, ratio, averageHours: days > 0 ? total / days : 0, meetsCommonRule: ratio >= 0.7 };
+}
