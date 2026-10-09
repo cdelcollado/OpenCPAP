@@ -9,7 +9,7 @@ const NEXT: Record<ThemePreference, ThemePreference> = { system: 'light', light:
 
 type Page = 'dashboard' | 'compare' | 'equipment' | 'report' | 'import' | 'settings';
 
-export function Header({ current }: { current: Page }) {
+export function Header({ current }: { current: Page | null }) {
   const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<ThemePreference>(getThemePreference);
   const label = t(theme === 'system' ? 'settings.themeSystem' : theme === 'light' ? 'settings.themeLight' : 'settings.themeDark');

@@ -60,3 +60,6 @@ See `docs/decisions/` for rationale. Summary: TypeScript strict, npm workspaces,
 - **Time:** all timestamps in the model are UTC epoch milliseconds. Devices store local or UTC seconds depending on the format; each loader normalizes and documents this in its format doc.
 - **Performance:** parsing runs in Web Workers; waveforms are `Float32Array`; the UI will decimate on zoom.
 - **Privacy:** see [privacy-and-security.md](privacy-and-security.md).
+
+## Sharing and optional network features (Phase 6)
+Two small modules in `apps/web/src` are the only code that can produce data meant to leave the device, and both are user-initiated: `share.ts` (snapshot ⇄ URL fragment, optional AES-GCM) and `llm.ts` (prompt builder and one `fetch` to the address the user configured). Neither touches IndexedDB directly; they receive figures already computed by `@opencpap/core`. See [sharing.md](sharing.md), [llm-summaries.md](llm-summaries.md) and [ADR-0012](decisions/0012-phase6-design-choices.md).

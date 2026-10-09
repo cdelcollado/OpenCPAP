@@ -7,6 +7,7 @@ import { repository } from '../../db/repository';
 import { db } from '../../db/db';
 import { exportBackup, importBackup, type BackupCounts } from '../../db/backup';
 import { useData } from '../../state';
+import { LlmSettings } from '../llm/LlmSettings';
 
 declare const __APP_VERSION__: string;
 const version = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : 'dev';
@@ -128,6 +129,8 @@ export function Settings() {
         <div><button className="btn secondary" type="button" disabled={persisted === true} onClick={() => void requestPersist()}>{t('settings.persistButton')}</button></div>
         <p role="status" className="muted">{persistMsg}</p>
       </section>
+
+      <LlmSettings />
 
       <section className="card stack" aria-labelledby="s-about">
         <h2 id="s-about">{t('settings.privacyTitle')}</h2>

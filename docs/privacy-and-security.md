@@ -25,6 +25,12 @@ The DreamStation 2 encrypts files with AES-256-GCM, but the key material is deri
 - **Breath analysis** is derived from data already on the device; nothing is uploaded.
 - **Exports** (CSV, EDF) contain health data and are written wherever the browser downloads; they have no notes. The serial number is not included in any export. Treat the files like the card contents.
 
+## Phase 6: sharing and language models
+- **Share links** put a snapshot (figures only; no notes, equipment or serial) in the URL fragment. Nothing is uploaded, but a link is the data: anyone who gets it can read it, it cannot be revoked, and chat apps that preview links may see the fragment. Optional passphrase encryption helps only if the passphrase travels separately ([sharing.md](sharing.md)). Incoming links are validated and size-limited, and shown as text.
+- **Written summaries** are off by default. When enabled they send aggregate figures (no dates of nights, notes, names or serials) only to the address the user entered; non-local addresses need explicit consent ([llm-summaries.md](llm-summaries.md)). Settings live in `localStorage` (`opencpap.llm`).
+- The JSON summary export contains figures only.
+- There is still no telemetry, account or default network destination.
+
 ## Threat model (browser app)
 - Malicious SD card or ZIP contents: file sizes are capped (`MAX_FILE_BYTES`), ZIP entries are inflated one at a time after checking their declared size, and paths are only used as map keys. Parsing runs in a Web Worker, isolated from the page.
 - Malicious SD card contents: parsers must bounds-check every length field, cap allocations, and never `eval` or interpolate file content into HTML.

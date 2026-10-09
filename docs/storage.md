@@ -48,3 +48,6 @@ Sample card (550 sessions, ~190 nights with waveforms): a few tens of MB. `Setti
 
 ## Tests
 `db/repository.test.ts` runs against `fake-indexeddb`: storage and night grouping, idempotent re-import, waveform replacement, typed-array round trip, multi-device isolation and deletion, clearing.
+
+## `localStorage` keys
+Per-device conveniences only (the app works without them): `opencpap.theme`, `opencpap.lang`, `opencpap.reportName` (the optional name for the report), and from Phase 6 `opencpap.llm` (the language-model settings: enabled flag, address, model name, remote consent). No health data is stored there. Share links are never stored.

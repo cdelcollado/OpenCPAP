@@ -75,3 +75,7 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 35 | Compatibility matrix with support levels (Synthetic / Verified) | [devices.md](devices.md) |
 | 4 | Second device family: ResMed AirSense/AirCurve (EDF+) behind the same canonical model | [formats/resmed.md](formats/resmed.md) |
 | 32 | Contributor path for new devices: conformance suite and checklist | [adding-a-device.md](adding-a-device.md) |
+| 19 | Shareable report snapshot as a link — serverless; *revocable* links are not possible without a server | [sharing.md](sharing.md) |
+| 20 | Link encryption with a passphrase (no server involved; the ciphertext is in the link) | [sharing.md](sharing.md) |
+| 23 | Written summary from a user-run local language model (opt-in, aggregates only) | [llm-summaries.md](llm-summaries.md) |
+| 22 | Building block for Home Assistant/MQTT: stable JSON summary; the companion itself is not built | [integrations.md](integrations.md) |

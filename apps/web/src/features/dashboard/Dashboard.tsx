@@ -5,7 +5,7 @@ import { Badge } from '../../components/Badge';
 import { InfoTip } from '../../components/InfoTip';
 import { Meter } from '../../components/Meter';
 import { IconWave } from '../../components/icons';
-import { download, nightsCsv } from '../../exports';
+import { download, nightsCsv, summaryJson } from '../../exports';
 import { formatNightDate } from '../../format';
 import { href } from '../../router';
 import { useData } from '../../state';
@@ -14,6 +14,7 @@ import { Hero } from './Hero';
 import { ChangesPanel } from '../changes/ChangesPanel';
 import { Reminders } from '../equipment/Reminders';
 import { AnomalyPanel } from './AnomalyPanel';
+import { LlmCard } from '../llm/LlmCard';
 import { BreathingTrends } from './BreathingTrends';
 import { Distribution } from './Distribution';
 import { NightsTable } from './NightsTable';
@@ -42,7 +43,7 @@ export function EmptyState() {
 export function Dashboard() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-  const { nights, loading, demoOnly, changes } = useData();
+  const { nights, loading, demoOnly, changes, asOf } = useData();
   const [range, setRange] = useState<RangeKey>('30');
   const [custom, setCustom] = useState<[string, string]>(['', '']);
   const [rolling, setRolling] = useState(true);
@@ -66,7 +67,10 @@ export function Dashboard() {
           <h1>{t('dashboard.title')}</h1>
           <p className="sub">{t('dashboard.subtitle', { count: nights.length, date: formatNightDate(last.date, lang) })}</p>
         </div>
-        <button className="btn secondary" type="button" onClick={() => download(nightsCsv(nights), 'opencpap-nights.csv', 'text/csv;charset=utf-8')}>{t('dashboard.exportNights')}</button>
+        <div className="btn-row">
+          <button className="btn secondary" type="button" onClick={() => download(nightsCsv(nights), 'opencpap-nights.csv', 'text/csv;charset=utf-8')}>{t('dashboard.exportNights')}</button>
+          <button className="btn secondary" type="button" onClick={() => asOf && download(summaryJson(nights, asOf), 'opencpap-summary.json', 'application/json')}>{t('dashboard.exportSummary')}</button>
+        </div>
       </div>
       {demoOnly && <div className="banner" role="note" style={{ marginBottom: '1rem' }}>{t('dashboard.demoBanner')}</div>}
 
@@ -74,6 +78,7 @@ export function Dashboard() {
       <div className="stack" style={{ marginTop: '0.9rem' }}>
         <AnomalyPanel />
         <Reminders />
+        <LlmCard />
       </div>
 
       <section className="card" aria-labelledby="comp" style={{ marginTop: '0.9rem' }}>

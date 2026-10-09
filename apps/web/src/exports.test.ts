@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generateDemoSessions, groupNights } from '@opencpap/core';
-import { csv, csvCell, eventsCsv, flowEdf, nightsCsv, oximetryCsv, statisticsCsv, wallClock } from './exports';
+import { csv, csvCell, eventsCsv, flowEdf, nightsCsv, oximetryCsv, statisticsCsv, summaryJson, wallClock } from './exports';
 
 describe('csvCell', () => {
   it('quotes separators, quotes and newlines', () => {
@@ -60,5 +60,29 @@ describe('oximetryCsv', () => {
   it('writes wall-clock times and leaves invalid readings empty', () => {
     const out = oximetryCsv({ times: Float64Array.of(Date.UTC(2026, 2, 5, 23, 0, 0), Date.UTC(2026, 2, 5, 23, 0, 4)), spo2: Float32Array.of(96, NaN), pulse: Float32Array.of(61, 62) });
     expect(out).toBe('time,spo2_pct,pulse_bpm\r\n2026-03-05T23:00:00,96,61\r\n2026-03-05T23:00:04,,62\r\n');
+  });
+});
+
+describe('summaryJson', () => {
+  const nights = groupNights(generateDemoSessions({ nights: 40, seed: 6, waveformNights: 0 }).map(({ waveforms: _w, ...s }) => s));
+  const doc = JSON.parse(summaryJson(nights, nights.at(-1)!.date, '2026-05-01T00:00:00.000Z'));
+  it('has a stable, documented shape', () => {
+    expect(doc.schema).toBe('opencpap-summary/1');
+    expect(doc.generated).toBe('2026-05-01T00:00:00.000Z');
+    expect(doc.as_of).toBe(nights.at(-1)!.date);
+    expect(Object.keys(doc.last_night)).toEqual(['date', 'usage_hours', 'ahi', 'obstructive', 'central', 'hypopnea', 'leak_p95_lmin', 'leak_kind', 'pressure_min_cmh2o', 'pressure_max_cmh2o', 'mode']);
+    expect(Object.keys(doc.last_7_days)).toEqual(['days', 'nights_with_data', 'usage_hours_mean', 'nights_over_4h', 'compliance_pct', 'ahi', 'leak_p95_lmin', 'leak_median_lmin']);
+    expect(doc.last_7_days.days).toBe(7);
+    expect(doc.last_30_days.nights_with_data).toBeGreaterThan(20);
+  });
+  it('contains figures only', () => {
+    const text = summaryJson(nights, nights.at(-1)!.date);
+    expect(text).not.toMatch(/serial|note|patient|tag/i);
+    expect(text.endsWith('\n')).toBe(true);
+  });
+  it('uses null for what is missing', () => {
+    const empty = JSON.parse(summaryJson([], '2026-01-10'));
+    expect(empty.last_night).toBeUndefined();
+    expect(empty.last_7_days.ahi).toBeNull();
   });
 });
