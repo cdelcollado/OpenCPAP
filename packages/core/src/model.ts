@@ -1,4 +1,4 @@
-/** Model canònic independent del fabricant. Temps en ms UTC des d'epoch. */
+/** Manufacturer-independent canonical model. Timestamps are UTC epoch milliseconds. See docs/data-model.md. */
 
 export type EventType =
   | 'obstructive' | 'central' | 'hypopnea' | 'unclassified-apnea'
@@ -15,11 +15,11 @@ export interface DeviceInfo {
 export interface TherapyEvent {
   type: EventType;
   start: number;
-  /** durada en segons (0 si puntual) */
+  /** duration in seconds (0 for instantaneous events) */
   duration: number;
 }
 
-/** Senyal mostrejada a freqüència constant. */
+/** Signal sampled at a constant rate. */
 export interface Waveform {
   channel: 'flow' | 'pressure' | 'leak' | 'tidal-volume' | 'resp-rate' | 'spo2' | 'pulse';
   unit: string;
@@ -40,6 +40,6 @@ export interface Session {
   settings: SessionSettings;
   events: TherapyEvent[];
   waveforms: Waveform[];
-  /** estadístiques que el dispositiu ja ha resumit, si n'hi ha */
+  /** statistics already summarized by the device, if any (used for cross-checking) */
   deviceSummary?: Record<string, number>;
 }

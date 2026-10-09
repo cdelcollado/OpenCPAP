@@ -1,5 +1,5 @@
 node_modules
 dist
 *.tsbuildinfo
-# Mostres reals de SD: no versionar dades de salut sense anonimitzar
+# Real SD card samples: never version health data unless anonymized
 fixtures/raw/
