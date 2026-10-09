@@ -4,6 +4,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 ### Added
+- Time-weighted leak statistics (`weightedMean`, `weightedPercentile`, `intervalSeconds`) matching OSCAR; `NightSummary.leak.average`.
+- OSCAR comparison run on the sample card: 550/550 sessions match on hours, AHI, RDI, event counts and leak ([oscar-comparison.md](docs/oscar-comparison.md)); the comparison tool now reads OSCAR's real CSV format and matches sessions by start time.
 - **Web app (Phase 2)**: `apps/web` React/Vite PWA with dashboard, night view (timeline, flow/leak/pressure/snore charts, linked zoom), import screen (folder, ZIP, drag & drop, progress, cancel), settings (language, theme, delete data), demo mode, metric explainers, English/Català/Español, light/dark themes, offline precache.
 - IndexedDB storage layer (`Repository`, Dexie) with idempotent re-import.
 - `@opencpap/core`: `summarizeNight`, `groupNights`, `nightOf`, `compliance`, `percentile`, `configuredPressure`, `generateDemoSessions`.

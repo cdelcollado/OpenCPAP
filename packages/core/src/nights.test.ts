@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { compliance, configuredPressure, groupNights, nightOf, percentile, summarizeNight, type SessionLite } from './nights';
+import { compliance, configuredPressure, groupNights, intervalSeconds, nightOf, percentile, summarizeNight, weightedMean, weightedPercentile, type SessionLite } from './nights';
 import { generateDemoSessions, rng } from './demo';
 
 const iso = (s: string) => Date.parse(`${s}Z`);
@@ -18,6 +18,38 @@ describe('percentile', () => {
   it('is NaN for no data and clamps p', () => {
     expect(percentile([], 50)).toBeNaN();
     expect(percentile([1, 2], 150)).toBe(2);
+  });
+});
+
+describe('time-weighted statistics', () => {
+  it('weights each value by the time it covers (the case that revealed OSCAR\'s method)', () => {
+    // 24 L/min for 120 s then 46 L/min for the 31 s left of a 151 s session: OSCAR reports an average of 28.52
+    expect(weightedMean([24, 46], [120, 31])).toBeCloseTo(28.52, 2);
+    expect(weightedPercentile([24, 46], [120, 31], 95)).toBe(46);
+    // a brief spike at the end must not dominate the 95th percentile
+    expect(weightedPercentile([28, 27, 23, 21, 76], [120, 120, 120, 120, 8], 95)).toBe(28);
+  });
+  it('nearest rank on cumulative weight', () => {
+    expect(weightedPercentile([1, 2, 3, 4], [1, 1, 1, 1], 50)).toBe(2);
+    expect(weightedPercentile([1, 2, 3, 4], [1, 1, 1, 1], 100)).toBe(4);
+    expect(weightedPercentile([3, 1, 2], [1, 1, 1], 0)).toBe(1);
+  });
+  it('falls back to equal weights and handles empty input', () => {
+    expect(weightedMean([2, 4], [0, 0])).toBe(3);
+    expect(weightedPercentile([5, 1], [0, 0], 50)).toBe(1);
+    expect(weightedPercentile([], [], 50)).toBeNaN();
+  });
+  it('derives interval lengths from sample times', () => {
+    expect(intervalSeconds([120_000, 240_000, 271_000], 0)).toEqual([120, 120, 31]);
+    expect(intervalSeconds([1000], 5000)).toEqual([0]);
+  });
+  it('is used for the night leak statistics', () => {
+    const s = lite(1, '2026-03-05T23:00:00', 1, {
+      statistics: [{ channel: 'leak-total', unit: 'L/min', times: Float64Array.of(iso('2026-03-05T23:02:00'), iso('2026-03-05T23:02:31')), values: Float32Array.of(24, 46) }],
+    });
+    const leak = summarizeNight('2026-03-05', [s]).leak!;
+    expect(leak.average).toBeCloseTo(28.52, 2);
+    expect(leak.max).toBe(46);
   });
 });
 

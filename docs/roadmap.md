@@ -21,8 +21,8 @@ Legend: [x] done · [ ] pending
 - [x] Automated cross-check against the device's own statistics (333 sessions, 0 mismatches)
 - [x] Synthetic-fixture tests for every parser; real-card integration test (skipped without `fixtures/raw`)
 - [x] OSCAR comparison tooling (`scripts/compare-oscar.ts`, [guide](oscar-comparison.md))
-- [ ] Run the comparison on the sample card — needs the maintainer's OSCAR "Sessions" CSV export
-- [ ] Pressure/leak comparison (OSCAR's unintentional-leak model)
+- [x] Comparison with OSCAR 2.1.0 on the sample card: 550/550 sessions match on all metrics ([results](oscar-comparison.md#results))
+- [ ] Pressure comparison (needs a card from an auto-titrating device; OSCAR leaves pressure empty for fixed CPAP)
 - [ ] Interpret `D/*.B03` (device settings log) and `E/*.B04` (device events)
 - [x] Browser `VirtualFS` implementations: directory handle, FileList, ZIP — `packages/browser`
 - [x] Web Worker import pipeline with progress, errors and cancellation — [browser-import.md](browser-import.md)

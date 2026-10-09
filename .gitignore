@@ -6,3 +6,7 @@ fixtures/raw/
 dist-types
 playwright-report
 test-results
+
+# OSCAR exports contain health data
+oscar-*.csv
+*oscar*.csv

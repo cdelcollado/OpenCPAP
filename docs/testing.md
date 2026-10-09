@@ -7,7 +7,7 @@
 | Real-card integration | Vitest | `real-card.test.ts` in `philips-ds2` and `browser` | Needs `fixtures/raw/P-SERIES` (not in git). All files decrypt, all 24 154 chunks pass CRC, parsed event counts equal the device's own counts (333 sessions), all card sources give identical sessions |
 | End to end | Playwright + system Chrome | `e2e/*.e2e.ts` | The built PWA in a real browser: empty state, demo data, night view, linked zoom, navigation, language/theme persistence, deletion, PWA manifest + service worker, import from ZIP and from the real card folder through the Web Worker and IndexedDB, error messages, console silence |
 | Accessibility | axe-core via Playwright | `e2e/app.e2e.ts` | No WCAG 2.1 A/AA violations on dashboard, night, import, settings, in light and dark themes |
-| Comparison with OSCAR | `scripts/compare-oscar.ts` | [oscar-comparison.md](oscar-comparison.md) | Usage/AHI/event counts versus OSCAR's CSV export (needs a manual export) |
+| Comparison with OSCAR | `scripts/compare-oscar.ts` | [oscar-comparison.md](oscar-comparison.md) | Hours, AHI, RDI, event counts and leak versus OSCAR's CSV export (needs a manual export; last run: 550/550 sessions match) |
 
 ## Commands
 ```bash
