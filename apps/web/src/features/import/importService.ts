@@ -1,4 +1,4 @@
-import { generateDemoSessions } from '@opencpap/core';
+import { addDays, generateDemoSessions, nightOf } from '@opencpap/core';
 import { createImportWorker, importCard, type CardSource } from '@opencpap/browser';
 import { DEMO_DEVICE_ID, repository } from '../../db/repository';
 
@@ -18,13 +18,31 @@ export async function importCardToDb(source: CardSource, cb: ImportCallbacks = {
   return count;
 }
 
+export const DEMO_TAG = 'demo';
+
+/** Synthetic sessions plus a demo mask/cushion/filter and a few notes, so every feature has something to show. */
 export async function loadDemoData(): Promise<number> {
   const sessions = generateDemoSessions({ nights: 75, waveformNights: 3 });
   for (const s of sessions) await repository.saveSession(s);
+  const asOf = nightOf(sessions.at(-1)!.start);
+  // the demo story replaces the cushion about 45 % of the way through the data (see generateDemoSessions)
+  const cushionStart = nightOf((sessions.find((x) => x.id > Math.floor(75 * 0.45)) ?? sessions[0]!).start);
+  await repository.saveEquipment({ id: 'demo-mask', kind: 'mask', name: 'Demo nasal mask', startDate: addDays(asOf, -150), intervalDays: 180 });
+  await repository.saveEquipment({ id: 'demo-cushion', kind: 'cushion', name: 'Demo cushion', startDate: cushionStart, intervalDays: 45 });
+  await repository.saveEquipment({ id: 'demo-filter-old', kind: 'filter', name: 'Demo filter (replaced)', startDate: addDays(asOf, -75), endDate: addDays(asOf, -46), intervalDays: 30 });
+  await repository.saveEquipment({ id: 'demo-filter', kind: 'filter', name: 'Demo filter', startDate: addDays(asOf, -45), intervalDays: 30 });
+  await repository.saveJournal({ date: addDays(asOf, -2), note: 'Slept on my back for part of the night.', tags: [DEMO_TAG, 'back sleeping'], mood: 3 });
+  await repository.saveJournal({ date: addDays(asOf, -9), note: 'Cold with a blocked nose.', tags: [DEMO_TAG, 'cold'], mood: 2 });
+  await repository.saveJournal({ date: addDays(asOf, -20), note: 'Felt rested all day.', tags: [DEMO_TAG], mood: 5 });
   return sessions.length;
 }
 
-export const removeDemoData = () => repository.deleteDevice(DEMO_DEVICE_ID);
+/** Removes the demo device together with the demo equipment and notes (identified by id prefix and tag). */
+export async function removeDemoData(): Promise<void> {
+  await repository.deleteDevice(DEMO_DEVICE_ID);
+  for (const e of await repository.equipment()) if (e.id.startsWith('demo-')) await repository.deleteEquipment(e.id);
+  for (const j of await repository.journal()) if (j.tags.includes(DEMO_TAG)) await repository.deleteJournal(j.date);
+}
 
 /* ---- folder drag & drop ---- */
 

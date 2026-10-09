@@ -13,7 +13,7 @@ npx tsc -b          # type-check with project references
 npx vitest run      # run all unit/integration tests
 npm run dev         # web app with hot reload
 npm run build       # production build of the web app
-npm run e2e         # build + Playwright E2E and accessibility tests (needs Google Chrome)
+npm run e2e         # build + Playwright E2E and accessibility tests (needs Google Chrome and poppler-utils for the PDF test)
 ```
 
 ## Layout and conventions

@@ -1,4 +1,4 @@
-import type { EventType, Session, TimeSeries } from './model';
+import type { EventType, Session, SessionSettings, TimeSeries } from './model';
 import { usageSeconds } from './stats';
 
 /** A session without its bulky waveforms: what the dashboard and the database list work with. */
@@ -106,6 +106,8 @@ export interface NightSummary {
   snoreIndex?: number;
   /** device mode of the first session */
   mode?: string;
+  /** therapy settings of the first session of the night (used to detect setting changes) */
+  settings: SessionSettings;
   hasWaveforms: boolean;
 }
 
@@ -154,6 +156,7 @@ export function summarizeNight(date: string, sessions: SessionLite[], opts: { ha
     pressure: pressures.length ? { min: Math.min(...pressures), max: Math.max(...pressures), median: percentile(pressures, 50) } : undefined,
     snoreIndex: usage > 0 && snores > 0 ? snores / usage : undefined,
     mode: typeof sorted[0]?.settings.mode === 'string' ? sorted[0].settings.mode : undefined,
+    settings: sorted[0]?.settings ?? {},
     hasWaveforms: opts.hasWaveforms ?? false,
   };
 }

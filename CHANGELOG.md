@@ -9,6 +9,23 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
 - Bundle split into app / vendor / charts chunks.
 
+### Added (Phase 3)
+- **Notes**: mood, text and tags per night, saved automatically; note icon in the nights table.
+- **Plain-language summary** of each night (deterministic rules, `nightFindings` in core), in three languages.
+- **Setting changes**: detection (`settingsChanges`), dashed markers with a flag on the trend charts, a change list on the dashboard.
+- **Compare periods** page (`periodStats`, `comparePeriods`, `recentVersusPrevious`, `aroundChange`) with settings diff and event-rate bars; shareable URL.
+- **Equipment** page: items, replacement intervals, reminders on the dashboard, *Replace now*, leak-versus-age chart and trend (`equipmentStatus`, `leakByAge`, `dueItems`).
+- **Report** page: printable clinician report (A4, light palette, static SVG figures) with optional notes, equipment, previous-period comparison and nights table; PDF content verified with `pdftotext`.
+- **Backup / restore**: gzip-compressed NDJSON, validated on read, newest-wins merge for notes and equipment, optional flow data; **persistent-storage** request.
+- Dashboard **custom date range**; header links to Compare, Equipment and Report.
+- IndexedDB **schema v2** (`journal`, `equipment`) with a v1 → v2 test.
+- Docs: `report.md`, `backup-format.md`, Phase 3 sections of `analytics.md`/`storage.md`/`web-app.md`/`design-system.md`/`privacy-and-security.md`, ADR-0009.
+
+### Fixed (Phase 3)
+- Header links built from parameterised route builders rendered without `href` (found by the new header-link E2E test).
+- Overflow on narrow screens caused by long `<option>` text; the `?` explainer could leave the viewport on phones.
+- Demo data: a pressure change and a cushion-age story so the new features have something to show; `NightSummary` now carries the night's settings.
+
 ### Added
 - `docs/design-system.md`; ADR-0008; E2E tests for tooltips and click-through, calendar, hero, track alignment (pixel measurement), shared readout, therapy settings, date jump and no horizontal overflow on a 390 px phone; unit tests for the heat ramp, dashboard metrics, readout lookups, nice ticks and settings rows.
 - Time-weighted leak statistics (`weightedMean`, `weightedPercentile`, `intervalSeconds`) matching OSCAR; `NightSummary.leak.average`.

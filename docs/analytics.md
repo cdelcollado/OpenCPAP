@@ -35,3 +35,39 @@ Over the last `days` calendar nights ending at the most recent night (default 30
 
 ## Tests
 `nights.test.ts` (percentile, time-weighted statistics, night boundary at noon, merging sessions, pressure rules, compliance window, demo generator) and `stats.test.ts`.
+
+## Phase 3 definitions
+
+### Setting changes
+`settingsChanges(nights)` (core `changes.ts`) compares the settings of each night with the previous night's. A setting is reported only when **both** nights report it and the values differ (devices only report what applies, so a missing key is not a change). Major settings (`isMajor`: mode, pressures, ramp, flex, EZ-Start) are listed first in the UI; minor ones (humidifier level, tube temperature…) are marked as such. The first night of the data cannot have a change.
+
+### Period statistics and comparison
+`periodStats(nights)` summarises a set of nights; `comparePeriods(a, b)` returns both plus `delta = b − a`.
+- **AHI of a period** = all apneas and hypopneas / **total** hours (weighted by use, so a 2 h night counts for less than an 8 h one); the **median nightly AHI** is reported next to it. The two can differ when a few short nights are extreme.
+- **Compliance** = nights with ≥ 4 h / nights **with data** in the period (the dashboard's 30-night compliance counts missing calendar nights as 0 h; this one does not, because the comparison is about the nights that exist).
+- **Rates** = events per hour of use over the whole period, per type.
+- **Leak** = median across nights of the nightly 95th percentile (and of the nightly median).
+- Pairs: `recentVersusPrevious(end, days)` (the `days` calendar days ending at `end` against the `days` before) and `aroundChange(date, days)` (the `days` before a change against the `days` from the change night on).
+- The UI never says a change *caused* a difference; it states the caution that sleep, illness, season and mask fit vary too.
+
+### Equipment
+`equipmentStatus(item, asOf)`: age in days since `startDate` (counted to `asOf`, the date of the latest data, so results do not depend on today's clock; a replaced item's clock stops at `endDate`). State: `ok`; `soon` when ≤ max(7, 10 % of the interval) days remain; `due` when 0 to 7 days overdue; `overdue` when more than 7 days past; `retired` once replaced. Default intervals (`DEFAULT_INTERVAL_DAYS`: mask 180, cushion 90, headgear 180, hose 90, filter 30, humidifier chamber 180, other 90) are editable starting points, not medical advice.
+
+`leakByAge(nights, item)`: nightly 95 % leak against days of use of the item. With ≥ 6 nights it reports the median of the first and of the latest 7 nights; with ≥ 10 nights a least-squares slope in **L/min per 30 days** and a trend label: `rising` ≥ +2, `falling` ≤ −2, otherwise `flat`. An upward slope with age is a hint, not a diagnosis (fit, position, weight and season also change leak); the UI says so.
+
+### Plain-language summary (`nightFindings`)
+Deterministic rules, no machine-learning model, neutral wording, never advice on settings. Each rule yields `{id, level, params}`; the app translates it (`finding.*` strings in three languages).
+
+| Rule | Condition | Level |
+|---|---|---|
+| use | < 2 h → *very short*; < 4 h → *short*; otherwise *ok* | warn / warn / good |
+| AHI band | < 5, 5–15, ≥ 15 | good / warn / warn |
+| AHI vs usual | night ≥ 4 h and AHI ≥ 1.5× the 30-night baseline and ≥ 1 above it → *above usual*; ≤ 0.67× and ≥ 1 below → *below usual* | info |
+| leak | 95 % leak ≥ 1.25× baseline and ≥ 5 L/min above it | warn |
+| large leak | ≥ 5 min of reported large leak | warn |
+| mask off | any mask-off period: count and total minutes | info |
+| periodic breathing | ≥ 5 min | info |
+| RERA | index ≥ 5 per hour | info |
+| settings changed | a setting differs from the previous night | info |
+
+Thresholds are reading aids chosen to avoid noise on small differences; they are constants in `findings.ts` and covered by tests.

@@ -38,6 +38,10 @@ export function generateDemoSessions(opts: DemoOptions = {}): Session[] {
   const waveformNights = opts.waveformNights ?? 3;
   const device = { manufacturer: 'Demo', model: 'Demo CPAP (synthetic data)', serial: 'DEMO-0001', firmware: '1.0' };
   const out: Session[] = [];
+  // a story for the demo: the pressure is raised once (events drop afterwards), and the leak creeps up as the
+  // cushion ages until it is replaced
+  const changeAt = nights >= 10 ? Math.floor(nights * 0.62) : nights; // very short demos have no story
+  const cushionReplacedAt = Math.floor(nights * 0.45);
 
   for (let n = 0; n < nights; n++) {
     const day = end - (nights - 1 - n) * 86400_000;
@@ -47,7 +51,7 @@ export function generateDemoSessions(opts: DemoOptions = {}): Session[] {
     const durS = Math.round(hours * 3600);
     const endMs = startMs + durS * 1000;
 
-    const rate = 1.2 + 2.5 * r() * r(); // events/hour, most nights low
+    const rate = (1.2 + 2.5 * r() * r()) * (n >= changeAt ? 0.75 : 1); // events/hour, most nights low
     const events: TherapyEvent[] = [];
     const add = (type: TherapyEvent['type'], count: number, duration = 0) => {
       for (let i = 0; i < count; i++) events.push({ type, start: startMs + Math.round(r() * durS) * 1000, duration });
@@ -62,13 +66,14 @@ export function generateDemoSessions(opts: DemoOptions = {}): Session[] {
 
     const intervals = Math.floor(durS / 120);
     const times = new Float64Array(intervals), leak = new Float32Array(intervals), snore = new Float32Array(intervals);
-    const base = 4 + r() * 6;
+    const cushionAge = n < cushionReplacedAt ? n : n - cushionReplacedAt;
+    const base = 3 + 0.09 * cushionAge + r() * 3;
     for (let i = 0; i < intervals; i++) {
       times[i] = startMs + (i + 1) * 120_000;
       leak[i] = Math.max(0, base + (r() - 0.5) * 6 + (r() < 0.02 ? 25 : 0));
       snore[i] = r() < 0.25 ? Math.round(r() * 3) : 0;
     }
-    const pressure = 9.5;
+    const pressure = n >= changeAt ? 10 : 9.5;
     const statistics: TimeSeries[] = [
       { channel: 'leak-total', unit: 'L/min', times, values: leak },
       { channel: 'snore-count', unit: 'count', times, values: snore },

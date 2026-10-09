@@ -4,3 +4,7 @@ export * from './loader';
 export * from './stats';
 export * from './nights';
 export * from './demo';
+export * from './changes';
+export * from './compare';
+export * from './equipment';
+export * from './findings';

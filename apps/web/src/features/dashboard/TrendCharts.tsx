@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { NightSummary } from '@opencpap/core';
+import type { ChangeEvent, NightSummary } from '@opencpap/core';
 import { Chart, axisStyle, uPlot, utcDate, type ChartColors } from '../../components/Chart';
 import { dayAxisValues } from '../../components/axes';
 import { InfoTip } from '../../components/InfoTip';
+import { markersPlugin } from '../../components/annotations';
+import { describeChanges } from '../changes/format';
 import { tooltipPlugin } from '../../components/chartTooltip';
 import { formatHours, formatNightDate, formatNumber } from '../../format';
 import { href } from '../../router';
@@ -15,9 +17,15 @@ const dateOf = (x: number) => new Date(x * 1000).toISOString().slice(0, 10);
 type Kind = 'usage' | 'ahi' | 'leak';
 
 /** Three single-measure charts. Each measure keeps its own colour everywhere in the app. */
-export function TrendCharts({ nights }: { nights: NightSummary[] }) {
+export function TrendCharts({ nights, changes = [] }: { nights: NightSummary[]; changes?: ChangeEvent[] }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+
+  const inView = useMemo(() => {
+    const first = nights[0]?.date, last = nights.at(-1)?.date;
+    return first && last ? changes.filter((c) => c.date >= first && c.date <= last) : [];
+  }, [nights, changes]);
+  const byDate = useMemo(() => new Map(inView.map((c) => [c.date, c])), [inView]);
 
   const xs = useMemo(() => Float64Array.from(nights, (n) => dayStamp(n.date)), [nights]);
   const data = useMemo(() => ({
@@ -45,15 +53,22 @@ export function TrendCharts({ nights }: { nights: NightSummary[] }) {
           : { label, stroke: color, fill: color, width: 0, paths: bars, points: { show: false } },
         ...(kind === 'ahi' ? [{ label: String(AHI_REFERENCE), stroke: c.muted, width: 1, dash: [5, 4], points: { show: false } }] : []),
       ],
-      plugins: [tooltipPlugin({
-        title: (u, i) => formatNightDate(dateOf(u.data[0][i]!), lang),
-        rows: (u, i) => {
-          const v = u.data[1]?.[i];
-          return v == null ? [] : [{ label, value: fmt(v), color }];
-        },
-      })],
+      plugins: [
+        tooltipPlugin({
+          title: (u, i) => formatNightDate(dateOf(u.data[0][i]!), lang),
+          rows: (u, i) => {
+            const v = u.data[1]?.[i];
+            const change = byDate.get(dateOf(u.data[0][i]!));
+            return [
+              ...(v == null ? [] : [{ label, value: fmt(v), color }]),
+              ...(change ? [{ label: describeChanges(change, t, lang), value: t('changes.marker'), color: c.muted }] : []),
+            ];
+          },
+        }),
+        markersPlugin(inView.map((c) => dayStamp(c.date) - 43200), c.muted),
+      ],
     };
-  }, [t, lang]);
+  }, [t, lang, byDate, inView]);
 
   const usageOpts = useMemo(() => build('usage'), [build]);
   const ahiOpts = useMemo(() => build('ahi'), [build]);
@@ -64,7 +79,7 @@ export function TrendCharts({ nights }: { nights: NightSummary[] }) {
     <div className="stack">
       <div className="card chart-card">
         <h3>{t('dashboard.usageChart')}</h3>
-        <p className="caption">{t('dashboard.chartHint')}</p>
+        <p className="caption">{t('dashboard.chartHint')}{inView.length > 0 && ` ${t('dashboard.markersHint')}`}</p>
         <Chart options={usageOpts} data={data.usage} height={190} ariaLabel={t('dashboard.usageChart')} zoom={false} onPointClick={open} />
       </div>
       <div className="card chart-card">

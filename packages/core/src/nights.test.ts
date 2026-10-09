@@ -136,6 +136,16 @@ describe('generateDemoSessions', () => {
     const nights = groupNights(a);
     expect(nights.every((n) => n.usageHours > 0)).toBe(true);
   });
+  it('tells a story: a pressure change part-way and leak that grows with cushion age', () => {
+    const a = generateDemoSessions({ nights: 80, seed: 11, waveformNights: 0 });
+    const first = a[0]!.settings.pressure, lastP = a.at(-1)!.settings.pressure;
+    expect(first).toBe(9.5);
+    expect(lastP).toBe(10);
+    const nightsList = groupNights(a);
+    const early = nightsList.slice(0, 30).map((n) => n.leak!.p95), late = nightsList.slice(34, 36).map((n) => n.leak!.p95);
+    expect(Math.max(...early.slice(-5))).toBeGreaterThan(Math.min(...early.slice(0, 5))); // rising before the replacement
+    expect(late.length).toBe(2);
+  });
   it('rng is in [0,1)', () => {
     const r = rng(1);
     for (let i = 0; i < 100; i++) { const v = r(); expect(v).toBeGreaterThanOrEqual(0); expect(v).toBeLessThan(1); }

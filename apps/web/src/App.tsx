@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Header } from './components/Header';
+import { ComparePage } from './features/compare/ComparePage';
 import { Dashboard } from './features/dashboard/Dashboard';
+import { EquipmentPage } from './features/equipment/EquipmentPage';
 import { ImportPanel } from './features/import/ImportPanel';
 import { NightView } from './features/night/NightView';
+import { ReportPage } from './features/report/ReportPage';
 import { Settings } from './features/settings/Settings';
 import { useRoute } from './router';
 import { DataProvider, useData } from './state';
@@ -16,6 +19,9 @@ function Main() {
       {route.name === 'import' && <ImportPanel />}
       {route.name === 'settings' && <Settings />}
       {route.name === 'night' && <NightView date={route.date} />}
+      {route.name === 'compare' && <ComparePage />}
+      {route.name === 'equipment' && <EquipmentPage />}
+      {route.name === 'report' && <ReportPage />}
     </main>
   );
 }

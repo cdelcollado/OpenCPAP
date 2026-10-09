@@ -52,8 +52,23 @@ Legend: [x] done · [ ] pending
 - [ ] Dashboard "pressure/leak distribution" for auto-titrating modes
 - [ ] Performance budget for large histories (virtualise the nights table, decimate waveforms on zoom)
 
-## Phase 3 — Analysis and trends
-Trends, compliance, period comparison, notes/tags, PDF report, backup/restore, mask/consumables tracking.
+## Phase 3 — Analysis, notes, comparison and reports
+- [x] Custom date range for the trends, calendar and table
+- [x] Setting-change detection, markers on the trend charts and a change list ([analytics.md](analytics.md#setting-changes))
+- [x] Period comparison: presets, around a change, shareable URL, settings diff, event-rate bars ([web-app.md](web-app.md))
+- [x] Sleep journal: notes, tags, mood; flagged in the nights table; included in backups; optional in the report
+- [x] Plain-language summary of the night (rules in three languages)
+- [x] Equipment tracking: reminders, replace flow, leak-versus-age trend ([analytics.md](analytics.md#equipment))
+- [x] Clinician report: print / save as PDF with options ([report.md](report.md))
+- [x] Backup and restore (gzip NDJSON, validated, mergeable) and persistent-storage request ([backup-format.md](backup-format.md))
+- [x] IndexedDB schema v2 with a migration test
+- [x] Demo story (pressure change, ageing cushion, equipment, notes)
+- [x] E2E: notes, summary, changes, comparison, equipment, PDF content via `pdftotext`, backup round trip, axe on every new page in both themes, header links, 390 px layout
+- [ ] Keyboard access to the chart readouts; screen-reader pass of the new pages
+- [ ] Encrypted backups (optional passphrase)
+- [ ] Event-type distribution histograms and rolling averages on the trends
+- [ ] Report: signature block, date of birth and clinic logo as optional fields
+- [ ] Clinical review of the plain-language thresholds and the default equipment intervals
 
 ## Phase 4 — Advanced analytics
 Flow limitation, breathing regularity, snore, periodic breathing, oximetry import, anomaly alerts, exports.

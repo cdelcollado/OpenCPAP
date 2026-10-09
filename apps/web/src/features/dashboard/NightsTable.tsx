@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { NightSummary } from '@opencpap/core';
-import { IconWarn } from '../../components/icons';
+import { IconNote, IconWarn } from '../../components/icons';
+import { useData } from '../../state';
 import { formatHours, formatNightDate, formatNumber } from '../../format';
 import { href } from '../../router';
 
@@ -8,6 +9,7 @@ import { href } from '../../router';
 export function NightsTable({ nights }: { nights: NightSummary[] }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const { journal } = useData();
   if (nights.length === 0) return <p>{t('dashboard.noNightsInRange')}</p>;
   return (
     <div className="table-wrap">
@@ -21,6 +23,7 @@ export function NightsTable({ nights }: { nights: NightSummary[] }) {
             <th scope="col" className="num"><abbr title={`${t('event.obstructive')} · ${t('event.central')} · ${t('event.hypopnea')}`}>OA·CA·H</abbr></th>
             <th scope="col" className="num">{t('metric.leakP95')}</th>
             <th scope="col" className="num">{t('metric.pressure')}</th>
+            <th scope="col"><span className="sr-only">{t('dashboard.notesColumn')}</span></th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +46,7 @@ export function NightsTable({ nights }: { nights: NightSummary[] }) {
               <td className="num">{n.counts.obstructive ?? 0}·{n.counts.central ?? 0}·{n.counts.hypopnea ?? 0}</td>
               <td className="num">{formatNumber(n.leak?.p95, lang)}</td>
               <td className="num">{n.pressure ? (n.pressure.min === n.pressure.max ? formatNumber(n.pressure.max, lang) : `${formatNumber(n.pressure.min, lang, 0)}–${formatNumber(n.pressure.max, lang, 0)}`) : '—'}</td>
+              <td>{journal.has(n.date) && <a className="note-flag" href={href.night(n.date)} title={journal.get(n.date)!.tags.join(', ') || journal.get(n.date)!.note.slice(0, 80)}><IconNote /><span className="sr-only">{t('journal.hasNote')}</span></a>}</td>
             </tr>
           ))}
         </tbody>

@@ -43,3 +43,8 @@ export async function loadDemo(page: Page) {
 export async function scrollToCenter(locator: import('@playwright/test').Locator) {
   await locator.evaluate((el) => el.scrollIntoView({ block: 'center' }));
 }
+
+export async function openLatestNight(page: Page) {
+  await page.getByRole('row').nth(1).getByRole('link').first().click();
+  await expect(page.getByRole('group', { name: 'Event timeline' })).toBeVisible();
+}

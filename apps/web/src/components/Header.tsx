@@ -7,12 +7,15 @@ import { IconAuto, IconMoon, IconSun } from './icons';
 
 const NEXT: Record<ThemePreference, ThemePreference> = { system: 'light', light: 'dark', dark: 'system' };
 
-export function Header({ current }: { current: 'dashboard' | 'import' | 'settings' }) {
+type Page = 'dashboard' | 'compare' | 'equipment' | 'report' | 'import' | 'settings';
+
+export function Header({ current }: { current: Page }) {
   const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<ThemePreference>(getThemePreference);
   const label = t(theme === 'system' ? 'settings.themeSystem' : theme === 'light' ? 'settings.themeLight' : 'settings.themeDark');
   const Icon = theme === 'system' ? IconAuto : theme === 'light' ? IconSun : IconMoon;
-  const link = (name: 'dashboard' | 'import' | 'settings') => ({ href: href[name], 'aria-current': current === name ? ('page' as const) : undefined });
+  const TARGET: Record<Page, string> = { dashboard: href.dashboard, compare: href.compare(), equipment: href.equipment, report: href.report(), import: href.import, settings: href.settings };
+  const link = (name: Page) => ({ href: TARGET[name], 'aria-current': current === name ? ('page' as const) : undefined });
 
   return (
     <header className="app-header">
@@ -21,6 +24,9 @@ export function Header({ current }: { current: 'dashboard' | 'import' | 'setting
         <nav aria-label={t('nav.label')}>
           <ul>
             <li><a {...link('dashboard')}>{t('nav.dashboard')}</a></li>
+            <li><a {...link('compare')}>{t('nav.compare')}</a></li>
+            <li><a {...link('equipment')}>{t('nav.equipment')}</a></li>
+            <li><a {...link('report')}>{t('nav.report')}</a></li>
             <li><a {...link('import')}>{t('nav.import')}</a></li>
             <li><a {...link('settings')}>{t('nav.settings')}</a></li>
           </ul>

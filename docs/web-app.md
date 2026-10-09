@@ -5,6 +5,9 @@ A React + TypeScript single-page app, built with Vite, that is also an installab
 ![Dashboard](img/dashboard.png)
 ![Night view with the shared cursor readout](img/night.png)
 ![Calendar of nights](img/calendar.png)
+![Notes and the plain-language summary](img/night-notes.png)
+![Comparing two periods](img/compare.png)
+![Equipment tracking with the leak-versus-age reading](img/equipment.png)
 ![Night view in dark mode](img/night-dark.png)
 ![Night view on a phone](img/night-mobile.png)
 
@@ -25,10 +28,19 @@ Requirements: Node 20+. For import from the card the browser must be able to rea
 |---|---|---|
 | `#/` | **Dashboard** | *Last night* hero (AHI as the large figure with a status chip, change versus the 30-night average and a sparkline) with tiles for use, 95 % leak (each with sparkline and change), pressure and events; a **compliance meter** (target marker at 70 %); **trend charts** (hours of use, AHI with a 5/h reference line, 95 % leak) for 7/30/90 nights or all; a **calendar** with one cell per night coloured by use, AHI or leak; and a **nights table** with mini bars and warning icons |
 | `#/night/YYYY-MM-DD` | **Night** | The same hero for that night, then **Night detail**: an event timeline and flow, leak, pressure and snore tracks on one aligned time axis with linked zoom and a shared readout; event counts as bars (with an optional full event table); and the **therapy settings** reported by the device (mode, ramp, pressure relief, humidifier, tube, mask resistance, auto start/stop). Previous/next buttons and a date picker move between nights |
+| `#/compare?a=…&b=…` | **Compare** | Two periods (date pickers, presets: last 30/90 nights vs the same number before, or around a setting change; swap A and B): a table of nights with data, average use, nights ≥ 4 h, AHI, median nightly AHI and leak with the change (B − A), events per hour as paired bars, the therapy settings of each period with differences highlighted, and the setting changes inside them. The URL carries both periods, so a comparison can be bookmarked or shared |
+| `#/equipment` | **Equipment** | Add mask, cushion, headgear, hose, filter, humidifier chamber or other items with a first night of use and a replacement interval; each shows age, a progress meter against the interval, a status chip (in good time / replace soon / due / overdue), *Replace now* (retires the item and starts a new one), edit, delete, and a **Leak and age** panel (95 % leak against days of use with a plain-language trend) |
+| `#/report?range=…` | **Report** | A printable summary for a clinician with options, then *Print or save as PDF* ([report.md](report.md)) |
 | `#/import` | **Import** | Three numbered steps, folder picker (Chromium), folder input (any browser), ZIP input, drag & drop of a folder or ZIP, progress with cancel, detected device, clear errors, demo data loader |
-| `#/settings` | **Settings** | Language, theme, stored data summary and browser storage usage, per-device and global delete, privacy and about |
+| `#/settings` | **Settings** | Language, theme, stored data summary and browser storage usage, **backup download and restore** ([backup-format.md](backup-format.md)), **persistent-storage request**, per-device and global delete (also removes notes and equipment), privacy and about |
 
 The **header** has the language selector and a theme button (system → light → dark) on every screen.
+
+### Dashboard additions (Phase 3)
+A **custom date range**; **equipment reminders** (only when something is due or overdue); **dashed markers with a flag** on the trend charts on nights when a setting changed (the tooltip names the change); a **Setting changes** list with a *Compare 30 nights before and after* link for each; and a note icon in the nights table for nights that have a note.
+
+### Night additions (Phase 3)
+A **Summary of the night** in plain language (rules in [analytics.md](analytics.md#plain-language-summary-nightfindings), one icon per sentence, disclaimer) next to **Notes**: mood (1–5), free text and tags with suggestions from tags used before. Notes save automatically 0.7 s after the last edit and show "Saved on this device"; an entry with nothing in it is removed.
 
 Routing is hash-based (`router.ts`): it needs no server configuration and works from any static host and from the installed PWA.
 
@@ -39,7 +51,7 @@ Routing is hash-based (`router.ts`): it needs no server configuration and works 
 - **Mask-off periods** are shaded on the charts and on the timeline.
 - **Missing detail.** Nights for which the card kept no flow data still show summary statistics and a notice instead of the flow chart.
 - **Metric explainers.** Every key figure has a `?` button with a plain-language explanation (`explain.*` strings), including a reminder that targets are for the clinician to decide.
-- **Demo mode.** *Load demo data* generates 75 synthetic nights (`generateDemoSessions`) under a fictitious "Demo" device; a banner tells the user, and the data can be removed independently of real data.
+- **Demo mode.** *Load demo data* generates 75 synthetic nights (`generateDemoSessions`) under a fictitious "Demo" device, with a story so every feature has something to show: the pressure is raised once, the leak creeps up as a cushion ages, and there is a demo mask, cushion, filter and three notes. A banner tells the user, and *Remove demo data* deletes the demo device, the demo equipment (ids starting `demo-`) and the demo notes (tag `demo`) without touching real data.
 - **Idempotent imports.** Importing the same card again replaces sessions with the same device and id; nothing is duplicated.
 
 ## Source layout (`apps/web/src`)
@@ -48,11 +60,15 @@ Routing is hash-based (`router.ts`): it needs no server configuration and works 
 | `main.tsx`, `App.tsx` | Bootstrapping (i18n, theme, service worker) and the page shell with navigation |
 | `router.ts` | Hash router (`parseRoute`, `href`, `useRoute`) |
 | `state.tsx` | `DataProvider`/`useData`: night summaries and devices loaded from the repository, `reload()` after changes |
-| `db/` | Dexie schema (`db.ts`) and the `Repository` data-access layer (`repository.ts`) |
+| `db/` | Dexie schema (`db.ts`), the `Repository` data-access layer (`repository.ts`) and the backup codec (`backup.ts`) |
 | `features/import/` | `ImportPanel`, `importService` (worker import → database, demo data, folder drop traversal) |
 | `features/dashboard/` | `Dashboard`, `Hero`, `TrendCharts`, `CalendarHeatmap`, `NightsTable`, `metrics` (status bands, baseline, heat scale, calendar maths) |
 | `features/night/` | `NightView`, `Timeline` (SVG rows, nice ticks), `nightData` (model → chart arrays, cursor readout lookups), `settingsRows` |
-| `features/settings/` | `Settings` |
+| `features/changes/` | `ChangesPanel`, `format` (setting labels and values with units) |
+| `features/compare/` | `ComparePage` |
+| `features/equipment/` | `EquipmentPage`, `LeakAgeChart`, `Reminders` |
+| `features/report/` | `ReportPage`, `ReportDocument`, `SvgCharts` |
+| `features/settings/` | `Settings` (language, theme, backup, storage, deletion) |
 | `components/` | `Chart` (uPlot wrapper), `chartTooltip`, `axes` (locale-aware labels), `Header`, `Badge`, `Delta`, `Sparkline`, `Meter`, `InfoTip`, `icons` |
 | `i18n/` | i18next setup and the three locale files |
 | `format.ts`, `color.ts`, `theme.ts`, `styles.css` | Formatting, colour maths (mix, contrast, heat ramp), theme handling, design tokens |
@@ -84,6 +100,7 @@ Semantic landmarks and headings, a skip link, visible focus rings, text/backgrou
 - Hash routing means night links look like `#/night/2026-03-05`.
 - The File System Access picker path (Chromium) and drag & drop are only exercised through unit fakes; E2E covers the folder input, ZIP, errors and persistence in real Chrome. Firefox/Safari are untested.
 - Flow values are shown as reported (OSCAR calls them L/min); physical scaling is unverified ([formats/ds2.md](formats/ds2.md)).
-- No PDF report, journal, notes or period comparison yet (Phase 3).
+- The report relies on the browser's print dialog; there is no one-click PDF download.
+- Backups are not encrypted.
 - The sticky *Night detail* header covers part of the viewport while scrolling the tracks; on phones it is static.
 - The calendar is bounded by the selected range (7/30/90/all); the nights table lists every night in the range without virtualisation.

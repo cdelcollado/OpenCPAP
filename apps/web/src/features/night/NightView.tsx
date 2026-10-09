@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { EventType, SessionLite, Waveform } from '@opencpap/core';
+import { nightFindings, type EventType, type SessionLite, type Waveform } from '@opencpap/core';
 import { Chart, PLOT_PAD_RIGHT, axisStyle, readAxisWidth, uPlot, utcDate, type ChartColors, type XRange } from '../../components/Chart';
 import { InfoTip } from '../../components/InfoTip';
 import { clockAxisValues } from '../../components/axes';
@@ -11,6 +11,8 @@ import { Hero } from '../dashboard/Hero';
 import { baseline } from '../dashboard/metrics';
 import { href } from '../../router';
 import { useData } from '../../state';
+import { Findings } from './Findings';
+import { JournalCard } from './JournalCard';
 import { buildNightData, readoutAt, type NightChartData } from './nightData';
 import { settingsRows } from './settingsRows';
 import { EVENT_COLOR, EVENT_ORDER, Timeline } from './Timeline';
@@ -67,7 +69,7 @@ function trackOptions(c: ChartColors, lang: string, maskOff: [number, number][],
 export function NightView({ date }: { date: string }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-  const { nights } = useData();
+  const { nights, changes } = useData();
   const summary = nights.find((n) => n.date === date);
   const { loading, chart, sessions, date: loadedDate } = useNightData(date);
   const [range, setRange] = useState<XRange | null>(null);
@@ -92,6 +94,7 @@ export function NightView({ date }: { date: string }) {
   const history = useMemo(() => nights.filter((n) => n.date <= date), [nights, date]);
   const base = useMemo(() => baseline(history, 30), [history]);
 
+  const findings = useMemo(() => (summary ? nightFindings(summary, { baseline: base, changes, sessions }) : []), [summary, base, changes, sessions]);
   const mo = useMemo(() => chart?.maskOff ?? [], [chart]);
   const specs = useMemo(() => ({
     flow: { color: (c: ChartColors) => c.flow, label: t('night.flowChart') } as TrackSpec,
@@ -138,6 +141,11 @@ export function NightView({ date }: { date: string }) {
       </div>
 
       <Hero nights={history} last={summary} base={base} heading={t('night.heroHeading')} />
+
+      <div className="two-col" style={{ marginTop: '0.9rem' }}>
+        <Findings findings={findings} />
+        <JournalCard key={date} date={date} />
+      </div>
 
       <section className="card detail" style={{ marginTop: '0.9rem' }} aria-labelledby="detail-title">
         <div className="detail-head">
