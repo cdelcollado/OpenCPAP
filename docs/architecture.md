@@ -11,7 +11,7 @@
 | Package | Responsibility |
 |---|---|
 | `@opencpap/core` | Canonical model (`model.ts`), `VirtualFS` abstraction (`vfs.ts`), `DeviceLoader` interface (`loader.ts`). No device-specific code, no DOM dependencies. |
-| `@opencpap/loader-philips-ds2` | DS2 detection and container decryption (`container.ts`); chunk parsing arrives in Phase 1. |
+| `@opencpap/loader-philips-ds2` | DS2 loader. Layers, bottom-up: `container.ts` (decrypt) → `chunk.ts` + `crc.ts` (framing, integrity) → `summary.ts` / `events.ts` / `waveform.ts` (record decoders) → `index.ts` (session assembly, `DeviceLoader`). `device.ts` reads `PROP.BIN`. `testing/` holds synthetic builders and a Node `VirtualFS` used only by tests. |
 | `apps/web` (planned) | React + Vite PWA: import, storage, charts, reports. |
 
 Planned: `packages/loaders/resmed`, `packages/ui-charts`, further loaders.

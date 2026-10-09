@@ -15,15 +15,15 @@ A local-first web application for reading and visualizing the therapy data that 
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Foundations, model, DS2 container decryption | Mostly done (see [roadmap](docs/roadmap.md)) |
-| 1 | DS2 chunk parser and data loader | Not started |
+| 0 | Foundations, model, DS2 container decryption | Done (CI/lint pending) |
+| 1 | DS2 chunk parser and data loader | Core parser done and validated; browser file access and OSCAR comparison pending (see [roadmap](docs/roadmap.md)) |
 | 2–6 | UI, analytics, multi-device, sharing | Planned |
 
 ## Supported devices
 
 | Device | Detect | Decrypt | Parse | Notes |
 |---|---|---|---|---|
-| Philips DreamStation 2 | yes | yes | no (Phase 1) | Verified on a 420X150C, firmware V1.0.6 |
+| Philips DreamStation 2 | yes | yes | yes — sessions, settings, events, flow waveform, statistics | Verified on a 420X150C, firmware V1.0.6; other DS2 variants untested |
 
 ## Repository layout
 
