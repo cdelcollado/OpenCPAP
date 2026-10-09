@@ -12,6 +12,7 @@
 |---|---|
 | `@opencpap/core` | Canonical model (`model.ts`), `VirtualFS` abstraction (`vfs.ts`), `DeviceLoader` interface (`loader.ts`). No device-specific code, no DOM dependencies. |
 | `@opencpap/loader-philips-ds2` | DS2 loader. Layers, bottom-up: `container.ts` (decrypt) → `chunk.ts` + `crc.ts` (framing, integrity) → `summary.ts` / `events.ts` / `waveform.ts` (record decoders) → `index.ts` (session assembly, `DeviceLoader`). `device.ts` reads `PROP.BIN`. `testing/` holds synthetic builders and a Node `VirtualFS` used only by tests. |
+| `@opencpap/browser` | Card sources (`FileListFS`, `DirectoryHandleFS`, `ZipFS`), path re-rooting, import pipeline (`runImport`), Web Worker entry and client (`importCard`). See [browser-import.md](browser-import.md). |
 | `apps/web` (planned) | React + Vite PWA: import, storage, charts, reports. |
 
 Planned: `packages/loaders/resmed`, `packages/ui-charts`, further loaders.
@@ -20,12 +21,13 @@ Planned: `packages/loaders/resmed`, `packages/ui-charts`, further loaders.
 
 ```
 SD card folder / ZIP
-        │  (File System Access API | <input webkitdirectory> | ZIP)
+        │  (File System Access API | <input webkitdirectory> | ZIP)   — UI thread
         ▼
-   VirtualFS ──► DeviceLoader.detect() picks the loader
-        │
-        ▼
-   DeviceLoader.load()  (Web Worker)  ──► AsyncIterable<Session>
+   CardSource ──postMessage──►  Web Worker
+                                  │ VirtualFS (re-rooted at the marker folder)
+                                  │ detectLoader() picks the DeviceLoader
+                                  ▼
+                         DeviceLoader.load() ──► AsyncIterable<Session> ──► UI thread
         │
         ▼
    Canonical model ──► local storage (IndexedDB / SQLite-WASM)
@@ -47,7 +49,7 @@ interface DeviceLoader {
   load(fs: VirtualFS, onProgress?: Progress): AsyncIterable<Session>;
 }
 ```
-`detect` must be cheap (directory listing only). `load` streams sessions so the UI can show progress and memory stays bounded.
+`detect` must be cheap (directory listing only) and specific: it must return `null` for cards of other families (e.g. the DS2 loader rejects older PRS1 cards that use unencrypted `.00n` files). `load` streams sessions so the UI can show progress and memory stays bounded.
 
 ## Technology choices
 

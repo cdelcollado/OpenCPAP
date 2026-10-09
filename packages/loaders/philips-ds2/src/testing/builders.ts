@@ -70,3 +70,29 @@ export function buildChunk(spec: ChunkSpec): Uint8Array {
 }
 
 export const concatBytes = (...a: Uint8Array[]) => Uint8Array.from(a.flatMap((x) => [...x]));
+
+const enc = (s: string) => new TextEncoder().encode(s);
+
+/** Files of a tiny synthetic DS2 card: one device, one 1-hour session with 2 events and 10 s of flow. */
+export function syntheticCardFiles(): Map<string, Uint8Array> {
+  const props = buildDs2File(enc('SN=TEST0001\nMN=420X150C\nSV=V1.0.6\nCF=6\n'));
+  const summary = buildChunk({
+    sessionId: 0x10, timestamp: 1_800_000_000, ext: 1, hblock: { 1: 3, 3: 4, 4: 4 },
+    data: [1, 0x0a, 1, 100, /* settings: pressure 10 */ 3, 0, 0, 0, 0, 4, 0x10, 0x0e, 0, 0],
+  });
+  const events = buildChunk({
+    sessionId: 0x10, timestamp: 1_800_000_000, ext: 2, hblock: { 6: 3, 0x14: 3 },
+    data: [0x06, 100, 0, 10, 0x14, 50, 0, 5],
+  });
+  const wave = buildChunk({
+    sessionId: 0x10, timestamp: 1_800_000_000, ext: 5,
+    waveform: { intervalCount: 2, intervalSeconds: 1, interleave: [5] },
+    data: [1, 2, 3, 4, 5, 0xff, 0xfe, 0, 1, 2],
+  });
+  return new Map([
+    ['P-SERIES/AAAA0001/PROP.BIN', props],
+    ['P-SERIES/AAAA0001/P0/00000010.B01', buildDs2File(summary)],
+    ['P-SERIES/AAAA0001/P0/00000010.B02', buildDs2File(events)],
+    ['P-SERIES/AAAA0001/P0/00000010.B05', buildDs2File(wave)],
+  ]);
+}

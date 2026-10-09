@@ -1,7 +1,14 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/core" },
-    { "path": "packages/loaders/philips-ds2" }
+    {
+      "path": "packages/core"
+    },
+    {
+      "path": "packages/loaders/philips-ds2"
+    },
+    {
+      "path": "packages/browser"
+    }
   ]
 }

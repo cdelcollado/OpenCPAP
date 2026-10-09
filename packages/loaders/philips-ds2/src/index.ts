@@ -112,8 +112,13 @@ export const philipsDs2Loader: DeviceLoader = {
     const files = await fs.list();
     const root = seriesRoot(files);
     if (!root) return null;
-    const hasProp = files.some((p) => /^[^/]+\/[^/]+\/PROP\.BIN$/i.test(p) && p.toUpperCase().startsWith('P-SERIES/'));
-    return { device: { manufacturer: 'Philips Respironics', model: 'DreamStation 2' }, confidence: hasProp ? 0.9 : 0.5 };
+    // Older PRS1 devices (System One, DreamStation 1) also use P-Series but with unencrypted .00n files;
+    // only DS2 uses PROP.BIN and .B0n files.
+    const upper = files.map((p) => p.toUpperCase());
+    const hasProp = upper.some((p) => /^P-SERIES\/[^/]+\/PROP\.BIN$/.test(p));
+    const hasSessions = upper.some((p) => /^P-SERIES\/[^/]+\/P\d+\/[0-9A-F]{8}\.B\d{2}$/.test(p));
+    if (!hasProp && !hasSessions) return null;
+    return { device: { manufacturer: 'Philips Respironics', model: 'DreamStation 2' }, confidence: hasProp && hasSessions ? 0.9 : 0.6 };
   },
 
   async *load(fs: VirtualFS, onProgress?: Progress): AsyncIterable<Session> {

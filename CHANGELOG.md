@@ -4,6 +4,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 ### Added
+- `@opencpap/browser`: `FileListFS`, `DirectoryHandleFS` (File System Access API) and `ZipFS` card sources with marker-folder re-rooting and size limits; import worker, message protocol and `importCard` client with progress, error propagation and cancellation.
+- `@opencpap/core`: `detectLoader`, `loadCard`, `UnsupportedCardError`.
+- `docs/browser-import.md`, ADR-0005.
 - DS2 chunk framing reader with header checksum and CRC-32/CRC-16 validation.
 - DS2 summary, event and waveform parsers; `philipsDs2Loader.load()` yields canonical sessions (settings, mask slices, events, flow waveform, statistics).
 - Canonical model extensions: `Session.id`, `clock`, `slices`, `statistics`, `TimeSeries`, `TherapyEvent.detail`, `variable-breathing`.

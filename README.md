@@ -16,7 +16,7 @@ A local-first web application for reading and visualizing the therapy data that 
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Foundations, model, DS2 container decryption | Done (CI/lint pending) |
-| 1 | DS2 chunk parser and data loader | Core parser done and validated; browser file access and OSCAR comparison pending (see [roadmap](docs/roadmap.md)) |
+| 1 | DS2 chunk parser and data loader | Parser validated; browser import (folder/files/ZIP + Web Worker) done; OSCAR comparison and device-log files pending (see [roadmap](docs/roadmap.md)) |
 | 2–6 | UI, analytics, multi-device, sharing | Planned |
 
 ## Supported devices
@@ -29,7 +29,8 @@ A local-first web application for reading and visualizing the therapy data that 
 
 ```
 packages/core/                 canonical model, VirtualFS, DeviceLoader interface
-packages/loaders/philips-ds2/  DreamStation 2 loader (container decryption, detection)
+packages/loaders/philips-ds2/  DreamStation 2 loader (decryption, chunk parsing, sessions)
+packages/browser/              card sources (folder, files, ZIP), Web Worker import pipeline
 apps/web/                      web UI (not yet created)
 docs/                          documentation (start with docs/architecture.md)
 fixtures/raw/                  real SD data, git-ignored, never committed
@@ -48,6 +49,7 @@ Requires Node.js 20+ (developed on Node 24). See [docs/development.md](docs/deve
 ## Documentation index
 
 - [Architecture](docs/architecture.md)
+- [Browser import (card sources, worker protocol)](docs/browser-import.md)
 - [Canonical data model](docs/data-model.md)
 - [DreamStation 2 file format](docs/formats/ds2.md)
 - [Roadmap](docs/roadmap.md)

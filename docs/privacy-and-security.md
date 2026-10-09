@@ -14,6 +14,7 @@
 The DreamStation 2 encrypts files with AES-256-GCM, but the key material is derivable from a public constant and per-file header fields (see [formats/ds2.md](formats/ds2.md)). It is obfuscation that restricts access for patients, not a confidentiality control. OpenCPAP uses it solely to let patients read their own data. The key-derivation constants come from OSCAR's GPLv3 source.
 
 ## Threat model (browser app)
+- Malicious SD card or ZIP contents: file sizes are capped (`MAX_FILE_BYTES`), ZIP entries are inflated one at a time after checking their declared size, and paths are only used as map keys. Parsing runs in a Web Worker, isolated from the page.
 - Malicious SD card contents: parsers must bounds-check every length field, cap allocations, and never `eval` or interpolate file content into HTML.
 - Supply chain: pin dependency versions, prefer audited crypto (`@noble/*`), review lockfile changes.
 - Local storage: data in IndexedDB is unencrypted at rest by default; document this and offer export/wipe.

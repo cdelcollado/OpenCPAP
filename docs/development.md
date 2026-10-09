@@ -3,6 +3,9 @@
 ## Prerequisites
 Node.js 20+ (developed on 24), npm 10+. (pnpm is not required.)
 
+## Packages
+`core` (model, interfaces, stats) · `loaders/*` (one per device family) · `browser` (card sources, worker) · `apps/web` (planned). Test helpers for synthetic DS2 data are exported as `@opencpap/loader-philips-ds2/testing`.
+
 ## Commands
 ```bash
 npm install         # install all workspaces
@@ -23,7 +26,8 @@ npx vitest run      # run all tests
 
 ## Adding a device loader
 1. Create `packages/loaders/<name>/` with `package.json`, `tsconfig.json`, `src/index.ts`.
-2. Implement `DeviceLoader` and register it in the loader list.
+2. Implement `DeviceLoader` (with a specific `detect` that returns `null` for other families) and register it in `packages/browser/src/worker.ts` (`LOADERS`).
+   Add the family's root folder (e.g. `DATALOG`) to `ROOT_MARKERS` in `packages/browser/src/paths.ts` if it is not there yet.
 3. Write `docs/formats/<name>.md` before or with the code.
 4. Add synthetic-fixture tests and an OSCAR cross-check script.
 5. Update the supported-devices table in `README.md`.
