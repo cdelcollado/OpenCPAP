@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "outDir": "dist", "rootDir": "src", "types": ["node"], "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"] },
+  "include": ["src"],
+  "references": [{ "path": "../core" }, { "path": "../loaders/philips-ds2" }]
+}

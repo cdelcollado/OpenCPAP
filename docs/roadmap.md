@@ -22,8 +22,10 @@ Legend: [x] done · [ ] pending
 - [x] Synthetic-fixture tests for every parser; real-card integration test (skipped without `fixtures/raw`)
 - [ ] Cross-validation vs OSCAR output (usage hours, AHI, P95 pressure/leak) — needs OSCAR's daily report for the same card
 - [ ] Interpret `D/*.B03` (device settings log) and `E/*.B04` (device events)
-- [ ] Browser `VirtualFS` implementations (directory handle, FileList, ZIP)
-- [ ] Web Worker wrapper and progress reporting
+- [x] Browser `VirtualFS` implementations: directory handle, FileList, ZIP — `packages/browser`
+- [x] Web Worker import pipeline with progress, errors and cancellation — [browser-import.md](browser-import.md)
+- [x] Specific `detect` (rejects older PRS1 cards) and `detectLoader`/`loadCard` in core
+- [ ] Real-browser smoke test (Playwright; arrives with the web app in Phase 2)
 - [ ] SD anonymizer tool for sharing samples
 - [ ] Zero-tag GCM recovery and other firmware variants (410/520/521 models)
 - [ ] Night grouping (several device sessions per night) — design in Phase 2
