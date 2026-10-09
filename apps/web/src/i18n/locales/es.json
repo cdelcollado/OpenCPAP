@@ -114,7 +114,8 @@
   "histBinLast": "{{from}} o más",
   "anomaliesTitle": "Merece la pena mirarlo",
   "exportNights": "Exportar las noches (CSV)",
-  "rollingLabel": "Media de 7 noches"
+  "rollingLabel": "Media de 7 noches",
+  "exportSummary": "Exportar el resumen (JSON)"
  },
  "metric": {
   "usage": "Uso",
@@ -580,5 +581,54 @@
   "perHour": "/h",
   "hours": "{{hours}} h de datos válidos",
   "status": "Estado"
+ },
+ "share": {
+  "title": "Comparte una instantánea",
+  "intro": "Crea un enlace que contiene las cifras de este informe. Quien lo abra ve el mismo resumen, sin necesitar los datos de la aplicación. No se sube nada: los datos viajan dentro del propio enlace.",
+  "passphrase": "Contraseña (opcional)",
+  "passphraseHint": "Con una contraseña el enlace queda cifrado; dásela al destinatario por otro canal.",
+  "create": "Crear enlace",
+  "creating": "Creando…",
+  "link": "Enlace",
+  "copy": "Copiar enlace",
+  "copied": "Copiado",
+  "warnPlain": "Cualquiera que reciba este enlace podrá leer estas cifras. Trátalo como el propio informe.",
+  "warnEncrypted": "El enlace está cifrado. El destinatario necesita la contraseña; si la olvidas, crea un enlace nuevo.",
+  "tooLong": "Este enlace tiene {{chars}} caracteres; algunas aplicaciones de mensajería y clientes de correo recortan los enlaces largos. Elige un periodo más corto.",
+  "contents": "El enlace contiene las cifras de cada noche, el periodo anterior si la comparación está activada y los cambios de ajustes. Nunca contiene notas, equipamiento ni el número de serie del equipo.",
+  "includesName": "También contiene el nombre escrito arriba."
+ },
+ "shared": {
+  "title": "Instantánea compartida",
+  "intro": "Alguien ha compartido contigo un resumen de sus datos de CPAP.",
+  "passphrase": "Contraseña",
+  "open": "Abrir",
+  "openApp": "Abrir OpenCPAP",
+  "banner": "Instantánea de solo lectura creada el {{date}}. No se guarda en este dispositivo y solo contiene lo que su remitente quiso compartir. No es un diagnóstico.",
+  "err_bad-link": "Este enlace está dañado o incompleto. Pide uno nuevo.",
+  "err_passphrase-required": "Este enlace necesita una contraseña.",
+  "err_wrong-passphrase": "Contraseña incorrecta, o el enlace se ha modificado.",
+  "err_unsupported-version": "Este enlace lo ha hecho una versión más nueva de la aplicación. Actualiza la aplicación e inténtalo de nuevo."
+ },
+ "llm": {
+  "title": "Resumen escrito (experimental)",
+  "introLocal": "Una descripción breve de tus últimos 30 días, escrita por el modelo «{{model}}» que se ejecuta en tu ordenador.",
+  "introRemote": "Una descripción breve de tus últimos 30 días, escrita por un modelo en {{endpoint}}. Las cifras de la petición salen de este ordenador.",
+  "demo": "Son las cifras de demostración.",
+  "generate": "Escribir un resumen",
+  "writing": "Escribiendo…",
+  "disclaimer": "Escrito por un modelo de lenguaje solo a partir de cifras agregadas. Puede equivocarse y no es un diagnóstico ni un consejo; habla de tus datos con tu clínico.",
+  "err_blocked": "El resumen no está permitido con la configuración actual.",
+  "err_unreachable": "No se pudo llegar al modelo en {{endpoint}}. ¿El servidor está en marcha y acepta peticiones desde esta página?",
+  "err_http": "El servidor del modelo devolvió un error. Comprueba que el nombre del modelo existe.",
+  "err_empty": "El modelo no devolvió texto.",
+  "settingsTitle": "Resumen escrito con un modelo de lenguaje",
+  "settingsIntro": "Opcional y desactivado por defecto. Se conecta a un modelo que ejecutas tú (un servidor compatible con Ollama) y le pide que describa tus cifras en unas pocas frases.",
+  "enable": "Activar los resúmenes escritos",
+  "endpoint": "Dirección del servidor",
+  "model": "Nombre del modelo",
+  "remoteWarning": "Esta dirección no es de este ordenador. Tus cifras agregadas de terapia se enviarían allí.",
+  "allowRemote": "Lo entiendo y permito enviar las cifras a este servidor",
+  "whatIsSent": "Solo se envían totales de los dos últimos periodos de 30 días: noches de uso, horas medias, AHI, tasas de eventos, fuga y cambios de ajustes. Nunca notas, nombres, números de serie ni noches individuales."
  }
 }

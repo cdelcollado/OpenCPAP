@@ -9,7 +9,8 @@ export type Route =
   | { name: 'equipment' }
   | { name: 'night'; date: string }
   | { name: 'compare'; a?: DateRange; b?: DateRange }
-  | { name: 'report'; range?: DateRange };
+  | { name: 'report'; range?: DateRange }
+  | { name: 'shared'; payload: string };
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -30,6 +31,7 @@ export function parseRoute(hash: string): Route {
   if (head === 'equipment') return { name: 'equipment' };
   if (head === 'compare') return { name: 'compare', a: parseRange(q.get('a')), b: parseRange(q.get('b')) };
   if (head === 'report') return { name: 'report', range: parseRange(q.get('range')) };
+  if (head === 'shared') return { name: 'shared', payload: arg ?? '' };
   if (head === 'night' && arg && DATE.test(arg)) return { name: 'night', date: arg };
   return { name: 'dashboard' };
 }

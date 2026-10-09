@@ -114,7 +114,8 @@
   "histBinLast": "{{from}} or more",
   "anomaliesTitle": "Worth a look",
   "exportNights": "Export nights (CSV)",
-  "rollingLabel": "7-night average"
+  "rollingLabel": "7-night average",
+  "exportSummary": "Export summary (JSON)"
  },
  "metric": {
   "usage": "Use",
@@ -580,5 +581,54 @@
   "perHour": "/h",
   "hours": "{{hours}} h of valid data",
   "status": "Status"
+ },
+ "share": {
+  "title": "Share a snapshot",
+  "intro": "Creates a link that contains the figures of this report. Whoever opens it sees the same summary, without needing the app's data. Nothing is uploaded: the data travels inside the link itself.",
+  "passphrase": "Passphrase (optional)",
+  "passphraseHint": "With a passphrase the link is encrypted; give the passphrase to the recipient through a different channel.",
+  "create": "Create link",
+  "creating": "Creating…",
+  "link": "Link",
+  "copy": "Copy link",
+  "copied": "Copied",
+  "warnPlain": "Anyone who gets this link can read these figures. Treat it like the report itself.",
+  "warnEncrypted": "The link is encrypted. The recipient needs the passphrase; if you forget it, create a new link.",
+  "tooLong": "This link is {{chars}} characters long; some chat apps and email clients cut long links. Choose a shorter period.",
+  "contents": "The link contains the nightly figures, the previous period if comparison is on, and setting changes. It never contains notes, equipment or the device serial number.",
+  "includesName": "It also contains the name typed above."
+ },
+ "shared": {
+  "title": "Shared snapshot",
+  "intro": "Someone shared a summary of their CPAP data with you.",
+  "passphrase": "Passphrase",
+  "open": "Open",
+  "openApp": "Open OpenCPAP",
+  "banner": "Read-only snapshot created on {{date}}. It is not stored on this device and only contains what its sender chose to share. It is not a diagnosis.",
+  "err_bad-link": "This link is damaged or incomplete. Ask for a new one.",
+  "err_passphrase-required": "This link needs a passphrase.",
+  "err_wrong-passphrase": "Wrong passphrase, or the link was changed.",
+  "err_unsupported-version": "This link was made by a newer version of the app. Update the app and try again."
+ },
+ "llm": {
+  "title": "Written summary (experimental)",
+  "introLocal": "A short description of your last 30 days, written by the model \"{{model}}\" running on your own computer.",
+  "introRemote": "A short description of your last 30 days, written by a model on {{endpoint}}. The figures in the request leave this computer.",
+  "demo": "These are the demo figures.",
+  "generate": "Write a summary",
+  "writing": "Writing…",
+  "disclaimer": "Written by a language model from aggregate figures only. It can be wrong and is not a diagnosis or advice; talk to your clinician about your data.",
+  "err_blocked": "The summary is not allowed with the current settings.",
+  "err_unreachable": "Could not reach the model at {{endpoint}}. Is the server running and does it allow requests from this page?",
+  "err_http": "The model server returned an error. Check that the model name exists.",
+  "err_empty": "The model returned no text.",
+  "settingsTitle": "Written summary with a language model",
+  "settingsIntro": "Optional and off by default. Connects to a model you run yourself (an Ollama-compatible server) and asks it to describe your numbers in a few sentences.",
+  "enable": "Enable written summaries",
+  "endpoint": "Server address",
+  "model": "Model name",
+  "remoteWarning": "This address is not on this computer. Your aggregate therapy figures would be sent to it.",
+  "allowRemote": "I understand and allow sending the figures to this server",
+  "whatIsSent": "Only totals for the last two 30-day periods are sent: nights of use, average hours, AHI, event rates, leak and setting changes. Never notes, names, serial numbers or individual nights."
  }
 }

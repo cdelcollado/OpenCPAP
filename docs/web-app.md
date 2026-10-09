@@ -111,3 +111,9 @@ Semantic landmarks and headings, a skip link, visible focus rings, text/backgrou
 - Backups are not encrypted.
 - The sticky *Night detail* header covers part of the viewport while scrolling the tracks; on phones it is static.
 - The calendar is bounded by the selected range (7/30/90/all); the nights table lists every night in the range without virtualisation.
+
+### Phase 6 additions
+- **Report → Share a snapshot**: create a link (optionally encrypted) for the period shown; copy button, warnings about plain links and long links ([sharing.md](sharing.md)).
+- **`#/shared/<payload>`**: read-only viewer for a link (passphrase prompt when encrypted, clear messages for damaged, wrong-passphrase and newer-version links). Nothing is stored. Not linked from the header.
+- **Settings → Written summary with a language model** and a **Dashboard card** (only when enabled) ([llm-summaries.md](llm-summaries.md)).
+- **Dashboard → Export summary (JSON)** ([integrations.md](integrations.md)).

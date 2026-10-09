@@ -355,3 +355,5 @@ p, li, dd, dt, label { overflow-wrap: anywhere; }
 .anomalies li { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; }
 .anomalies .badge { white-space: normal; text-align: left; }
 .histogram { width: 100%; height: auto; display: block; }
+
+.llm-text { white-space: pre-wrap; max-width: 62ch; line-height: 1.55; }

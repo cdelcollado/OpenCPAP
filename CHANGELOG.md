@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
 - Bundle split into app / vendor / charts chunks.
 
+### Added (Phase 6)
+- **Share a snapshot**: serverless link carrying the report figures in the URL fragment, optional passphrase encryption (PBKDF2-SHA-256 + AES-256-GCM), read-only viewer at `#/shared/<payload>`, strict validation of incoming links ([docs/sharing.md](docs/sharing.md)).
+- **Written summary** from a user-run Ollama-compatible model: off by default, local first, consent required for non-local servers, aggregate-only prompt ([docs/llm-summaries.md](docs/llm-summaries.md)).
+- **Export summary (JSON)** (`opencpap-summary/1`) for scripts and Home Assistant ([docs/integrations.md](docs/integrations.md)); companion/MQTT documented as future work.
+- ADR-0012; 8 E2E tests; unit tests for share, prompt/consent and the JSON summary.
+
 ### Added (Phase 5)
 - **ResMed loader** (`@opencpap/loader-resmed`): AirSense 10 / AirCurve 10 / S9 (AirSense 11 best effort) — identity, `STR.edf` settings, sessions, events, 25 Hz flow and pressure, unintentional leak, CSR episodes. **Tested on synthetic cards only**; see [docs/formats/resmed.md](docs/formats/resmed.md) and [docs/devices.md](docs/devices.md).
 - **Generic EDF/EDF+ reader** (`readEdf`) and EDF+ builder (`buildEdfPlus`) in core.

@@ -21,7 +21,7 @@ A local-first web application for reading and visualizing the therapy data that 
 | 3 | Notes, summary in plain language, setting changes, period comparison, equipment tracking, clinician report (print/PDF), backup and restore | Done (see [roadmap](docs/roadmap.md)) |
 | 4 | Breath analysis (flat-topped breaths, rate, regularity, periodic pattern), oximeter import (ODI, T90), alerts, rolling averages and distributions, CSV/EDF exports | Done; **experimental** measures, see [breathing-analysis.md](docs/breathing-analysis.md) and [oximetry.md](docs/oximetry.md) |
 | 5 | Multi-device: generic EDF reader, ResMed AirSense/AirCurve loader, shared loader conformance suite, compatibility matrix, guide for adding devices | Done; ResMed is tested on **synthetic** cards only, see [devices.md](docs/devices.md) |
-| 6 | Sharing and connectivity | Planned |
+| 6 | Serverless share links (optionally passphrase-encrypted), opt-in local language-model summary, JSON summary for other tools | Done for what a static app can do; companion/MQTT/Home Assistant and server-based sharing **not built** ([integrations.md](docs/integrations.md)) |
 
 ## Supported devices
 
@@ -80,6 +80,9 @@ Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrom
 - [Design system (tokens, palette, chart rules, accessibility checklist)](docs/design-system.md)
 - [Clinician report (print / PDF)](docs/report.md)
 - [Backup file format](docs/backup-format.md)
+- [Sharing a snapshot (links, encryption, threat model)](docs/sharing.md)
+- [Written summaries with a local language model](docs/llm-summaries.md)
+- [Integrations (Home Assistant, MQTT, Wi-Fi SD)](docs/integrations.md)
 - [Supported devices and support levels](docs/devices.md)
 - [Adding a device](docs/adding-a-device.md)
 - [ResMed format](docs/formats/resmed.md)

@@ -1,5 +1,5 @@
 import type { NightSummary, SessionLite, Waveform } from '@opencpap/core';
-import { writeEdf } from '@opencpap/core';
+import { addDays, nightsInRange, periodStats, writeEdf } from '@opencpap/core';
 
 /** CSV cells starting with these characters can be executed as formulas by spreadsheets; prefix them with an apostrophe. */
 const FORMULA = /^[=+\-@\t\r]/;
@@ -72,4 +72,23 @@ export function download(data: BlobPart, name: string, type: string) {
   a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
+}
+
+/**
+ * A small, stable JSON document with the latest night and the last 7 / 30 days, meant for other tools (Home Assistant
+ * command-line or file sensors, scripts, spreadsheets). Dates are YYYY-MM-DD; numbers use a decimal point. It holds
+ * figures only: no notes, name or serial number. The schema is documented in docs/integrations.md.
+ */
+export function summaryJson(nights: NightSummary[], asOf: string, generated = new Date().toISOString()): string {
+  const r = (v: number | undefined, d = 2) => (v === undefined || Number.isNaN(v) ? null : +v.toFixed(d));
+  const period = (days: number) => {
+    const s = periodStats(nightsInRange(nights, addDays(asOf, -(days - 1)), asOf));
+    return { days, nights_with_data: s.nights, usage_hours_mean: r(s.usageMean), nights_over_4h: s.nightsOverMin, compliance_pct: r(s.compliance === undefined ? undefined : s.compliance * 100, 1), ahi: r(s.ahi), leak_p95_lmin: r(s.leakP95, 1), leak_median_lmin: r(s.leakMedian, 1) };
+  };
+  const last = nights.at(-1);
+  return JSON.stringify({
+    schema: 'opencpap-summary/1', generated, as_of: asOf,
+    last_night: last && { date: last.date, usage_hours: r(last.usageHours), ahi: r(last.ahi), obstructive: last.counts.obstructive ?? 0, central: last.counts.central ?? 0, hypopnea: last.counts.hypopnea ?? 0, leak_p95_lmin: r(last.leak?.p95, 1), leak_kind: last.leakKind ?? null, pressure_min_cmh2o: r(last.pressure?.min, 1), pressure_max_cmh2o: r(last.pressure?.max, 1), mode: last.mode ?? null },
+    last_7_days: period(7), last_30_days: period(30),
+  }, null, 2) + '\n';
 }

@@ -114,7 +114,8 @@
   "histBinLast": "{{from}} o més",
   "anomaliesTitle": "Val la pena mirar-ho",
   "exportNights": "Exporta les nits (CSV)",
-  "rollingLabel": "Mitjana de 7 nits"
+  "rollingLabel": "Mitjana de 7 nits",
+  "exportSummary": "Exporta el resum (JSON)"
  },
  "metric": {
   "usage": "Ús",
@@ -580,5 +581,54 @@
   "perHour": "/h",
   "hours": "{{hours}} h de dades vàlides",
   "status": "Estat"
+ },
+ "share": {
+  "title": "Comparteix una instantània",
+  "intro": "Crea un enllaç que conté les xifres d'aquest informe. Qui l'obri veu el mateix resum, sense necessitar les dades de l'aplicació. No es puja res: les dades viatgen dins del propi enllaç.",
+  "passphrase": "Contrasenya (opcional)",
+  "passphraseHint": "Amb una contrasenya l'enllaç queda xifrat; dona-la al destinatari per un altre canal.",
+  "create": "Crea l'enllaç",
+  "creating": "Creant…",
+  "link": "Enllaç",
+  "copy": "Copia l'enllaç",
+  "copied": "Copiat",
+  "warnPlain": "Qualsevol persona que rebi aquest enllaç podrà llegir aquestes xifres. Tracta'l com l'informe mateix.",
+  "warnEncrypted": "L'enllaç està xifrat. El destinatari necessita la contrasenya; si l'oblides, crea un enllaç nou.",
+  "tooLong": "Aquest enllaç té {{chars}} caràcters; algunes aplicacions de missatgeria i clients de correu retallen els enllaços llargs. Tria un període més curt.",
+  "contents": "L'enllaç conté les xifres de cada nit, el període anterior si la comparació està activada i els canvis d'ajustos. Mai conté notes, equipament ni el número de sèrie de l'aparell.",
+  "includesName": "També conté el nom escrit a dalt."
+ },
+ "shared": {
+  "title": "Instantània compartida",
+  "intro": "Algú ha compartit amb tu un resum de les seves dades de CPAP.",
+  "passphrase": "Contrasenya",
+  "open": "Obre",
+  "openApp": "Obre OpenCPAP",
+  "banner": "Instantània de només lectura creada el {{date}}. No es desa en aquest dispositiu i només conté el que el remitent ha volgut compartir. No és un diagnòstic.",
+  "err_bad-link": "Aquest enllaç està malmès o incomplet. Demana'n un de nou.",
+  "err_passphrase-required": "Aquest enllaç necessita una contrasenya.",
+  "err_wrong-passphrase": "Contrasenya incorrecta, o l'enllaç s'ha modificat.",
+  "err_unsupported-version": "Aquest enllaç l'ha fet una versió més nova de l'aplicació. Actualitza l'aplicació i torna-ho a provar."
+ },
+ "llm": {
+  "title": "Resum escrit (experimental)",
+  "introLocal": "Una descripció breu dels últims 30 dies, escrita pel model «{{model}}» que s'executa al teu ordinador.",
+  "introRemote": "Una descripció breu dels últims 30 dies, escrita per un model a {{endpoint}}. Les xifres de la petició surten d'aquest ordinador.",
+  "demo": "Són les xifres de demostració.",
+  "generate": "Escriu un resum",
+  "writing": "Escrivint…",
+  "disclaimer": "Escrit per un model de llenguatge només a partir de xifres agregades. Pot equivocar-se i no és un diagnòstic ni un consell; parla de les teves dades amb el teu clínic.",
+  "err_blocked": "El resum no està permès amb la configuració actual.",
+  "err_unreachable": "No s'ha pogut arribar al model a {{endpoint}}. El servidor està en marxa i accepta peticions des d'aquesta pàgina?",
+  "err_http": "El servidor del model ha retornat un error. Comprova que el nom del model existeix.",
+  "err_empty": "El model no ha retornat text.",
+  "settingsTitle": "Resum escrit amb un model de llenguatge",
+  "settingsIntro": "Opcional i desactivat per defecte. Es connecta a un model que executes tu (un servidor compatible amb Ollama) i li demana que descrigui les teves xifres en unes poques frases.",
+  "enable": "Activa els resums escrits",
+  "endpoint": "Adreça del servidor",
+  "model": "Nom del model",
+  "remoteWarning": "Aquesta adreça no és d'aquest ordinador. Les teves xifres agregades de teràpia s'hi enviarien.",
+  "allowRemote": "Ho entenc i permeto enviar les xifres a aquest servidor",
+  "whatIsSent": "Només s'envien totals dels dos últims períodes de 30 dies: nits d'ús, hores mitjanes, AHI, taxes d'esdeveniments, fuita i canvis d'ajustos. Mai notes, noms, números de sèrie ni nits individuals."
  }
 }

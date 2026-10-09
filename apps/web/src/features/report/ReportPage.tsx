@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { addDays, daysBetween, nightsInRange } from '@opencpap/core';
 import { href, useRoute, type DateRange } from '../../router';
 import { useData } from '../../state';
+import { SharePanel } from '../share/SharePanel';
 import { ReportDocument, type ReportInput, type ReportOptions } from './ReportDocument';
 
 const NAME_KEY = 'opencpap.reportName';
@@ -84,6 +85,7 @@ export function ReportPage() {
           </div>
           <p><a href={href.compare()}>{t('nav.compare')}</a></p>
         </section>
+        <SharePanel input={input} />
         <h2>{t('report.preview')}</h2>
       </div>
 

@@ -105,7 +105,15 @@ Legend: [x] done · [ ] pending
 - [ ] Philips DreamStation 1 / System One (unencrypted `.00n`), Fisher & Paykel, BMC, Löwenstein
 
 ## Phase 6 — Connectivity and sharing (optional)
-E2E-encrypted share links, Wi-Fi SD companion, MQTT/Home Assistant, opt-in LLM summaries.
+- [x] Serverless share links: report snapshot compressed into the URL fragment, optional passphrase (PBKDF2 + AES-GCM), read-only viewer, strict validation ([sharing.md](sharing.md))
+- [x] Opt-in written summary from a user-run, Ollama-compatible model; local by default, per-address consent for remote servers; aggregates only ([llm-summaries.md](llm-summaries.md))
+- [x] JSON summary export (`opencpap-summary/1`) as the building block for Home Assistant and scripts ([integrations.md](integrations.md))
+- [x] Tests: share format and hostile links (10), prompt/consent/request (8), summary JSON (3), E2E (8: plain and encrypted links in a fresh browser, damaged link, axe, local and remote model, unreachable server, JSON download)
+- [ ] Companion program (Node/Tauri) that watches a folder or Wi-Fi SD adapter and publishes to MQTT / Home Assistant discovery — **not started**, see [integrations.md](integrations.md)
+- [ ] Revocable or expiring links (requires an optional server, end-to-end encrypted)
+- [ ] Other model servers (OpenAI-compatible, llama.cpp) and streaming; in-browser models
+- [ ] Context from external sources (room temperature, noise, position) via Home Assistant
+- [ ] Multi-patient clinic mode, batch import
 
 ## Risks
 - DS2 format is proprietary; OSCAR is the living reference.
