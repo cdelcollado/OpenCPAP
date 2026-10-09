@@ -20,3 +20,4 @@ export const IconCalendar = () => svg(<><rect x="3.5" y="5" width="17" height="1
 export const IconImport = () => svg(<><path d="M12 3v12M7 10l5 5 5-5" /><path d="M4 19h16" /></>);
 export const IconChevronLeft = () => svg(<path d="M14.5 5.5L8 12l6.5 6.5" />);
 export const IconChevronRight = () => svg(<path d="M9.5 5.5L16 12l-6.5 6.5" />);
+export const IconNote = () => svg(<><path d="M5 4h14v12l-5 5H5z" /><path d="M14 21v-5h5M8 9h8M8 13h4" /></>);

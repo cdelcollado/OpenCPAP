@@ -18,7 +18,8 @@ A local-first web application for reading and visualizing the therapy data that 
 | 0 | Foundations, model, DS2 container decryption | Done (CI/lint pending) |
 | 1 | DS2 chunk parser and data loader | Parser validated against OSCAR 2.1.0 (550/550 sessions, all metrics); browser import done; device-log files (`D`/`E`) and anonymizer pending (see [roadmap](docs/roadmap.md)) |
 | 2 | Web app: import, dashboard, night view, local storage, PWA, i18n, accessibility | Done (see [web-app.md](docs/web-app.md)); manual screen-reader and Firefox/Safari checks pending |
-| 3–6 | Trends and reports, advanced analytics, multi-device, sharing | Planned |
+| 3 | Notes, summary in plain language, setting changes, period comparison, equipment tracking, clinician report (print/PDF), backup and restore | Done (see [roadmap](docs/roadmap.md)) |
+| 4–6 | Advanced analytics, multi-device, sharing | Planned |
 
 ## Supported devices
 
@@ -43,6 +44,7 @@ fixtures/raw/                  real SD data, git-ignored, never committed
 ![Dashboard](docs/img/dashboard.png)
 ![Night view](docs/img/night.png)
 ![Calendar](docs/img/calendar.png)
+![Compare periods](docs/img/compare.png)
 
 *(Synthetic demo data.)* Try it without a card: **Import → Load demo data**.
 
@@ -61,13 +63,16 @@ Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrom
 ## Using it
 1. Open the app, go to **Import** and choose the SD card's folder (the one that contains `P-SERIES`), drop it, or pick a ZIP of it.
 2. Browse the **Dashboard** and open any **night** for the timeline and waveforms.
-3. Everything stays in your browser. **Settings** lets you change language/theme and delete all stored data.
+3. Add a **note** (mood, text, tags) to a night, track your **equipment**, **compare** two periods (for example before and after a setting change) and print a **report** for your clinician.
+4. Everything stays in your browser. **Settings** lets you change language/theme, **back up and restore** your data, and delete all stored data.
 
 ## Documentation index
 
 - [Architecture](docs/architecture.md)
 - [Web application (screens, charts, i18n, a11y, PWA)](docs/web-app.md)
 - [Design system (tokens, palette, chart rules, accessibility checklist)](docs/design-system.md)
+- [Clinician report (print / PDF)](docs/report.md)
+- [Backup file format](docs/backup-format.md)
 - [Browser import (card sources, worker protocol)](docs/browser-import.md)
 - [Local storage (IndexedDB schema)](docs/storage.md)
 - [Analytics definitions (nights, AHI, leak, pressure, compliance)](docs/analytics.md)

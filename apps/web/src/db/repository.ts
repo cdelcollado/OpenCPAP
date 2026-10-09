@@ -1,5 +1,5 @@
 import { groupNights, nightOf, type NightSummary, type Session, type SessionLite, type Waveform } from '@opencpap/core';
-import { db as defaultDb, type OpenCpapDb, type SessionRow } from './db';
+import { db as defaultDb, type EquipmentRow, type JournalRow, type OpenCpapDb, type SessionRow } from './db';
 
 export const deviceIdOf = (s: Pick<Session, 'device'>) => `${s.device.manufacturer}:${s.device.serial}`;
 export const sessionKey = (s: Pick<Session, 'device' | 'id'>) => `${deviceIdOf(s)}/${s.id}`;
@@ -72,11 +72,49 @@ export class Repository {
     });
   }
 
+  /** Deletes everything stored in this browser: therapy data, journal and equipment. */
   async clearAll(): Promise<void> {
-    await this.db.transaction('rw', this.db.sessions, this.db.waveforms, async () => {
+    await this.db.transaction('rw', this.db.sessions, this.db.waveforms, this.db.journal, this.db.equipment, async () => {
       await this.db.sessions.clear();
       await this.db.waveforms.clear();
+      await this.db.journal.clear();
+      await this.db.equipment.clear();
     });
+  }
+
+  /* ---- journal ---- */
+
+  async journal(): Promise<JournalRow[]> {
+    return this.db.journal.orderBy('date').toArray();
+  }
+
+  /** Saves a night's entry; an entry with no note, tags or mood is removed instead. Tags are trimmed, de-duplicated and capped. */
+  async saveJournal(entry: Omit<JournalRow, 'updatedAt'>): Promise<void> {
+    const tags = [...new Set(entry.tags.map((t) => t.trim()).filter(Boolean).map((t) => t.slice(0, 40)))].slice(0, 20);
+    const note = entry.note.slice(0, 5000);
+    if (!note.trim() && tags.length === 0 && entry.mood === undefined) {
+      await this.db.journal.delete(entry.date);
+      return;
+    }
+    await this.db.journal.put({ ...entry, note, tags, updatedAt: Date.now() });
+  }
+
+  async deleteJournal(date: string): Promise<void> {
+    await this.db.journal.delete(date);
+  }
+
+  /* ---- equipment ---- */
+
+  async equipment(): Promise<EquipmentRow[]> {
+    return this.db.equipment.orderBy('startDate').toArray();
+  }
+
+  async saveEquipment(item: Omit<EquipmentRow, 'updatedAt'>): Promise<void> {
+    await this.db.equipment.put({ ...item, name: item.name.slice(0, 80), updatedAt: Date.now() });
+  }
+
+  async deleteEquipment(id: string): Promise<void> {
+    await this.db.equipment.delete(id);
   }
 }
 

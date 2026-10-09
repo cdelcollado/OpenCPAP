@@ -69,8 +69,22 @@ System UI sans everywhere (no web fonts: privacy and offline). The hero figure i
 ### Heatmap
 Six discrete steps are better than a continuous ramp (classes blur past ~7). On a light surface the ramp ends in a darkened version of the hue because the validated hues are mid tones where neither black nor white text reaches 4.5:1; each step is nudged along the ramp until its day number is readable (`heatRamp` in `color.ts`, unit-tested for 3 hues × light/dark). Empty nights are dashed outlines, so "no data" differs from "low value".
 
+### Phase 3 components
+| Component | File | Notes |
+|---|---|---|
+| Mood selector | `features/night/JournalCard.tsx` | five radio buttons in a `fieldset` (`.seg`), emoji **plus** a word, clearing by clicking the selected one |
+| Tag chips | same | chips with a labelled remove button; Enter or comma adds, Backspace removes the last; suggestions through a native `<datalist>` |
+| Findings list | `features/night/Findings.tsx` | one sentence per observation with a ✓ / ⚠ / ● icon |
+| Settings diff | `features/compare/ComparePage.tsx` | table rows that differ get a warning chip and a tinted background (not colour alone) |
+| Paired bars | same | A in the muted grey, B in the event's colour, the value printed beside the bar (never over the colour) |
+| Equipment card | `features/equipment/EquipmentPage.tsx` | meter with a target marker at 100 % of the interval, status chip, action buttons |
+| Report SVG charts | `features/report/SvgCharts.tsx` | static SVG for print: thin bars, 2 px line, hairline grid, dashed reference lines and setting-change flags, titles on every mark |
+| Change markers | `components/annotations.ts` | dashed vertical line with a small flag on the uPlot trend charts |
+
+The report (`.report`) defines its own light tokens so that it looks the same on screen and in print whatever theme the app is in.
+
 ## Layout and responsiveness
-Max content width 1180 px. The hero is a two-column grid that stacks below 860 px. On phones (≤ 600 px) tiles are single column and each night track puts its label above the plot (the gutter becomes 0 and the axis shrinks to 40 px) so the plots keep their width. E2E tests assert there is no horizontal overflow at 390 px.
+Max content width 1180 px. The hero is a two-column grid that stacks below 860 px. On phones (≤ 600 px) tiles are single column and each night track puts its label above the plot (the gutter becomes 0 and the axis shrinks to 40 px) so the plots keep their width; the `?` explainers open centred in the viewport so they cannot run off the edge. Selects, inputs and long words are constrained (`max-width: 100%`, `overflow-wrap: anywhere`) so no control can widen the page. E2E tests assert there is no horizontal overflow at 390 px on the dashboard, a night, compare, equipment, report and settings.
 
 ## Motion
 No decorative animation; `prefers-reduced-motion` disables transitions. While a night loads, the previous content stays at reduced opacity (no skeleton flash).
@@ -90,3 +104,9 @@ No decorative animation; `prefers-reduced-motion` disables transitions. While a 
 4. Add the table twin and the i18n strings (all three languages).
 5. Check both themes visually and run the validator if a colour changed.
 6. Update this document and the E2E tests.
+
+## Pitfalls found while building
+- **`.sr-only` is absolutely positioned.** Inside a scrolling wrapper (tables) it can escape the clip and widen the page; wrappers that scroll must be `position: relative`.
+- **Never build `href` from a function.** Route builders that take parameters (`compare`, `report`) must be called; React silently drops a function-valued `href`.
+- **Mouse tests must scroll targets to the centre**; sticky headers hide elements scrolled to the viewport edge.
+- **A palette is not a contrast guarantee for text on tinted cells**: heatmap steps are tuned for the number inside them (`heatRamp`).

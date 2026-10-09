@@ -3,7 +3,7 @@ import type { NightSummary } from '@opencpap/core';
 import { ahiLevel, baseline, daysInMonth, firstWeekday, heatDomain, monthsBetween, usageLevel } from './metrics';
 
 const night = (date: string, usageHours: number, ahi?: number, p95?: number): NightSummary => ({
-  date, sessionIds: [1], start: 0, end: 0, usageHours, counts: {}, ahi, hasWaveforms: false,
+  date, sessionIds: [1], start: 0, end: 0, usageHours, counts: {}, ahi, hasWaveforms: false, settings: {},
   leak: p95 === undefined ? undefined : { average: p95, median: p95, p95, max: p95 },
 });
 

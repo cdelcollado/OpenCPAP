@@ -70,3 +70,56 @@ describe('Repository', () => {
     expect(sessionKey(s!)).toBe(`${deviceIdOf(s!)}/${s!.id}`);
   });
 });
+
+describe('journal and equipment', () => {
+  it('stores, updates and removes a journal entry; an empty entry deletes it', async () => {
+    await repo.saveJournal({ date: '2026-03-05', note: 'Noisy night', tags: [' cold ', 'cold', '', 'late meal'], mood: 2 });
+    let rows = await repo.journal();
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ date: '2026-03-05', note: 'Noisy night', tags: ['cold', 'late meal'], mood: 2 });
+    await repo.saveJournal({ date: '2026-03-05', note: 'Edited', tags: [], mood: undefined });
+    expect((await repo.journal())[0]!.note).toBe('Edited');
+    await repo.saveJournal({ date: '2026-03-05', note: '   ', tags: [], mood: undefined });
+    expect(await repo.journal()).toHaveLength(0);
+  });
+  it('caps note length and tag count', async () => {
+    await repo.saveJournal({ date: '2026-03-05', note: 'x'.repeat(6000), tags: Array.from({ length: 30 }, (_, i) => `t${i}`) });
+    const [row] = await repo.journal();
+    expect(row!.note).toHaveLength(5000);
+    expect(row!.tags).toHaveLength(20);
+  });
+  it('stores equipment ordered by start date and deletes it', async () => {
+    await repo.saveEquipment({ id: 'b', kind: 'hose', name: 'Hose', startDate: '2026-02-01', intervalDays: 90 });
+    await repo.saveEquipment({ id: 'a', kind: 'mask', name: 'Mask', startDate: '2026-01-01', intervalDays: 180 });
+    expect((await repo.equipment()).map((e) => e.id)).toEqual(['a', 'b']);
+    await repo.deleteEquipment('a');
+    expect((await repo.equipment()).map((e) => e.id)).toEqual(['b']);
+  });
+  it('clearAll also removes the journal and equipment, deleteDevice does not', async () => {
+    for (const s of demo()) await repo.saveSession(s);
+    await repo.saveJournal({ date: '2026-03-05', note: 'keep me', tags: [] });
+    await repo.saveEquipment({ id: 'a', kind: 'mask', name: 'Mask', startDate: '2026-01-01', intervalDays: 180 });
+    await repo.deleteDevice('Demo:DEMO-0001');
+    expect(await repo.journal()).toHaveLength(1);
+    expect(await repo.equipment()).toHaveLength(1);
+    await repo.clearAll();
+    expect(await repo.journal()).toHaveLength(0);
+    expect(await repo.equipment()).toHaveLength(0);
+  });
+});
+
+describe('schema migration v1 → v2', () => {
+  it('keeps existing therapy data when a version-1 database is opened by the current code', async () => {
+    const name = `migrate-${n++}`;
+    const { default: Dexie } = await import('dexie');
+    const old = new Dexie(name);
+    old.version(1).stores({ sessions: 'key, night, start, deviceId', waveforms: 'key, sessionKey' });
+    await old.table('sessions').put({ key: 'Demo:X/1', deviceId: 'Demo:X', night: '2026-03-05', start: 1, session: { id: 1 } });
+    old.close();
+    const upgraded = new OpenCpapDb(name);
+    expect(await upgraded.sessions.count()).toBe(1);
+    await upgraded.journal.put({ date: '2026-03-05', note: 'n', tags: [], updatedAt: 1 });
+    expect(await upgraded.journal.count()).toBe(1);
+    upgraded.close();
+  });
+});

@@ -60,3 +60,6 @@ Free-form keys with these conventions (set when the device reports them):
 - Whether to standardize `settings` further (typed union per mode) once a second manufacturer is added.
 - How to represent mask-off periods that belong to the same night but different device sessions (night grouping belongs to the analytics layer, Phase 2/3).
 - Whether to store the original clock offset when a device records one.
+
+## Night-level model (analytics layer)
+`NightSummary` (core `nights.ts`) is not part of the device-facing model; it is derived from sessions. Besides use, AHI, counts, leak and pressure it carries `settings` (the settings of the night's first session) so that [setting changes](analytics.md#setting-changes) can be detected without reloading sessions. `EquipmentItem` (core `equipment.ts`) and the journal row (`apps/web/src/db/db.ts`) are user-entered data, not device data.

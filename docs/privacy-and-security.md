@@ -13,6 +13,13 @@
 ## The DS2 "encryption"
 The DreamStation 2 encrypts files with AES-256-GCM, but the key material is derivable from a public constant and per-file header fields (see [formats/ds2.md](formats/ds2.md)). It is obfuscation that restricts access for patients, not a confidentiality control. OpenCPAP uses it solely to let patients read their own data. The key-derivation constants come from OSCAR's GPLv3 source.
 
+## User-written data (Phase 3)
+- **Notes, tags, mood and equipment** are stored only in this browser (IndexedDB), like therapy data. They appear in **backups** (always) and in the **printed report** only if the user ticks "Include my notes and tags" (off by default).
+- The report's **patient name** is kept in `localStorage` for convenience and never stored in the database or backups.
+- **Backups are not encrypted**; they contain health data and the device serial number. The Settings page warns about it. If encryption is added later it must be optional and passphrase-based (never a key stored in the browser).
+- Backup restore treats the file as untrusted input: validated rows only, size limits, no code evaluation ([backup-format.md](backup-format.md)).
+- Printing is done by the browser; nothing is sent anywhere.
+
 ## Threat model (browser app)
 - Malicious SD card or ZIP contents: file sizes are capped (`MAX_FILE_BYTES`), ZIP entries are inflated one at a time after checking their declared size, and paths are only used as map keys. Parsing runs in a Web Worker, isolated from the page.
 - Malicious SD card contents: parsers must bounds-check every length field, cap allocations, and never `eval` or interpolate file content into HTML.

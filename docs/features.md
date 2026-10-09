@@ -58,3 +58,11 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 29 | Contextual metric explainers | [web-app.md](web-app.md) |
 | 31 | Demo mode with synthetic data | [web-app.md](web-app.md) |
 | 36 | Accessibility (axe-verified WCAG 2.1 AA), dark mode — screen-reader pass pending | [web-app.md](web-app.md) |
+| 9 | Trends with a **custom date range** (7/30/90/all/custom) | [web-app.md](web-app.md) |
+| 11 | Sleep journal: notes, tags and mood per night, flagged in the nights table | [web-app.md](web-app.md) |
+| 12 | Clinician report: print / save as PDF | [report.md](report.md) |
+| 13 | Plain-language nightly summary (deterministic rules) | [analytics.md](analytics.md) |
+| 25 | Setting-change markers on the trend charts and a change list | [analytics.md](analytics.md) |
+| 26 | Period comparator (before/after a change, this vs previous period) | [web-app.md](web-app.md) |
+| 27 | Mask/consumables tracking with reminders and leak-versus-age reading | [analytics.md](analytics.md) |
+| 33 | Backup and restore (compressed, validated), persistent-storage request | [backup-format.md](backup-format.md) |
