@@ -16,7 +16,8 @@
 ## Project facts
 - Local-first web app that reads CPAP SD card data in the browser. First device: Philips DreamStation 2. Others later (ResMed, etc.) via the `DeviceLoader` plugin interface in `packages/core`.
 - License: GPL-3.0-or-later (logic is adapted from OSCAR's PRS1 loader, which is GPLv3).
-- Monorepo with npm workspaces (pnpm is not installed). Checks: `npx tsc -b` and `npx vitest run`.
+- Monorepo with npm workspaces (pnpm is not installed). Checks: `npx tsc -b`, `npx vitest run`, and `npm run e2e` (Playwright with system Chrome; builds the web app). Web app: `npm run dev`. UI strings live in `apps/web/src/i18n/locales/{en,ca,es}.json` and must stay in parity.
+- Screenshots committed under `docs/img` must come from demo data only (`DOC_SHOTS=1 npx playwright test e2e/docshots.e2e.ts`).
 - `fixtures/raw/` holds real patient SD data and is git-ignored. **Never commit, upload, or paste real health data or serial numbers.** Tests committed to git must use synthetic data.
 - The OSCAR source (reference only) is cloned outside the repo; do not vendor it.
 - Medical disclaimer: informational tool, not a medical device.
