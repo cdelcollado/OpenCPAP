@@ -1,4 +1,4 @@
-import { detectLoader, UnsupportedCardError, type DeviceLoader, type Session } from '@opencpap/core';
+import { analyzeSession, detectLoader, UnsupportedCardError, type DeviceLoader, type Session } from '@opencpap/core';
 import { createFs, type CardSource } from './source';
 import type { FromWorker } from './protocol';
 
@@ -7,6 +7,8 @@ export function sessionBuffers(s: Session): ArrayBuffer[] {
   const set = new Set<ArrayBuffer>();
   for (const w of s.waveforms) set.add(w.samples.buffer as ArrayBuffer);
   for (const t of s.statistics) { set.add(t.times.buffer as ArrayBuffer); set.add(t.values.buffer as ArrayBuffer); }
+  const win = s.analysis?.windows;
+  if (win) for (const a of [win.times, win.flatShare, win.rate, win.volumeCv]) set.add(a.buffer as ArrayBuffer);
   return [...set];
 }
 
@@ -29,6 +31,8 @@ export async function runImport(
     for await (const session of match.loader.load(fs, (done, total) => post({ type: 'progress', done, total }))) {
       if (isCancelled()) return;
       count++;
+      // breath analysis runs here, off the UI thread, while the waveform is in memory
+      session.analysis ??= analyzeSession(session.waveforms);
       post({ type: 'session', session }, sessionBuffers(session));
     }
     post({ type: 'done', count });

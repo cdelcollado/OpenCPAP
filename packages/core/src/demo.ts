@@ -1,3 +1,5 @@
+import { analyzeSession } from './analysis';
+import type { OximetryRecording } from './oximetry';
 import type { Session, TherapyEvent, TimeSeries, Waveform } from './model';
 
 /** Small deterministic PRNG (mulberry32) so demo data and tests are reproducible. */
@@ -82,10 +84,14 @@ export function generateDemoSessions(opts: DemoOptions = {}): Session[] {
 
     const waveforms: Waveform[] = [];
     if (n >= nights - waveformNights) {
+      // breathing like the real signal: smooth inspiration (positive), abrupt switch to a decaying expiration.
+      // Each night has its own breath rate and "flatness" (a smaller exponent flattens the inspiration).
       const rateHz = 5, count = durS * rateHz, flow = new Float32Array(count);
+      const bpm = 14 + r() * 5, period = 60 / bpm, flatPower = 0.55 + r() * 0.5;
       for (let i = 0; i < count; i++) {
-        const t = i / rateHz;
-        flow[i] = 22 * Math.sin((2 * Math.PI * t) / 4) + (r() - 0.5) * 4;
+        const t = i / rateHz, ph = t % period, ti = 1.4;
+        const v = ph < ti ? 24 * Math.sin((Math.PI * ph) / ti) ** flatPower : -26 * Math.exp(-(ph - ti) / 0.9);
+        flow[i] = Math.round(v + (r() - 0.5) * 3);
       }
       waveforms.push({ channel: 'flow', unit: 'L/min', sampleRate: rateHz, start: startMs, samples: flow });
     }
@@ -94,8 +100,26 @@ export function generateDemoSessions(opts: DemoOptions = {}): Session[] {
       id: n + 1, device, start: startMs, end: endMs, clock: 'device-local',
       slices: [{ start: startMs, end: endMs, status: 'mask-on' }],
       settings: { mode: 'cpap', pressure, rampTimeMinutes: 15, rampType: 'ramp-plus', rampPressure: 4, humidifierPresent: true, humidifierMode: 'adaptive', humidifierLevel: 3, tubingDiameterMm: 15 },
-      events, waveforms, statistics, unknownRecords: 0,
+      events, waveforms, statistics, unknownRecords: 0, analysis: analyzeSession(waveforms),
     });
   }
   return out;
+}
+
+/**
+ * A fictitious pulse-oximeter recording that goes with a demo session: SpO2 around 95 % with a dip after each
+ * obstructive apnea or hypopnea (the more events, the more dips), pulse rising a little after each dip. 1 Hz.
+ */
+export function generateDemoOximetry(session: Pick<Session, 'start' | 'end' | 'events'>, seed = 7): OximetryRecording {
+  const r = rng(seed);
+  const seconds = Math.floor((session.end - session.start) / 1000);
+  const times = new Float64Array(seconds), spo2 = new Float32Array(seconds), pulse = new Float32Array(seconds);
+  const dips = session.events.filter((e) => e.type === 'obstructive' || e.type === 'hypopnea' || e.type === 'central').map((e) => ({ at: Math.round((e.start - session.start) / 1000), depth: 3 + Math.round(r() * 3), len: 20 + Math.round(r() * 25) }));
+  for (let i = 0; i < seconds; i++) {
+    times[i] = session.start + i * 1000;
+    let v = 95.5 + Math.sin(i / 900) * 0.6 + (r() - 0.5) * 0.8, p = 58 + Math.sin(i / 1500) * 3 + (r() - 0.5) * 2;
+    for (const d of dips) { const k = i - d.at; if (k >= 0 && k < d.len) { v -= d.depth * Math.sin((Math.PI * k) / d.len); p += 6 * Math.sin((Math.PI * k) / d.len); } }
+    spo2[i] = Math.round(Math.min(100, Math.max(70, v))); pulse[i] = Math.round(p);
+  }
+  return { times, spo2, pulse };
 }

@@ -1,4 +1,4 @@
-import type { OpenCpapDb, EquipmentRow, JournalRow, SessionRow, WaveformRow } from './db';
+import type { OpenCpapDb, EquipmentRow, JournalRow, OximetryRow, OximetrySamplesRow, SessionRow, WaveformRow } from './db';
 
 /**
  * Backup file: gzip-compressed NDJSON (one JSON object per line), so large histories are written and read as a
@@ -11,7 +11,7 @@ export const BACKUP_VERSION = 1;
 export const MAX_BACKUP_BYTES = 1.5 * 1024 ** 3;
 
 export interface BackupHeader { format: typeof BACKUP_FORMAT; version: number; createdAt: string; app: string; includesWaveforms: boolean }
-export interface BackupCounts { sessions: number; waveforms: number; journal: number; equipment: number; skipped: number }
+export interface BackupCounts { sessions: number; waveforms: number; journal: number; equipment: number; oximetry: number; skipped: number }
 
 /* ---------- typed-array (de)serialisation ---------- */
 
@@ -67,6 +67,8 @@ export function validSession(r: unknown): r is SessionRow {
 }
 export const validWaveform = (r: unknown): r is WaveformRow => isObj(r) && typeof r.key === 'string' && typeof r.sessionKey === 'string' && isObj(r.waveform) && isTyped(r.waveform.samples) && isNum(r.waveform.sampleRate);
 export const validJournal = (r: unknown): r is JournalRow => isObj(r) && isDate(r.date) && typeof r.note === 'string' && Array.isArray(r.tags) && r.tags.every((t) => typeof t === 'string') && isNum(r.updatedAt);
+export const validOximetry = (r: unknown): r is OximetryRow => isObj(r) && isDate(r.date) && typeof r.source === 'string' && isNum(r.start) && isNum(r.end) && isObj(r.stats) && isNum(r.importedAt);
+export const validOximetrySamples = (r: unknown): r is OximetrySamplesRow => isObj(r) && isDate(r.date) && isTyped(r.times) && isTyped(r.spo2) && isTyped(r.pulse) && (r.times as Float64Array).length === (r.spo2 as Float32Array).length && (r.times as Float64Array).length === (r.pulse as Float32Array).length;
 export const validEquipment = (r: unknown): r is EquipmentRow => isObj(r) && typeof r.id === 'string' && typeof r.kind === 'string' && typeof r.name === 'string' && isDate(r.startDate) && isNum(r.intervalDays) && isNum(r.updatedAt);
 
 /* ---------- export ---------- */
@@ -82,6 +84,8 @@ export async function exportBackup(db: OpenCpapDb, opts: ExportOptions): Promise
   if (opts.includeWaveforms) await db.waveforms.each((row) => { parts.push(`${stringifyRecord({ t: 'waveform', row })}\n`); });
   await db.journal.each((row) => { parts.push(`${stringifyRecord({ t: 'journal', row })}\n`); });
   await db.equipment.each((row) => { parts.push(`${stringifyRecord({ t: 'equipment', row })}\n`); });
+  await db.oximetry.each((row) => { parts.push(`${stringifyRecord({ t: 'oximetry', row })}\n`); });
+  await db.oximetrySamples.each((row) => { parts.push(`${stringifyRecord({ t: 'oximetrySamples', row })}\n`); });
   const plain = new Blob(parts, { type: 'application/x-ndjson' });
   if (typeof CompressionStream === 'undefined') return plain;
   return new Response(plain.stream().pipeThrough(new CompressionStream('gzip'))).blob();
@@ -117,8 +121,9 @@ async function* lines(blob: Blob): AsyncGenerator<string> {
  * rows are replaced only when the backup's copy is newer. Malformed lines are skipped and counted, never trusted.
  */
 export async function importBackup(db: OpenCpapDb, blob: Blob): Promise<BackupCounts> {
-  const counts: BackupCounts = { sessions: 0, waveforms: 0, journal: 0, equipment: 0, skipped: 0 };
+  const counts: BackupCounts = { sessions: 0, waveforms: 0, journal: 0, equipment: 0, oximetry: 0, skipped: 0 };
   let first = true;
+  const acceptedOximetry = new Set<string>(); // nights whose metadata came from this backup: only those take its samples
   let batch: { sessions: SessionRow[]; waveforms: WaveformRow[] } = { sessions: [], waveforms: [] };
   const flush = async () => {
     if (batch.sessions.length) await db.sessions.bulkPut(batch.sessions);
@@ -147,6 +152,12 @@ export async function importBackup(db: OpenCpapDb, blob: Blob): Promise<BackupCo
       const cur = await db.equipment.get(row.id);
       if (!cur || cur.updatedAt < row.updatedAt) await db.equipment.put(row);
       counts.equipment++;
+    } else if (rec.t === 'oximetry' && validOximetry(row)) {
+      const cur = await db.oximetry.get(row.date);
+      if (!cur || cur.importedAt < row.importedAt) { await db.oximetry.put(row); acceptedOximetry.add(row.date); }
+      counts.oximetry++;
+    } else if (rec.t === 'oximetrySamples' && validOximetrySamples(row)) {
+      if (acceptedOximetry.has(row.date)) await db.oximetrySamples.put(row); // samples only go with their own metadata
     } else counts.skipped++;
     if (batch.sessions.length + batch.waveforms.length >= 100) await flush();
   }

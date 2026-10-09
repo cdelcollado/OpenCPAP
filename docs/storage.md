@@ -2,7 +2,7 @@
 
 All user data is stored in the browser's **IndexedDB**, via [Dexie](https://dexie.org). Nothing is sent to a server. Code: `apps/web/src/db/`.
 
-## Database `opencpap` (schema version 2)
+## Database `opencpap` (schema version 3)
 
 | Store | Primary key | Indexes | Row |
 |---|---|---|---|
@@ -11,6 +11,9 @@ All user data is stored in the browser's **IndexedDB**, via [Dexie](https://dexi
 
 | `journal` | `date` (the night, YYYY-MM-DD) | — | `{ date, note, tags[], mood?, updatedAt }`; one entry per night; an entry with no note, tags or mood is deleted rather than stored; note ≤ 5000 chars, ≤ 20 tags of ≤ 40 chars |
 | `equipment` | `id` (UUID) | `kind`, `startDate` | `{ id, kind, name, startDate, endDate?, intervalDays, note?, updatedAt }` |
+
+| `oximetry` | `date` (the night) | — | `{ date, source, start, end, offsetMin, stats, importedAt }` (light: what the dashboard needs) |
+| `oximetrySamples` | `date` | — | `{ date, times: Float64Array, spo2: Float32Array, pulse: Float32Array }` (loaded only on the night view) |
 
 - **Why two stores for therapy data?** The dashboard needs only light session data for ~hundreds of sessions; flow waveforms (≈130–160 k samples per night) are loaded only when a night is opened.
 - **Typed arrays** (`Float32Array`, `Float64Array`) are stored natively by IndexedDB (structured clone) — no conversion.
@@ -23,9 +26,10 @@ All user data is stored in the browser's **IndexedDB**, via [Dexie](https://dexi
 |---|---|---|
 | 1 | `sessions`, `waveforms` (Phase 2) | — |
 | 2 | adds `journal` and `equipment` (Phase 3) | none needed: purely additive, existing rows untouched. A test creates a version-1 database, opens it with the current code and checks that data survives |
+| 3 | adds `oximetry` and `oximetrySamples` (Phase 4) | none needed (additive); a test opens a version-2 database with the version-3 code. Sessions stored before Phase 4 get their breath analysis computed in the background on first open (`backfillAnalysis`) |
 
 ## `Repository` API
-`saveSession`, `listSessions`, `nights()` (all night summaries), `night(date)` (sessions + waveforms for one night), `counts`, `devices`, `deleteDevice` (therapy data of one device only), `clearAll` (**everything**, including notes and equipment), `sessionKeysWithWaveforms`, and for Phase 3 `journal`/`saveJournal`/`deleteJournal` and `equipment`/`saveEquipment`/`deleteEquipment`. Backups: [backup-format.md](backup-format.md). Components never touch Dexie directly, so the schema can change in one place.
+`saveSession`, `listSessions`, `nights()` (all night summaries), `night(date)` (sessions + waveforms for one night), `counts`, `devices`, `deleteDevice` (therapy data of one device only), `clearAll` (**everything**, including notes and equipment), `sessionKeysWithWaveforms`, for Phase 3 `journal`/`saveJournal`/`deleteJournal` and `equipment`/`saveEquipment`/`deleteEquipment`, and for Phase 4 `saveOximetry` (splits a recording by night and computes its statistics), `oximetry(date)`, `deleteOximetry` and `backfillAnalysis({ force })`. `SessionLite.analysis` (breath analysis with 5-minute window series) is stored inside the session row. Backups: [backup-format.md](backup-format.md). Components never touch Dexie directly, so the schema can change in one place.
 
 ## Size
 Sample card (550 sessions, ~190 nights with waveforms): a few tens of MB. `Settings` shows `navigator.storage.estimate()`. Browsers may evict storage for sites that are not installed or persistent; installing the PWA makes eviction less likely. Settings has a **Request persistent storage** button (`navigator.storage.persist()`, outcome shown) and a **backup** download/restore ([backup-format.md](backup-format.md)).

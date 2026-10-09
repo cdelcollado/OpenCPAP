@@ -5,6 +5,7 @@ import { Badge } from '../../components/Badge';
 import { InfoTip } from '../../components/InfoTip';
 import { Meter } from '../../components/Meter';
 import { IconWave } from '../../components/icons';
+import { download, nightsCsv } from '../../exports';
 import { formatNightDate } from '../../format';
 import { href } from '../../router';
 import { useData } from '../../state';
@@ -12,6 +13,9 @@ import { CalendarHeatmap } from './CalendarHeatmap';
 import { Hero } from './Hero';
 import { ChangesPanel } from '../changes/ChangesPanel';
 import { Reminders } from '../equipment/Reminders';
+import { AnomalyPanel } from './AnomalyPanel';
+import { BreathingTrends } from './BreathingTrends';
+import { Distribution } from './Distribution';
 import { NightsTable } from './NightsTable';
 import { TrendCharts } from './TrendCharts';
 import { baseline, type HeatMetric } from './metrics';
@@ -41,6 +45,7 @@ export function Dashboard() {
   const { nights, loading, demoOnly, changes } = useData();
   const [range, setRange] = useState<RangeKey>('30');
   const [custom, setCustom] = useState<[string, string]>(['', '']);
+  const [rolling, setRolling] = useState(true);
   const [heat, setHeat] = useState<HeatMetric>('usage');
 
   const visible = useMemo(() => {
@@ -61,11 +66,13 @@ export function Dashboard() {
           <h1>{t('dashboard.title')}</h1>
           <p className="sub">{t('dashboard.subtitle', { count: nights.length, date: formatNightDate(last.date, lang) })}</p>
         </div>
+        <button className="btn secondary" type="button" onClick={() => download(nightsCsv(nights), 'opencpap-nights.csv', 'text/csv;charset=utf-8')}>{t('dashboard.exportNights')}</button>
       </div>
       {demoOnly && <div className="banner" role="note" style={{ marginBottom: '1rem' }}>{t('dashboard.demoBanner')}</div>}
 
       <Hero nights={nights} last={last} base={base} />
       <div className="stack" style={{ marginTop: '0.9rem' }}>
+        <AnomalyPanel />
         <Reminders />
       </div>
 
@@ -98,7 +105,14 @@ export function Dashboard() {
           <label>{t('dashboard.to')} <input type="date" value={custom[1]} min={nights[0]?.date} max={last.date} onChange={(e) => setCustom([custom[0], e.target.value])} /></label>
         </div>
       )}
-      <TrendCharts nights={visible} changes={changes} />
+      <label className="row" style={{ margin: '0 0 0.6rem' }}><input type="checkbox" checked={rolling} onChange={(e) => setRolling(e.target.checked)} /> {t('dashboard.rolling')}</label>
+      <TrendCharts nights={visible} all={nights} changes={changes} rolling={rolling} />
+
+      <div className="section-title"><h2>{t('dashboard.distributionTitle')}</h2></div>
+      <Distribution nights={visible} />
+
+      <div className="section-title"><h2>{t('dashboard.breathingTitle')}</h2></div>
+      <BreathingTrends nights={visible} />
 
       <div className="section-title">
         <h2>{t('dashboard.calendar')}</h2>

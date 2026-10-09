@@ -99,7 +99,22 @@
   "from": "Desde",
   "to": "Hasta",
   "markersHint": "Los marcadores discontinuos muestran cambios de ajustes.",
-  "notesColumn": "Nota"
+  "notesColumn": "Nota",
+  "breathingTitle": "Respiración (experimental)",
+  "flatChart": "Respiraciones aplanadas por noche (%)",
+  "rateChart": "Respiraciones por minuto por noche",
+  "breathingNote": "Solo noches con datos detallados de flujo. Tendencias experimentales, consulta la nota de una noche.",
+  "breathingNone": "Ninguna noche de este intervalo tiene datos detallados de flujo.",
+  "rolling": "Media de 7 noches",
+  "distributionTitle": "Distribución",
+  "usageHistogram": "Noches según las horas de uso",
+  "ahiHistogram": "Noches según el IAH",
+  "histNights": "{{count}} noches",
+  "histBin": "{{from}} a {{to}}",
+  "histBinLast": "{{from}} o más",
+  "anomaliesTitle": "Merece la pena mirarlo",
+  "exportNights": "Exportar las noches (CSV)",
+  "rollingLabel": "Media de 7 noches"
  },
  "metric": {
   "usage": "Uso",
@@ -113,7 +128,9 @@
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
-  "unitPressure": "cmH₂O"
+  "unitPressure": "cmH₂O",
+  "unitPerMin": "/min",
+  "unitPercent": "%"
  },
  "event": {
   "obstructive": "Apnea obstructiva",
@@ -142,7 +159,15 @@
   "pressure": "Presión de la terapia en cmH₂O, fijada en el dispositivo o elegida automáticamente.",
   "compliance": "Proporción de noches con al menos 4 horas de uso durante las últimas 30 noches.",
   "flow": "Flujo respiratorio medido por el dispositivo (positivo: inspiración). La escala es aproximada.",
-  "rera": "Despertares relacionados con el esfuerzo respiratorio: eventos de esfuerzo que alteran el sueño sin ser una apnea o hipopnea completas. No forman parte del IAH."
+  "rera": "Despertares relacionados con el esfuerzo respiratorio: eventos de esfuerzo que alteran el sueño sin ser una apnea o hipopnea completas. No forman parte del IAH.",
+  "rate": "Respiraciones por minuto, a partir del tiempo entre respiraciones en la señal de flujo. Con 5 muestras por segundo, a frecuencias altas se cuantifica en pasos de aproximadamente una respiración por minuto.",
+  "regularity": "Cuánto difiere la duración de una respiración de la siguiente (coeficiente de variación). Más bajo significa un ritmo más estable; la fase del sueño, la postura y los microdespertares lo cambian.",
+  "flat": "Proporción de respiraciones con flujo inspiratorio aplanado en lugar de redondeado, una señal de que la vía aérea puede estar parcialmente estrechada. Experimental: durante el desarrollo, las respiraciones aplanadas eran unas 2,7 veces más frecuentes el minuto previo a eventos que el propio dispositivo había marcado como limitación de flujo.",
+  "periodic": "Proporción de la noche con un aumento y disminución regular y sostenido del tamaño de la respiración (periodos de 20 a 120 s durante varios minutos), como en la respiración periódica. Los episodios breves, como los pocos minutos que a veces informa el propio dispositivo, no se detectan: sus eventos de respiración periódica siguen siendo la referencia.",
+  "ie": "Cuánto más dura la espiración que la inspiración (habitualmente entre 1,2 y 2).",
+  "odi": "Índice de desaturación de oxígeno: cuántas veces por hora la SpO₂ bajó al menos 3 (o 4) puntos por debajo de su nivel reciente durante 10 s a 3 min. Depende del sensor y de cómo promedia; compáralo con tus noches anteriores.",
+  "t90": "Proporción del registro válido con la SpO₂ por debajo del 90 %.",
+  "spo2": "Saturación de oxígeno en sangre medida por tu oxímetro."
  },
  "night": {
   "notFound": "No hay datos de esta noche.",
@@ -174,7 +199,12 @@
   "jump": "Ir a la fecha",
   "settingsTitle": "Ajustes de la terapia",
   "settingsHint": "Tal como los informa el dispositivo para esta noche",
-  "count": "Recuento"
+  "count": "Recuento",
+  "flatShort": "Resp. aplanadas",
+  "rateShort": "Frec. resp.",
+  "flatChart": "Respiraciones aplanadas (%)",
+  "rateChart": "Frecuencia respiratoria (/min)",
+  "perWindow": "cada 5 min"
  },
  "settings": {
   "title": "Ajustes",
@@ -329,7 +359,12 @@
   "periodic": "Se detectó respiración periódica durante unos {{minutes}} min.",
   "reraHigh": "El índice de RERA fue de {{index}} por hora.",
   "settingsChanged_one": "Esta noche cambió {{count}} ajuste de la terapia.",
-  "settingsChanged_other": "Esta noche cambiaron {{count}} ajustes de la terapia."
+  "settingsChanged_other": "Esta noche cambiaron {{count}} ajustes de la terapia.",
+  "flatHigh": "Las respiraciones aplanadas fueron el {{share}} % de las respiraciones, por encima de tu habitual, {{usual}} %.",
+  "periodicPattern": "Se vio un patrón respiratorio de aumento y disminución durante aproximadamente el {{percent}} % de la noche.",
+  "desatFrequent": "El oxímetro registró {{odi}} desaturaciones de 3 puntos o más por hora.",
+  "lowOxygenTime": "La SpO₂ estuvo por debajo del 90 % durante el {{percent}} % del registro.",
+  "oxygenSteady": "El oxímetro mostró niveles de oxígeno estables (mínimo {{min}} %)."
  },
  "changes": {
   "title": "Cambios de ajustes",
@@ -471,6 +506,78 @@
   "vsPrevious": "Periodo anterior (del {{from}} al {{to}})",
   "noPrevious": "No hay datos en el periodo anterior.",
   "limits": "Las cifras proceden de los registros del propio dispositivo. La fuga es fuga total, incluida la ventilación intencionada de la mascarilla. Este resumen no es un diagnóstico.",
-  "refHint": "Las líneas horizontales discontinuas marcan 4 horas de uso y 5 eventos por hora."
+  "refHint": "Las líneas horizontales discontinuas marcan 4 horas de uso y 5 eventos por hora.",
+  "oximetry": "Oximetría (tu propio oxímetro)",
+  "oximetryLine": "{{count}} noche(s) con datos: SpO₂ media {{mean}} %, mínima {{min}} %, tiempo por debajo del 90 % {{t90}} % (mediana), desaturaciones ≥ 3 % {{odi}} por hora (media).",
+  "breathing": "Respiración (experimental, a partir del flujo a 5 Hz)",
+  "breathingLine": "{{count}} noche(s) con flujo detallado: frecuencia respiratoria {{rate}} por minuto (mediana), respiraciones aplanadas {{flat}} % (mediana), variación de la duración de la respiración {{cv}} %."
+ },
+ "breathing": {
+  "title": "Respiración (experimental)",
+  "note": "Se mide a partir del flujo a 5 Hz del dispositivo, así que son tendencias aproximadas dentro de tus propios datos. No son un diagnóstico y no se pueden comparar con herramientas de 25 Hz como AirwayLab.",
+  "none": "El análisis respiratorio necesita los datos detallados de flujo, que la tarjeta solo conserva de las noches recientes.",
+  "rate": "Frecuencia respiratoria",
+  "regularity": "Variación de la duración de la respiración",
+  "flat": "Respiraciones aplanadas",
+  "periodic": "Patrón periódico",
+  "periodicAt": "cada ~{{seconds}} s",
+  "ie": "Espiración : inspiración",
+  "breaths": "{{count}} respiraciones analizadas",
+  "unitPerMin": "/min",
+  "vsUsual": "habitual {{value}} %"
+ },
+ "anomaly": {
+  "missedNights": "{{missed}} de las últimas {{days}} noches no tienen datos.",
+  "shortRun": "Las últimas {{nights}} noches fueron todas de menos de 4 h.",
+  "leakRise": "La fuga (95 %) de las últimas 3 noches ({{now}} L/min) está muy por encima de tu habitual, {{usual}} L/min.",
+  "ahiRise": "Tu IAH de las últimas 7 noches ({{now}} por hora) es aproximadamente el doble de tu habitual ({{usual}} por hora).",
+  "note": "Estos avisos te comparan con tu propio historial reciente. No son un diagnóstico; si te preocupa, coméntalo con tu profesional sanitario.",
+  "open": "Abrir el {{date}}"
+ },
+ "export": {
+  "title": "Exportar esta noche",
+  "events": "Eventos (CSV)",
+  "stats": "Estadísticas (CSV)",
+  "flow": "Flujo (EDF)",
+  "hint": "Las horas son las del reloj del dispositivo, sin zona horaria. El flujo se exporta con los números propios del dispositivo (la unidad no está verificada).",
+  "oximetry": "Oximetría (CSV)"
+ },
+ "oximetry": {
+  "title": "Oxímetro",
+  "importTitle": "Datos del oxímetro (opcional)",
+  "importIntro": "Si además duermes con un pulsioxímetro (por ejemplo un anillo Wellue/Viatom), importa su exportación CSV para ver el oxígeno y el pulso junto a la terapia. La CPAP no registra datos de oxígeno.",
+  "choose": "Elegir un CSV del oxímetro",
+  "detected": "Detectado: {{format}}, columnas «{{time}}» y «{{spo2}}»",
+  "rows": "{{count}} lecturas en {{nights}} noche(s)",
+  "skipped": "{{count}} filas no se pudieron leer y se ignoraron.",
+  "dateOrder": "El orden de la fecha es ambiguo (03/04/2026). Leer las fechas como mes/día.",
+  "offset": "Corrección del reloj (minutos)",
+  "offsetHint": "Si el reloj del oxímetro no coincide con el de la CPAP, escribe los minutos a añadir (negativos para restar).",
+  "night": "Noche",
+  "overlap": "Cubre de tu noche de CPAP (minutos)",
+  "noOverlap": "No coincide con ninguna noche de CPAP: revisa la corrección del reloj.",
+  "lowOverlap": "Esta grabación cubre menos de tres cuartos de tu noche de CPAP: revisa las fechas y la corrección del reloj.",
+  "import": "Importar {{count}} noche(s)",
+  "done": "Se importó la oximetría de {{count}} noche(s).",
+  "error": "No se pudo leer el archivo: {{message}}",
+  "tooLarge": "El archivo pesa más de 50 MB.",
+  "remove": "Eliminar la oximetría de esta noche",
+  "spo2": "SpO₂",
+  "pulse": "Pulso",
+  "spo2Short": "SpO₂",
+  "pulseShort": "Pulso",
+  "spo2Chart": "Saturación de oxígeno (%)",
+  "pulseChart": "Frecuencia del pulso (/min)",
+  "mean": "SpO₂ media",
+  "min": "SpO₂ mínima",
+  "t90": "Tiempo por debajo del 90 %",
+  "odi3": "Desaturaciones ≥ 3 %",
+  "odi4": "Desaturaciones ≥ 4 %",
+  "pulseRange": "Pulso",
+  "source": "De {{source}}",
+  "note": "Registrado por tu propio oxímetro, no por la CPAP. Los relojes se comparan tal como están escritos; usa la corrección del reloj al importar si difieren.",
+  "perHour": "/h",
+  "hours": "{{hours}} h de datos válidos",
+  "status": "Estado"
  }
 }

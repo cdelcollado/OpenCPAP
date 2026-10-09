@@ -1,4 +1,5 @@
 export * from './model';
+export { analyzeSession, ANALYSIS_VERSION, type BreathingAnalysis, type WindowSeries } from './analysis';
 export * from './vfs';
 export * from './loader';
 export * from './stats';
@@ -8,3 +9,8 @@ export * from './changes';
 export * from './compare';
 export * from './equipment';
 export * from './findings';
+export * from './breath';
+export * from './trends';
+export * from './anomalies';
+export * from './edf';
+export * from './oximetry';

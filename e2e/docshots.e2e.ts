@@ -39,6 +39,14 @@ test('documentation screenshots (demo data)', async ({ page }) => {
   await page.screenshot({ path: 'docs/img/night-dark.png' });
   await page.emulateMedia({ colorScheme: 'light' });
 
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.getByTestId('breathing').evaluate((e) => { e.scrollIntoView({ block: 'start' }); window.scrollBy(0, -90); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: 'docs/img/breathing.png', clip: { x: 0, y: 0, width: 1200, height: 640 } });
+  await page.goto('/#/');
+  await page.locator('h2', { hasText: 'Distribution' }).evaluate((e) => e.scrollIntoView({ block: 'start' }));
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/img/distribution.png', clip: { x: 0, y: 0, width: 1200, height: 900 } });
   await page.goto('/#/compare');
   await page.getByRole('button', { name: 'Last 30 nights vs the 30 before' }).click();
   await page.waitForTimeout(500);

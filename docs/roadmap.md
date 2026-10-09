@@ -66,12 +66,28 @@ Legend: [x] done · [ ] pending
 - [x] E2E: notes, summary, changes, comparison, equipment, PDF content via `pdftotext`, backup round trip, axe on every new page in both themes, header links, 390 px layout
 - [ ] Keyboard access to the chart readouts; screen-reader pass of the new pages
 - [ ] Encrypted backups (optional passphrase)
-- [ ] Event-type distribution histograms and rolling averages on the trends
+- [x] Rolling averages and AHI/hours histograms (done in Phase 4)
 - [ ] Report: signature block, date of birth and clinic logo as optional fields
 - [ ] Clinical review of the plain-language thresholds and the default equipment intervals
 
 ## Phase 4 — Advanced analytics
-Flow limitation, breathing regularity, snore, periodic breathing, oximetry import, anomaly alerts, exports.
+- [x] Scale-free breath-by-breath analysis of the 5 Hz flow: breath rate, variation of breath length/volume, I:E, flat-topped (flow-limitation-like) share, in 5-minute windows ([breathing-analysis.md](breathing-analysis.md))
+- [x] Periodic-pattern measure (autocorrelation of the breath envelope), with its limits documented
+- [x] Validation on the real card (1.66 M breaths): flat-topped share 11 % at baseline versus 31 % before device-reported flow-limitation events
+- [x] Analysis runs in the import worker; background backfill for sessions stored earlier
+- [x] Oximeter CSV import, alignment with the CPAP night, ODI3/ODI4, T90/T88, preview with an overlap check ([oximetry.md](oximetry.md))
+- [x] Night view: Breathing and Oximeter cards, flat/rate/SpO₂/pulse tracks, shared readout
+- [x] Alerts: missed nights, short runs, leak rise, AHI rise ([analytics.md](analytics.md#alerts-worth-a-look))
+- [x] 7-night rolling average and AHI / hours distributions
+- [x] Exports: nights, events, statistics, oximetry (CSV with formula-injection guard) and flow as EDF ([exports.md](exports.md))
+- [x] New plain-language rules (flat breaths, periodic pattern, oxygen), report lines, backup records, IndexedDB schema v3
+- [x] E2E: 15 tests (analysis, oximetry import/remove, exports, alerts, zoom regression, axe, phone layout)
+- [ ] Validate the periodic-pattern measure against nights with clinically confirmed periodic breathing (the current one misses brief episodes)
+- [ ] Validate oximeter parsing against real files from several brands (only a synthetic layout is tested)
+- [ ] Snore analysis beyond the device's own snore count; Glasgow-index-style multi-feature scoring
+- [ ] Wearable integrations (Apple Watch, Oura, Garmin, Fitbit)
+- [ ] Rolling averages for leak/pressure, event-type distribution histograms
+- [ ] JSON export of the canonical model
 
 ## Phase 5 — Multi-device
 ResMed (EDF+) first, then others; conformance suite; compatibility matrix.

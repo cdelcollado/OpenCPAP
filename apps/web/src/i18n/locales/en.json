@@ -99,7 +99,22 @@
   "from": "From",
   "to": "To",
   "markersHint": "Dashed markers show setting changes.",
-  "notesColumn": "Note"
+  "notesColumn": "Note",
+  "breathingTitle": "Breathing (experimental)",
+  "flatChart": "Flat-topped breaths per night (%)",
+  "rateChart": "Breaths per minute per night",
+  "breathingNote": "Only nights with detailed flow data. Experimental trends, see the note on a night.",
+  "breathingNone": "No night in this range has detailed flow data.",
+  "rolling": "7-night average",
+  "distributionTitle": "Distribution",
+  "usageHistogram": "Nights by hours of use",
+  "ahiHistogram": "Nights by AHI",
+  "histNights": "{{count}} nights",
+  "histBin": "{{from}} to {{to}}",
+  "histBinLast": "{{from}} or more",
+  "anomaliesTitle": "Worth a look",
+  "exportNights": "Export nights (CSV)",
+  "rollingLabel": "7-night average"
  },
  "metric": {
   "usage": "Use",
@@ -113,7 +128,9 @@
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
-  "unitPressure": "cmH₂O"
+  "unitPressure": "cmH₂O",
+  "unitPerMin": "/min",
+  "unitPercent": "%"
  },
  "event": {
   "obstructive": "Obstructive apnea",
@@ -142,7 +159,15 @@
   "pressure": "Therapy pressure in cmH₂O set on the device or chosen automatically.",
   "compliance": "Share of nights with at least 4 hours of use over the last 30 nights.",
   "flow": "Breathing flow measured by the device (positive: breathing in). Scaling is approximate.",
-  "rera": "Respiratory Effort Related Arousals: breathing effort events that disturb sleep without being a full apnea or hypopnea. They are not part of the AHI."
+  "rera": "Respiratory Effort Related Arousals: breathing effort events that disturb sleep without being a full apnea or hypopnea. They are not part of the AHI.",
+  "rate": "Breaths per minute, taken from the time between breaths in the flow signal. At 5 samples per second it is quantised in steps of about one breath per minute at higher rates.",
+  "regularity": "How much the length of one breath differs from the next (coefficient of variation). Lower means a steadier rhythm; sleep stage, position and arousals all change it.",
+  "flat": "Share of breaths whose inspiratory flow is flat-topped rather than rounded, a sign the airway may be partly narrowed. Experimental: while developing it, flat-topped breaths were about 2.7 times more common in the minute before events the device itself flagged as flow limitation.",
+  "periodic": "Share of the night with a sustained, regular waxing and waning of breath size (periods of 20 to 120 s lasting several minutes), as in periodic breathing. Brief episodes, like the few minutes the device itself sometimes reports, are not detected: its own periodic-breathing events remain the reference.",
+  "ie": "How much longer expiration lasts than inspiration (typically 1.2 to 2).",
+  "odi": "Oxygen desaturation index: how many times per hour SpO₂ fell by at least 3 (or 4) points below its recent level for 10 s to 3 min. It depends on the sensor and its averaging; compare it with your own earlier nights.",
+  "t90": "Share of the valid recording with SpO₂ under 90 %.",
+  "spo2": "Blood oxygen saturation measured by your oximeter."
  },
  "night": {
   "notFound": "No data for this night.",
@@ -174,7 +199,12 @@
   "jump": "Go to date",
   "settingsTitle": "Therapy settings",
   "settingsHint": "As reported by the device for this night",
-  "count": "Count"
+  "count": "Count",
+  "flatShort": "Flat breaths",
+  "rateShort": "Breath rate",
+  "flatChart": "Flat-topped breaths (%)",
+  "rateChart": "Breath rate (/min)",
+  "perWindow": "per 5 min"
  },
  "settings": {
   "title": "Settings",
@@ -329,7 +359,12 @@
   "periodic": "Periodic breathing was detected for about {{minutes}} min.",
   "reraHigh": "The RERA index was {{index}} per hour.",
   "settingsChanged_one": "{{count}} therapy setting changed on this night.",
-  "settingsChanged_other": "{{count}} therapy settings changed on this night."
+  "settingsChanged_other": "{{count}} therapy settings changed on this night.",
+  "flatHigh": "Flat-topped breaths were {{share}} % of breaths, above your usual {{usual}} %.",
+  "periodicPattern": "A waxing-and-waning breathing pattern was seen in about {{percent}} % of the night.",
+  "desatFrequent": "The oximeter recorded {{odi}} desaturations of 3 points or more per hour.",
+  "lowOxygenTime": "SpO₂ was under 90 % for {{percent}} % of the recording.",
+  "oxygenSteady": "The oximeter showed steady oxygen levels (lowest {{min}} %)."
  },
  "changes": {
   "title": "Setting changes",
@@ -471,6 +506,78 @@
   "vsPrevious": "Previous period ({{from}} to {{to}})",
   "noPrevious": "No data in the previous period.",
   "limits": "Figures come from the device's own records. Leak is total leak, including the mask's intentional vent flow. This summary is not a diagnosis.",
-  "refHint": "Dashed horizontal lines mark 4 hours of use and 5 events per hour."
+  "refHint": "Dashed horizontal lines mark 4 hours of use and 5 events per hour.",
+  "oximetry": "Oximetry (your own oximeter)",
+  "oximetryLine": "{{count}} night(s) with data: average SpO₂ {{mean}} %, lowest {{min}} %, time under 90 % {{t90}} % (median), desaturations ≥ 3 % {{odi}} per hour (mean).",
+  "breathing": "Breathing (experimental, from 5 Hz flow)",
+  "breathingLine": "{{count}} night(s) with detailed flow: breath rate {{rate}} per minute (median), flat-topped breaths {{flat}} % (median), variation of breath length {{cv}} %."
+ },
+ "breathing": {
+  "title": "Breathing (experimental)",
+  "note": "Measured from the device's 5 Hz flow, so these are coarse trends inside your own data. They are not a diagnosis and cannot be compared with 25 Hz tools such as AirwayLab.",
+  "none": "Breathing analysis needs the detailed flow data, which the card keeps only for recent nights.",
+  "rate": "Breath rate",
+  "regularity": "Variation of breath length",
+  "flat": "Flat-topped breaths",
+  "periodic": "Periodic pattern",
+  "periodicAt": "every ~{{seconds}} s",
+  "ie": "Expiration : inspiration",
+  "breaths": "{{count}} breaths analysed",
+  "unitPerMin": "/min",
+  "vsUsual": "usual {{value}} %"
+ },
+ "anomaly": {
+  "missedNights": "{{missed}} of the last {{days}} nights have no data.",
+  "shortRun": "The last {{nights}} nights were all under 4 h.",
+  "leakRise": "Leak (95 %) over the last 3 nights ({{now}} L/min) is well above your usual {{usual}} L/min.",
+  "ahiRise": "Your AHI over the last 7 nights ({{now}} per hour) is about double your usual ({{usual}} per hour).",
+  "note": "These prompts compare you with your own recent history. They are not a diagnosis; if you are worried, talk to your clinician.",
+  "open": "Open {{date}}"
+ },
+ "export": {
+  "title": "Export this night",
+  "events": "Events (CSV)",
+  "stats": "Statistics (CSV)",
+  "flow": "Flow (EDF)",
+  "hint": "Times are the device's clock without a time zone. Flow is exported with the device's own numbers (the unit is not verified).",
+  "oximetry": "Oximetry (CSV)"
+ },
+ "oximetry": {
+  "title": "Oximeter",
+  "importTitle": "Oximeter data (optional)",
+  "importIntro": "If you also sleep with a pulse oximeter (for example a Wellue/Viatom ring), import its CSV export to see oxygen and pulse next to your therapy. The CPAP itself records no oxygen data.",
+  "choose": "Choose an oximeter CSV",
+  "detected": "Detected: {{format}}, columns “{{time}}” and “{{spo2}}”",
+  "rows": "{{count}} readings over {{nights}} night(s)",
+  "skipped": "{{count}} rows could not be read and were ignored.",
+  "dateOrder": "The date order is ambiguous (03/04/2026). Read dates as month/day.",
+  "offset": "Clock correction (minutes)",
+  "offsetHint": "If the oximeter's clock differs from the CPAP's, enter the minutes to add (negative to subtract).",
+  "night": "Night",
+  "overlap": "Covers of your CPAP night (minutes)",
+  "noOverlap": "No overlap with your CPAP nights: check the clock correction.",
+  "lowOverlap": "Less than three quarters of your CPAP night is covered by this recording: check the dates and the clock correction.",
+  "import": "Import {{count}} night(s)",
+  "done": "Oximetry imported for {{count}} night(s).",
+  "error": "Could not read the file: {{message}}",
+  "tooLarge": "The file is larger than 50 MB.",
+  "remove": "Remove oximetry for this night",
+  "spo2": "SpO₂",
+  "pulse": "Pulse",
+  "spo2Short": "SpO₂",
+  "pulseShort": "Pulse",
+  "spo2Chart": "Oxygen saturation (%)",
+  "pulseChart": "Pulse rate (/min)",
+  "mean": "Average SpO₂",
+  "min": "Lowest SpO₂",
+  "t90": "Time under 90 %",
+  "odi3": "Desaturations ≥ 3 %",
+  "odi4": "Desaturations ≥ 4 %",
+  "pulseRange": "Pulse",
+  "source": "From {{source}}",
+  "note": "Recorded by your own oximeter, not by the CPAP. Clocks are compared as written; use the clock correction at import if they differ.",
+  "perHour": "/h",
+  "hours": "{{hours}} h of valid data",
+  "status": "Status"
  }
 }

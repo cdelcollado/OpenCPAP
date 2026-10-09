@@ -44,7 +44,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const reloadJournal = useCallback(async () => { setJournal(new Map((await repository.journal()).map((r) => [r.date, r]))); }, []);
   const reloadEquipment = useCallback(async () => { setEquipment(await repository.equipment()); }, []);
 
-  useEffect(() => { void reload(); }, [reload]);
+  useEffect(() => {
+    void (async () => {
+      await reload();
+      // sessions imported before the breath analysis existed get it in the background
+      if ((await repository.backfillAnalysis()) > 0) await reload();
+    })();
+  }, [reload]);
 
   const value = useMemo<DataState>(
     () => ({

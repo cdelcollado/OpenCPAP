@@ -19,7 +19,8 @@ A local-first web application for reading and visualizing the therapy data that 
 | 1 | DS2 chunk parser and data loader | Parser validated against OSCAR 2.1.0 (550/550 sessions, all metrics); browser import done; device-log files (`D`/`E`) and anonymizer pending (see [roadmap](docs/roadmap.md)) |
 | 2 | Web app: import, dashboard, night view, local storage, PWA, i18n, accessibility | Done (see [web-app.md](docs/web-app.md)); manual screen-reader and Firefox/Safari checks pending |
 | 3 | Notes, summary in plain language, setting changes, period comparison, equipment tracking, clinician report (print/PDF), backup and restore | Done (see [roadmap](docs/roadmap.md)) |
-| 4–6 | Advanced analytics, multi-device, sharing | Planned |
+| 4 | Breath analysis (flat-topped breaths, rate, regularity, periodic pattern), oximeter import (ODI, T90), alerts, rolling averages and distributions, CSV/EDF exports | Done; **experimental** measures, see [breathing-analysis.md](docs/breathing-analysis.md) and [oximetry.md](docs/oximetry.md) |
+| 5–6 | Multi-device, sharing | Planned |
 
 ## Supported devices
 

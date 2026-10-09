@@ -9,6 +9,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
 - Bundle split into app / vendor / charts chunks.
 
+### Added (Phase 4)
+- **Breath analysis** (`breath.ts`, `analysis.ts`): breath rate, variation of breath length and volume, I:E, flat-topped share and a periodic-pattern measure from the 5 Hz flow, scale-free; computed in the import worker with a background backfill for older data. Validated on the real card ([breathing-analysis.md](docs/breathing-analysis.md)).
+- **Oximeter import**: CSV parsing, alignment with the CPAP night, ODI3/ODI4, T90/T88, preview with an overlap check, SpO₂/pulse tracks and card ([oximetry.md](docs/oximetry.md)).
+- **Alerts** ("Worth a look"), **7-night rolling average**, **distribution histograms**, **breathing trends**.
+- **Exports**: nights/events/statistics/oximetry CSV (formula-injection guard) and flow as EDF ([exports.md](docs/exports.md)).
+- New plain-language rules, report lines, backup records, IndexedDB **schema v3** (`oximetry`, `oximetrySamples`).
+- ADR-0010; 248 unit tests and 55 E2E tests.
+
+### Fixed (Phase 4)
+- Night view froze when oximetry tracks were present (new chart data every render + range echo → render loop); data is memoised and `Chart` no longer echoes ranges.
+- Backup restore could pair newer oximetry metadata with older samples; samples are accepted only with their metadata.
+- Progress counter skipped by `++` inside an optional call, making the backfill report 0.
+
 ### Added (Phase 3)
 - **Notes**: mood, text and tags per night, saved automatically; note icon in the nights table.
 - **Plain-language summary** of each night (deterministic rules, `nightFindings` in core), in three languages.

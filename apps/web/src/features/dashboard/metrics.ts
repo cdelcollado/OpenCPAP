@@ -16,12 +16,12 @@ const mean = (xs: (number | undefined)[]) => {
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : undefined;
 };
 
-export interface Baseline { usage?: number; ahi?: number; leak?: number; nights: number }
+export interface Baseline { usage?: number; ahi?: number; leak?: number; flat?: number; nights: number }
 
 /** Averages of the (up to) `n` nights before the last one: what "last night" is compared against. */
 export function baseline(nights: NightSummary[], n = 30): Baseline {
   const prev = nights.slice(Math.max(0, nights.length - 1 - n), -1);
-  return { usage: mean(prev.map((x) => x.usageHours)), ahi: mean(prev.map((x) => x.ahi)), leak: mean(prev.map((x) => x.leak?.p95)), nights: prev.length };
+  return { usage: mean(prev.map((x) => x.usageHours)), ahi: mean(prev.map((x) => x.ahi)), leak: mean(prev.map((x) => x.leak?.p95)), flat: mean(prev.map((x) => x.breathing?.flatShare)), nights: prev.length };
 }
 
 export type HeatMetric = 'usage' | 'ahi' | 'leak';

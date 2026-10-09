@@ -99,7 +99,22 @@
   "from": "Des de",
   "to": "Fins a",
   "markersHint": "Els marcadors discontinus mostren canvis d'ajustos.",
-  "notesColumn": "Nota"
+  "notesColumn": "Nota",
+  "breathingTitle": "Respiració (experimental)",
+  "flatChart": "Respiracions aplanades per nit (%)",
+  "rateChart": "Respiracions per minut per nit",
+  "breathingNote": "Només nits amb dades detallades de flux. Tendències experimentals, consulta la nota d'una nit.",
+  "breathingNone": "Cap nit d'aquest interval té dades detallades de flux.",
+  "rolling": "Mitjana de 7 nits",
+  "distributionTitle": "Distribució",
+  "usageHistogram": "Nits segons les hores d'ús",
+  "ahiHistogram": "Nits segons l'IAH",
+  "histNights": "{{count}} nits",
+  "histBin": "{{from}} a {{to}}",
+  "histBinLast": "{{from}} o més",
+  "anomaliesTitle": "Val la pena mirar-ho",
+  "exportNights": "Exporta les nits (CSV)",
+  "rollingLabel": "Mitjana de 7 nits"
  },
  "metric": {
   "usage": "Ús",
@@ -113,7 +128,9 @@
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
-  "unitPressure": "cmH₂O"
+  "unitPressure": "cmH₂O",
+  "unitPerMin": "/min",
+  "unitPercent": "%"
  },
  "event": {
   "obstructive": "Apnea obstructiva",
@@ -142,7 +159,15 @@
   "pressure": "Pressió de la teràpia en cmH₂O, fixada al dispositiu o triada automàticament.",
   "compliance": "Proporció de nits amb almenys 4 hores d'ús durant les darreres 30 nits.",
   "flow": "Flux respiratori mesurat pel dispositiu (positiu: inspiració). L'escala és aproximada.",
-  "rera": "Despertars relacionats amb l'esforç respiratori: esdeveniments d'esforç que pertorben el son sense ser una apnea o hipopnea completes. No formen part de l'IAH."
+  "rera": "Despertars relacionats amb l'esforç respiratori: esdeveniments d'esforç que pertorben el son sense ser una apnea o hipopnea completes. No formen part de l'IAH.",
+  "rate": "Respiracions per minut, a partir del temps entre respiracions al senyal de flux. Amb 5 mostres per segon, a freqüències altes es quantifica en passos d'aproximadament una respiració per minut.",
+  "regularity": "Quant difereix la durada d'una respiració de la següent (coeficient de variació). Més baix vol dir un ritme més estable; l'etapa del son, la postura i els microdespertars el canvien.",
+  "flat": "Proporció de respiracions amb flux inspiratori aplanat en lloc d'arrodonit, un senyal que la via aèria pot estar parcialment estretida. Experimental: durant el desenvolupament, les respiracions aplanades eren unes 2,7 vegades més freqüents el minut abans d'esdeveniments que el propi aparell havia marcat com a limitació de flux.",
+  "periodic": "Proporció de la nit amb un augment i disminució regular i sostingut de la mida de la respiració (períodes de 20 a 120 s durant diversos minuts), com en la respiració periòdica. Els episodis breus, com els pocs minuts que de vegades informa el propi aparell, no es detecten: els seus esdeveniments de respiració periòdica continuen sent la referència.",
+  "ie": "Quant més dura l'expiració que la inspiració (habitualment entre 1,2 i 2).",
+  "odi": "Índex de desaturació d'oxigen: quantes vegades per hora la SpO₂ ha baixat almenys 3 (o 4) punts per sota del seu nivell recent durant 10 s a 3 min. Depèn del sensor i de com fa la mitjana; compara'l amb les teves nits anteriors.",
+  "t90": "Proporció del registre vàlid amb la SpO₂ per sota del 90 %.",
+  "spo2": "Saturació d'oxigen de la sang mesurada pel teu oxímetre."
  },
  "night": {
   "notFound": "No hi ha dades d'aquesta nit.",
@@ -174,7 +199,12 @@
   "jump": "Ves a la data",
   "settingsTitle": "Ajustos de la teràpia",
   "settingsHint": "Tal com els informa el dispositiu per a aquesta nit",
-  "count": "Recompte"
+  "count": "Recompte",
+  "flatShort": "Resp. aplanades",
+  "rateShort": "Freq. resp.",
+  "flatChart": "Respiracions aplanades (%)",
+  "rateChart": "Freqüència respiratòria (/min)",
+  "perWindow": "cada 5 min"
  },
  "settings": {
   "title": "Configuració",
@@ -329,7 +359,12 @@
   "periodic": "S'ha detectat respiració periòdica durant uns {{minutes}} min.",
   "reraHigh": "L'índex de RERA ha estat de {{index}} per hora.",
   "settingsChanged_one": "Aquesta nit ha canviat {{count}} ajust de la teràpia.",
-  "settingsChanged_other": "Aquesta nit han canviat {{count}} ajustos de la teràpia."
+  "settingsChanged_other": "Aquesta nit han canviat {{count}} ajustos de la teràpia.",
+  "flatHigh": "Les respiracions aplanades han estat el {{share}} % de les respiracions, per sobre del teu habitual, {{usual}} %.",
+  "periodicPattern": "S'ha vist un patró respiratori d'augment i disminució durant aproximadament el {{percent}} % de la nit.",
+  "desatFrequent": "L'oxímetre ha registrat {{odi}} desaturacions de 3 punts o més per hora.",
+  "lowOxygenTime": "La SpO₂ ha estat per sota del 90 % durant el {{percent}} % del registre.",
+  "oxygenSteady": "L'oxímetre ha mostrat nivells d'oxigen estables (mínim {{min}} %)."
  },
  "changes": {
   "title": "Canvis d'ajustos",
@@ -471,6 +506,78 @@
   "vsPrevious": "Període anterior (del {{from}} al {{to}})",
   "noPrevious": "No hi ha dades al període anterior.",
   "limits": "Les xifres provenen dels registres del propi dispositiu. La fuita és fuita total, inclosa la ventilació intencionada de la mascareta. Aquest resum no és un diagnòstic.",
-  "refHint": "Les línies horitzontals discontínues marquen 4 hores d'ús i 5 esdeveniments per hora."
+  "refHint": "Les línies horitzontals discontínues marquen 4 hores d'ús i 5 esdeveniments per hora.",
+  "oximetry": "Oximetria (el teu propi oxímetre)",
+  "oximetryLine": "{{count}} nit(s) amb dades: SpO₂ mitjana {{mean}} %, mínima {{min}} %, temps per sota del 90 % {{t90}} % (mediana), desaturacions ≥ 3 % {{odi}} per hora (mitjana).",
+  "breathing": "Respiració (experimental, a partir del flux a 5 Hz)",
+  "breathingLine": "{{count}} nit(s) amb flux detallat: freqüència respiratòria {{rate}} per minut (mediana), respiracions aplanades {{flat}} % (mediana), variació de la durada de la respiració {{cv}} %."
+ },
+ "breathing": {
+  "title": "Respiració (experimental)",
+  "note": "Es mesura a partir del flux a 5 Hz de l'aparell, així que són tendències aproximades dins de les teves pròpies dades. No són un diagnòstic i no es poden comparar amb eines de 25 Hz com AirwayLab.",
+  "none": "L'anàlisi respiratòria necessita les dades detallades de flux, que la targeta només conserva de les nits recents.",
+  "rate": "Freqüència respiratòria",
+  "regularity": "Variació de la durada de la respiració",
+  "flat": "Respiracions aplanades",
+  "periodic": "Patró periòdic",
+  "periodicAt": "cada ~{{seconds}} s",
+  "ie": "Expiració : inspiració",
+  "breaths": "{{count}} respiracions analitzades",
+  "unitPerMin": "/min",
+  "vsUsual": "habitual {{value}} %"
+ },
+ "anomaly": {
+  "missedNights": "{{missed}} de les darreres {{days}} nits no tenen dades.",
+  "shortRun": "Les darreres {{nights}} nits han estat totes per sota de 4 h.",
+  "leakRise": "La fuita (95 %) de les darreres 3 nits ({{now}} L/min) és molt per sobre de la teva habitual, {{usual}} L/min.",
+  "ahiRise": "El teu IAH de les darreres 7 nits ({{now}} per hora) és aproximadament el doble de l'habitual ({{usual}} per hora).",
+  "note": "Aquests avisos et comparen amb el teu propi historial recent. No són un diagnòstic; si et preocupa, parla-ho amb el teu professional sanitari.",
+  "open": "Obre el {{date}}"
+ },
+ "export": {
+  "title": "Exporta aquesta nit",
+  "events": "Esdeveniments (CSV)",
+  "stats": "Estadístiques (CSV)",
+  "flow": "Flux (EDF)",
+  "hint": "Les hores són les del rellotge de l'aparell, sense fus horari. El flux s'exporta amb els números propis de l'aparell (la unitat no està verificada).",
+  "oximetry": "Oximetria (CSV)"
+ },
+ "oximetry": {
+  "title": "Oxímetre",
+  "importTitle": "Dades de l'oxímetre (opcional)",
+  "importIntro": "Si també dorms amb un pulsioxímetre (per exemple un anell Wellue/Viatom), importa'n l'exportació CSV per veure l'oxigen i el pols al costat de la teràpia. La CPAP no registra dades d'oxigen.",
+  "choose": "Tria un CSV de l'oxímetre",
+  "detected": "Detectat: {{format}}, columnes «{{time}}» i «{{spo2}}»",
+  "rows": "{{count}} lectures en {{nights}} nit(s)",
+  "skipped": "{{count}} files no s'han pogut llegir i s'han ignorat.",
+  "dateOrder": "L'ordre de la data és ambigu (03/04/2026). Llegeix les dates com a mes/dia.",
+  "offset": "Correcció del rellotge (minuts)",
+  "offsetHint": "Si el rellotge de l'oxímetre no coincideix amb el de la CPAP, escriu els minuts a afegir (negatius per restar).",
+  "night": "Nit",
+  "overlap": "Cobreix de la teva nit de CPAP (minuts)",
+  "noOverlap": "No coincideix amb cap nit de CPAP: revisa la correcció del rellotge.",
+  "lowOverlap": "Aquest registre cobreix menys de tres quarts de la teva nit de CPAP: revisa les dates i la correcció del rellotge.",
+  "import": "Importa {{count}} nit(s)",
+  "done": "S'ha importat l'oximetria de {{count}} nit(s).",
+  "error": "No s'ha pogut llegir el fitxer: {{message}}",
+  "tooLarge": "El fitxer té més de 50 MB.",
+  "remove": "Elimina l'oximetria d'aquesta nit",
+  "spo2": "SpO₂",
+  "pulse": "Pols",
+  "spo2Short": "SpO₂",
+  "pulseShort": "Pols",
+  "spo2Chart": "Saturació d'oxigen (%)",
+  "pulseChart": "Freqüència del pols (/min)",
+  "mean": "SpO₂ mitjana",
+  "min": "SpO₂ mínima",
+  "t90": "Temps per sota del 90 %",
+  "odi3": "Desaturacions ≥ 3 %",
+  "odi4": "Desaturacions ≥ 4 %",
+  "pulseRange": "Pols",
+  "source": "De {{source}}",
+  "note": "Registrat pel teu propi oxímetre, no per la CPAP. Els rellotges es comparen tal com estan escrits; fes servir la correcció del rellotge en importar si difereixen.",
+  "perHour": "/h",
+  "hours": "{{hours}} h de dades vàlides",
+  "status": "Estat"
  }
 }

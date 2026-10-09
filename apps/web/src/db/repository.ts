@@ -1,5 +1,5 @@
-import { groupNights, nightOf, type NightSummary, type Session, type SessionLite, type Waveform } from '@opencpap/core';
-import { db as defaultDb, type EquipmentRow, type JournalRow, type OpenCpapDb, type SessionRow } from './db';
+import { ANALYSIS_VERSION, analyzeSession, groupNights, nightOf, oximetryStats, splitByNight, type NightSummary, type OximetryRecording, type OximetryStats, type Session, type SessionLite, type Waveform } from '@opencpap/core';
+import { db as defaultDb, type EquipmentRow, type JournalRow, type OpenCpapDb, type OximetryRow, type OximetrySamplesRow, type SessionRow } from './db';
 
 export const deviceIdOf = (s: Pick<Session, 'device'>) => `${s.device.manufacturer}:${s.device.serial}`;
 export const sessionKey = (s: Pick<Session, 'device' | 'id'>) => `${deviceIdOf(s)}/${s.id}`;
@@ -35,7 +35,8 @@ export class Repository {
     const rows = await this.listSessions();
     const withWf = await this.sessionKeysWithWaveforms();
     const ids = new Set(rows.filter((r) => withWf.has(r.key)).map((r) => r.session.id));
-    return groupNights(rows.map((r) => r.session), ids);
+    const oxi = new Map((await this.db.oximetry.toArray()).map((o) => [o.date, o.stats]));
+    return groupNights(rows.map((r) => r.session), ids, oxi);
   }
 
   /** Sessions of a night, with their waveforms. */
@@ -48,6 +49,24 @@ export class Repository {
       waveforms: wf.map((w) => w.waveform).sort((a, b) => a.start - b.start),
       keys,
     };
+  }
+
+  /**
+   * Computes (or recomputes) the breath analysis of stored sessions that have flow data: those without an analysis,
+   * with an older algorithm version, or all of them when `force` is set. Returns how many sessions were updated.
+   */
+  async backfillAnalysis(opts: { force?: boolean; onProgress?: (done: number, total: number) => void } = {}): Promise<number> {
+    const withFlow = await this.sessionKeysWithWaveforms();
+    const todo = (await this.db.sessions.toArray()).filter((r) => withFlow.has(r.key) && (opts.force || !r.session.analysis || r.session.analysis.version < ANALYSIS_VERSION));
+    let done = 0;
+    for (const row of todo) {
+      const wf = (await this.db.waveforms.where('sessionKey').equals(row.key).toArray()).map((w) => w.waveform);
+      const analysis = analyzeSession(wf);
+      await this.db.sessions.update(row.key, { session: { ...row.session, analysis } });
+      done++; // not inside the optional call: its arguments are skipped when there is no callback
+      opts.onProgress?.(done, todo.length);
+    }
+    return done;
   }
 
   async counts() {
@@ -74,11 +93,13 @@ export class Repository {
 
   /** Deletes everything stored in this browser: therapy data, journal and equipment. */
   async clearAll(): Promise<void> {
-    await this.db.transaction('rw', this.db.sessions, this.db.waveforms, this.db.journal, this.db.equipment, async () => {
+    await this.db.transaction('rw', [this.db.sessions, this.db.waveforms, this.db.journal, this.db.equipment, this.db.oximetry, this.db.oximetrySamples], async () => {
       await this.db.sessions.clear();
       await this.db.waveforms.clear();
       await this.db.journal.clear();
       await this.db.equipment.clear();
+      await this.db.oximetry.clear();
+      await this.db.oximetrySamples.clear();
     });
   }
 
@@ -101,6 +122,35 @@ export class Repository {
 
   async deleteJournal(date: string): Promise<void> {
     await this.db.journal.delete(date);
+  }
+
+  /* ---- oximetry ---- */
+
+  /**
+   * Stores a recording, split into nights. A night that already has oximetry is replaced. Returns the nights written
+   * with their statistics.
+   */
+  async saveOximetry(recording: OximetryRecording, meta: { source: string; offsetMin: number }): Promise<{ date: string; stats: OximetryStats }[]> {
+    const out: { date: string; stats: OximetryStats }[] = [];
+    for (const [date, part] of splitByNight(recording)) {
+      if (part.times.length < 60) continue; // a few stray samples after waking are not a night
+      const stats = oximetryStats(part);
+      await this.db.transaction('rw', this.db.oximetry, this.db.oximetrySamples, async () => {
+        await this.db.oximetry.put({ date, source: meta.source, start: part.times[0]!, end: part.times.at(-1)!, offsetMin: meta.offsetMin, stats, importedAt: Date.now() });
+        await this.db.oximetrySamples.put({ date, times: part.times, spo2: part.spo2, pulse: part.pulse });
+      });
+      out.push({ date, stats });
+    }
+    return out;
+  }
+
+  async oximetry(date: string): Promise<{ row: OximetryRow; samples: OximetrySamplesRow } | undefined> {
+    const [row, samples] = await Promise.all([this.db.oximetry.get(date), this.db.oximetrySamples.get(date)]);
+    return row && samples ? { row, samples } : undefined;
+  }
+
+  async deleteOximetry(date: string): Promise<void> {
+    await this.db.transaction('rw', this.db.oximetry, this.db.oximetrySamples, async () => { await this.db.oximetry.delete(date); await this.db.oximetrySamples.delete(date); });
   }
 
   /* ---- equipment ---- */

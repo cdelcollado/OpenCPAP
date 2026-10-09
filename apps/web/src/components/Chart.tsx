@@ -5,7 +5,7 @@ import 'uplot/dist/uPlot.min.css';
 /** Colours read from the design tokens at render time (canvas cannot follow CSS variables by itself). */
 export interface ChartColors {
   grid: string; axis: string; text: string; muted: string; band: string; surface: string; surface2: string;
-  usage: string; ahi: string; leak: string; pressure: string; flow: string; snore: string;
+  usage: string; ahi: string; leak: string; pressure: string; flow: string; snore: string; flat: string; rate: string; spo2: string; pulse: string;
   /** categorical series, fixed order: blue, orange, aqua, yellow, magenta, green, violet, red */
   series: string[];
 }
@@ -28,7 +28,7 @@ export function readColors(): ChartColors {
   const g = (n: string) => css.getPropertyValue(n).trim();
   return {
     grid: g('--chart-grid'), axis: g('--chart-axis'), text: g('--chart-text'), muted: g('--chart-muted'), band: g('--chart-band'), surface: g('--surface'), surface2: g('--surface-2'),
-    usage: g('--m-usage'), ahi: g('--m-ahi'), leak: g('--m-leak'), pressure: g('--m-pressure'), flow: g('--m-flow'), snore: g('--m-snore'),
+    usage: g('--m-usage'), ahi: g('--m-ahi'), leak: g('--m-leak'), pressure: g('--m-pressure'), flow: g('--m-flow'), snore: g('--m-snore'), flat: g('--m-flat'), rate: g('--m-rate'), spo2: g('--m-spo2'), pulse: g('--m-pulse'),
     series: ['blue', 'orange', 'aqua', 'yellow', 'magenta', 'green', 'violet', 'red'].map((n) => g(`--s-${n}`)),
   };
 }
@@ -73,6 +73,8 @@ export function Chart({ options, data, height = 220, ariaLabel, domain, range, o
   const dataRef = useRef(data);
   dataRef.current = data;
   const fullRef = useRef<XRange | null>(null);
+  const rangeRef = useRef<XRange | null | undefined>(range);
+  rangeRef.current = range;
   const theme = useThemeVersion();
 
   const dataExtent = useMemo<XRange | null>(() => {
@@ -101,6 +103,10 @@ export function Chart({ options, data, height = 220, ariaLabel, domain, range, o
             if (min == null || max == null) return;
             const f = fullRef.current;
             const isFull = !f || (Math.abs(min - f[0]) < 1e-6 && Math.abs(max - f[1]) < 1e-6);
+            // do not echo back a range the parent already holds: with several linked charts that can ping-pong forever
+            const cur = rangeRef.current;
+            const same = isFull ? cur == null : cur != null && Math.abs(cur[0] - min) < 1e-3 && Math.abs(cur[1] - max) < 1e-3;
+            if (same) return;
             cb.current.onRangeChange?.(isFull ? null : [min, max]);
           },
         ],

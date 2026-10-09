@@ -16,7 +16,7 @@ The report is a normal HTML page with a print stylesheet; the user chooses **Pri
 
 ## Contents, in order
 1. Title, period, patient name (if given), device model(s) (no serial number), generation date.
-2. **Summary**: average use, nights with ≥ 4 h (count and %), AHI (all events / all hours), median nightly AHI, median 95 % leak, configured pressure; with the previous period alongside when enabled.
+2. **Summary**: average use, nights with ≥ 4 h (count and %), AHI (all events / all hours), median nightly AHI, median 95 % leak, configured pressure; with the previous period alongside when enabled. When the period has them, one line each for **oximetry** (nights with data, average and lowest SpO₂, median time under 90 %, mean desaturations ≥ 3 % per hour) and **breathing** (nights with flow, median breath rate, median flat-topped share, median variation of breath length; labelled experimental).
 3. **Trends**: three static SVG figures — hours of use (reference at 4 h), AHI (reference at 5/h), 95 % leak — with dashed markers on nights when a therapy setting changed.
 4. **Events**: counts and rates per hour of use by type, previous period alongside.
 5. **Therapy settings** of the latest night and **setting changes** within the period (before → after).

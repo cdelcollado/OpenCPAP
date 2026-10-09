@@ -1,4 +1,5 @@
 import type { EventType, Session, SessionSettings, TimeSeries } from './model';
+import type { OximetryStats } from './oximetry';
 import { usageSeconds } from './stats';
 
 /** A session without its bulky waveforms: what the dashboard and the database list work with. */
@@ -83,6 +84,25 @@ export function configuredPressure(settings: SessionLite['settings']): { min: nu
   return fixed === undefined ? undefined : { min: fixed, max: fixed };
 }
 
+/** Night-level view of the sessions' breath analyses, weighted by the number of breaths (periodicity by seconds). */
+export interface NightBreathing { breaths: number; seconds: number; rate?: number; periodCv?: number; volumeCv?: number; shape?: number; flatShare?: number; ieRatio?: number; periodicityShare: number }
+
+function nightBreathing(sessions: SessionLite[]): NightBreathing | undefined {
+  const a = sessions.map((s) => s.analysis?.breathing).filter((x): x is NonNullable<typeof x> => !!x && x.breaths > 0);
+  if (a.length === 0) return undefined;
+  const breaths = a.reduce((t, x) => t + x.breaths, 0), seconds = a.reduce((t, x) => t + x.seconds, 0);
+  const wmean = (pick: (x: (typeof a)[number]) => number | undefined) => {
+    let sum = 0, w = 0;
+    for (const x of a) { const v = pick(x); if (v !== undefined && !Number.isNaN(v)) { sum += v * x.breaths; w += x.breaths; } }
+    return w ? sum / w : undefined;
+  };
+  return {
+    breaths, seconds, rate: wmean((x) => x.rate), periodCv: wmean((x) => x.periodCv), volumeCv: wmean((x) => x.volumeCv),
+    shape: wmean((x) => x.shape), flatShare: wmean((x) => x.flatShare), ieRatio: wmean((x) => x.ieRatio),
+    periodicityShare: a.reduce((t, x) => t + x.periodicityShare * x.seconds, 0) / seconds,
+  };
+}
+
 const seriesOf = (s: SessionLite, channel: TimeSeries['channel']) => s.statistics.find((t) => t.channel === channel);
 
 export interface NightSummary {
@@ -108,6 +128,10 @@ export interface NightSummary {
   mode?: string;
   /** therapy settings of the first session of the night (used to detect setting changes) */
   settings: SessionSettings;
+  /** experimental breath analysis over all sessions of the night that have flow data */
+  breathing?: NightBreathing;
+  /** statistics of a separate pulse-oximeter recording of this night, when one was imported */
+  oximetry?: OximetryStats;
   hasWaveforms: boolean;
 }
 
@@ -117,7 +141,7 @@ function mergeCounts(sessions: SessionLite[]) {
   return counts;
 }
 
-export function summarizeNight(date: string, sessions: SessionLite[], opts: { hasWaveforms?: boolean } = {}): NightSummary {
+export function summarizeNight(date: string, sessions: SessionLite[], opts: { hasWaveforms?: boolean; oximetry?: OximetryStats } = {}): NightSummary {
   const usage = sessions.reduce((a, s) => a + usageSeconds(s), 0) / 3600;
   const counts = mergeCounts(sessions);
   const apneas = (counts.obstructive ?? 0) + (counts.central ?? 0) + (counts.hypopnea ?? 0) + (counts['unclassified-apnea'] ?? 0);
@@ -157,12 +181,14 @@ export function summarizeNight(date: string, sessions: SessionLite[], opts: { ha
     snoreIndex: usage > 0 && snores > 0 ? snores / usage : undefined,
     mode: typeof sorted[0]?.settings.mode === 'string' ? sorted[0].settings.mode : undefined,
     settings: sorted[0]?.settings ?? {},
+    breathing: nightBreathing(sessions),
+    oximetry: opts.oximetry,
     hasWaveforms: opts.hasWaveforms ?? false,
   };
 }
 
 /** Groups sessions into nights (ascending by date). */
-export function groupNights(sessions: SessionLite[], waveformSessionIds: ReadonlySet<number> = new Set()): NightSummary[] {
+export function groupNights(sessions: SessionLite[], waveformSessionIds: ReadonlySet<number> = new Set(), oximetry: ReadonlyMap<string, OximetryStats> = new Map()): NightSummary[] {
   const by = new Map<string, SessionLite[]>();
   for (const s of sessions) {
     const k = nightOf(s.start);
@@ -170,7 +196,7 @@ export function groupNights(sessions: SessionLite[], waveformSessionIds: Readonl
   }
   return [...by]
     .sort(([a], [b]) => (a < b ? -1 : 1))
-    .map(([date, list]) => summarizeNight(date, list, { hasWaveforms: list.some((s) => waveformSessionIds.has(s.id)) }));
+    .map(([date, list]) => summarizeNight(date, list, { hasWaveforms: list.some((s) => waveformSessionIds.has(s.id)), oximetry: oximetry.get(date) }));
 }
 
 export interface Compliance {

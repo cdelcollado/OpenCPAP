@@ -7,7 +7,7 @@ export interface Finding { id: string; level: FindingLevel; params: Record<strin
 
 export interface FindingContext {
   /** averages of the nights before this one (see `baseline` in the app) */
-  baseline: { usage?: number; ahi?: number; leak?: number };
+  baseline: { usage?: number; ahi?: number; leak?: number; /** usual share of flat-topped breaths, 0..1 */ flat?: number };
   /** settings changes (any dates); only one on this night is reported */
   changes?: ChangeEvent[];
   sessions?: Pick<SessionLite, 'slices' | 'events'>[];
@@ -54,6 +54,22 @@ export function nightFindings(n: NightSummary, ctx: FindingContext): Finding[] {
   if (pbSeconds >= 300) out.push({ id: 'periodic', level: 'info', params: { minutes: Math.round(pbSeconds / 60) } });
 
   if (n.reraIndex !== undefined && n.reraIndex >= 5) out.push({ id: 'reraHigh', level: 'info', params: { index: round(n.reraIndex, 1) } });
+
+  const br = n.breathing;
+  if (br && br.seconds >= 1800 && br.flatShare !== undefined) {
+    const usual = ctx.baseline.flat;
+    if (usual !== undefined && br.flatShare >= Math.max(0.2, usual * 1.5) && br.flatShare - usual >= 0.05) {
+      out.push({ id: 'flatHigh', level: 'info', params: { share: Math.round(br.flatShare * 100), usual: Math.round(usual * 100) } });
+    }
+  }
+  if (br && br.seconds >= 1800 && br.periodicityShare >= 0.15) out.push({ id: 'periodicPattern', level: 'info', params: { percent: Math.round(br.periodicityShare * 100) } });
+
+  const ox = n.oximetry;
+  if (ox && ox.seconds >= 3600) {
+    if (ox.odi3 !== undefined && ox.odi3 >= 5) out.push({ id: 'desatFrequent', level: 'info', params: { odi: Math.round(ox.odi3 * 10) / 10 } });
+    if (ox.t90 !== undefined && ox.t90 >= 5) out.push({ id: 'lowOxygenTime', level: 'info', params: { percent: Math.round(ox.t90 * 10) / 10 } });
+    if (!(ox.odi3 !== undefined && ox.odi3 >= 5) && !(ox.t90 !== undefined && ox.t90 >= 5)) out.push({ id: 'oxygenSteady', level: 'good', params: { min: Math.round(ox.spo2Min ?? 0) } });
+  }
 
   const change = ctx.changes?.find((c) => c.date === n.date);
   if (change) out.push({ id: 'settingsChanged', level: 'info', params: { count: change.changes.length } });
