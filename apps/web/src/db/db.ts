@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie';
-import type { EquipmentItem, SessionLite, Waveform } from '@opencpap/core';
+import type { EquipmentItem, OximetryStats, SessionLite, Waveform } from '@opencpap/core';
 
 /** One imported session without its waveforms. `key` makes re-importing the same card idempotent. */
 export interface SessionRow {
@@ -29,11 +29,27 @@ export interface JournalRow {
 
 export interface EquipmentRow extends EquipmentItem { updatedAt: number }
 
+/** Light metadata of a pulse-oximeter recording of one night (the samples live in `oximetrySamples`). */
+export interface OximetryRow {
+  date: string; // the night
+  source: string;
+  start: number;
+  end: number;
+  /** minutes added to the oximeter's clock at import to line it up with the CPAP */
+  offsetMin: number;
+  stats: OximetryStats;
+  importedAt: number;
+}
+
+export interface OximetrySamplesRow { date: string; times: Float64Array; spo2: Float32Array; pulse: Float32Array }
+
 export class OpenCpapDb extends Dexie {
   sessions!: EntityTable<SessionRow, 'key'>;
   waveforms!: EntityTable<WaveformRow, 'key'>;
   journal!: EntityTable<JournalRow, 'date'>;
   equipment!: EntityTable<EquipmentRow, 'id'>;
+  oximetry!: EntityTable<OximetryRow, 'date'>;
+  oximetrySamples!: EntityTable<OximetrySamplesRow, 'date'>;
 
   constructor(name = 'opencpap') {
     super(name);
@@ -48,6 +64,15 @@ export class OpenCpapDb extends Dexie {
       waveforms: 'key, sessionKey',
       journal: 'date',
       equipment: 'id, kind, startDate',
+    });
+    // v3 (Phase 4): pulse-oximeter recordings, split into a light table (stats) and a heavy one (samples)
+    this.version(3).stores({
+      sessions: 'key, night, start, deviceId',
+      waveforms: 'key, sessionKey',
+      journal: 'date',
+      equipment: 'id, kind, startDate',
+      oximetry: 'date',
+      oximetrySamples: 'date',
     });
   }
 }

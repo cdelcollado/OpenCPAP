@@ -71,3 +71,26 @@ Deterministic rules, no machine-learning model, neutral wording, never advice on
 | settings changed | a setting differs from the previous night | info |
 
 Thresholds are reading aids chosen to avoid noise on small differences; they are constants in `findings.ts` and covered by tests.
+
+## Phase 4 definitions
+
+### Rolling average
+`rollingMean(values, 7, 3)`: the mean of the last 7 nights **that have a value** (a missing night does not count as zero), shown only once 3 values exist. It is computed over *all* stored nights and then cut to the visible range, so the line is already warmed up at the left edge of a short range. Used on the usage and AHI trend charts (checkbox *7-night average*, on by default).
+
+### Distribution
+`histogram(values, edges)`: values below the first edge fall in the first bin and values at or above the last edge in the last bin, so nothing is dropped. Bins: hours of use 0–2, 2–4, 4–5, 5–6, 6–7, 7–8, 8–9, 9+; AHI 0–0.5, 0.5–1, 1–2, 2–3, 3–5, 5–10, 10–15, 15+. Each bar has a title with its range and count and the figure has an accessible name listing them.
+
+### Alerts ("Worth a look")
+`detectAnomalies(nights)` looks only at the most recent nights, relative to the user's own history and anchored on the latest night (not today's clock). It needs at least 10 nights.
+
+| Alert | Condition |
+|---|---|
+| `missedNights` | 3 or more of the last 7 calendar nights have no data **and** the 30 nights before them have at least 14 nights of data (use was regular) |
+| `shortRun` | the last 3 nights with data were all under 4 h |
+| `leakRise` | median 95 % leak of the last 3 nights ≥ 1.4× the median of the previous 30 nights **and** ≥ 8 L/min above it (needs ≥ 10 previous nights) |
+| `ahiRise` | mean AHI of the last 7 nights (nights ≥ 2 h only) ≥ 2× the mean of the previous 30 **and** ≥ 2 higher |
+
+They are prompts to look at the data, worded neutrally with a note that they are not a diagnosis. They are in-app only (no notifications). Thresholds are constants in `anomalies.ts`, covered by tests that check both the trigger and the "almost but not quite" cases.
+
+### Breathing and oxygen
+See [breathing-analysis.md](breathing-analysis.md) and [oximetry.md](oximetry.md). The plain-language summary gained three rules: `flatHigh` (flat-topped share ≥ 1.5× the usual and ≥ 20 % and ≥ 5 points above it, on ≥ 30 min of flow), `periodicPattern` (≥ 15 % of the night), and oximeter rules (`desatFrequent` ODI3 ≥ 5/h, `lowOxygenTime` T90 ≥ 5 %, otherwise `oxygenSteady`; only with ≥ 1 h of valid data).

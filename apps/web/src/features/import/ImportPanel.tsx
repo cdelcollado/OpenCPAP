@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { CardSource } from '@opencpap/browser';
 import { useData } from '../../state';
 import { href } from '../../router';
+import { OximetryImport } from '../oximetry/OximetryImport';
 import { filesFromDrop, importCardToDb, loadDemoData, removeDemoData } from './importService';
 
 type Status =
@@ -120,6 +121,8 @@ export function ImportPanel() {
           <div className="banner warn" role="alert">{status.unsupported ? t('import.errorUnsupported') : t('import.errorGeneric', { message: status.message })}</div>
         )}
       </div>
+
+      <OximetryImport />
 
       <div className="card stack">
         <h2 style={{ margin: 0 }}>{t('import.demoTitle')}</h2>

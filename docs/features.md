@@ -66,3 +66,9 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 26 | Period comparator (before/after a change, this vs previous period) | [web-app.md](web-app.md) |
 | 27 | Mask/consumables tracking with reminders and leak-versus-age reading | [analytics.md](analytics.md) |
 | 33 | Backup and restore (compressed, validated), persistent-storage request | [backup-format.md](backup-format.md) |
+| 14 | Flat-topped-breath share (flow-limitation-like), validated against device events | [breathing-analysis.md](breathing-analysis.md) |
+| 15 | Breath rate, breathing regularity, periodic-pattern measure | [breathing-analysis.md](breathing-analysis.md) |
+| 16 | Oximeter CSV import aligned with therapy (ODI, T90, SpO₂/pulse tracks) | [oximetry.md](oximetry.md) |
+| 18 | CSV (nights, events, statistics, oximetry) and EDF (flow) export | [exports.md](exports.md) |
+| 28 | "Worth a look" alerts (missed nights, short runs, leak and AHI rises) | [analytics.md](analytics.md#alerts-worth-a-look) |
+| 9 | Rolling averages and distributions on the trends | [analytics.md](analytics.md) |

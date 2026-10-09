@@ -11,27 +11,31 @@ import { Hero } from '../dashboard/Hero';
 import { baseline } from '../dashboard/metrics';
 import { href } from '../../router';
 import { useData } from '../../state';
+import { BreathingCard } from './BreathingCard';
+import { OximetryCard } from '../oximetry/OximetryCard';
 import { Findings } from './Findings';
 import { JournalCard } from './JournalCard';
+import { download, eventsCsv, flowEdf, oximetryCsv, statisticsCsv } from '../../exports';
 import { buildNightData, readoutAt, type NightChartData } from './nightData';
 import { settingsRows } from './settingsRows';
 import { EVENT_COLOR, EVENT_ORDER, Timeline } from './Timeline';
 
 const SYNC = 'night';
 
-function useNightData(date: string) {
-  const [state, setState] = useState<{ loading: boolean; date: string; sessions: SessionLite[]; waveforms: Waveform[] }>({ loading: true, date, sessions: [], waveforms: [] });
+/** Loads a night; `oximetryKey` changes when its oximeter recording is imported or removed so the curves follow. */
+function useNightData(date: string, oximetryKey: number) {
+  const [state, setState] = useState<{ loading: boolean; date: string; sessions: SessionLite[]; waveforms: Waveform[]; oximetry?: { times: Float64Array; spo2: Float32Array; pulse: Float32Array; source: string } }>({ loading: true, date, sessions: [], waveforms: [] });
   useEffect(() => {
     let cancelled = false;
     setState((s) => ({ ...s, loading: true }));
-    void repository.night(date).then((r) => { if (!cancelled) setState({ loading: false, date, sessions: r.sessions, waveforms: r.waveforms }); });
+    void Promise.all([repository.night(date), repository.oximetry(date)]).then(([r, ox]) => { if (!cancelled) setState({ loading: false, date, sessions: r.sessions, waveforms: r.waveforms, oximetry: ox ? { ...ox.samples, source: ox.row.source } : undefined }); });
     return () => { cancelled = true; };
-  }, [date]);
-  const chart = useMemo(() => buildNightData(state.sessions, state.waveforms), [state.sessions, state.waveforms]);
+  }, [date, oximetryKey]);
+  const chart = useMemo(() => buildNightData(state.sessions, state.waveforms, state.oximetry), [state.sessions, state.waveforms, state.oximetry]);
   return { ...state, chart };
 }
 
-interface TrackSpec { color: (c: ChartColors) => string; label: string; step?: -1 | 1; bars?: boolean; fill?: boolean; yMin?: number; axisValues?: (v: number) => string }
+interface TrackSpec { color: (c: ChartColors) => string; label: string; step?: -1 | 1; bars?: boolean; fill?: boolean; points?: boolean; yMin?: number; axisValues?: (v: number) => string }
 
 /** Options for one aligned track: same plot-area insets as the HTML timeline, time labels only on the last track. */
 function trackOptions(c: ChartColors, lang: string, maskOff: [number, number][], spec: TrackSpec, showTime: boolean): Omit<uPlot.Options, 'width' | 'height'> {
@@ -46,7 +50,7 @@ function trackOptions(c: ChartColors, lang: string, maskOff: [number, number][],
       { ...axisStyle(c), size: readAxisWidth(), values: (_u, s) => s.map((v) => (spec.axisValues ? spec.axisValues(v) : String(Math.round(v * 10) / 10))) },
     ],
     series: [{}, {
-      label: spec.label, stroke: color, width: spec.bars ? 0 : 1.6, spanGaps: false, points: { show: false },
+      label: spec.label, stroke: color, width: spec.bars ? 0 : 1.6, spanGaps: false, points: spec.points ? { show: true, size: 5, fill: color, stroke: c.surface, width: 1 } : { show: false },
       fill: spec.bars ? color : spec.fill ? `${color}22` : undefined,
       paths: spec.step ? uPlot.paths.stepped!({ align: spec.step }) : spec.bars ? uPlot.paths.bars!({ size: [1, 8] }) : undefined,
     }],
@@ -71,7 +75,7 @@ export function NightView({ date }: { date: string }) {
   const lang = i18n.language;
   const { nights, changes } = useData();
   const summary = nights.find((n) => n.date === date);
-  const { loading, chart, sessions, date: loadedDate } = useNightData(date);
+  const { loading, chart, sessions, waveforms, oximetry, date: loadedDate } = useNightData(date, summary?.oximetry?.seconds ?? 0);
   const [range, setRange] = useState<XRange | null>(null);
   const [cursor, setCursor] = useState<number | null>(null);
   const [table, setTable] = useState(false);
@@ -101,10 +105,18 @@ export function NightView({ date }: { date: string }) {
     leak: { color: (c: ChartColors) => c.leak, label: t('night.leakChart'), step: -1, fill: true, yMin: 0 } as TrackSpec,
     pressure: { color: (c: ChartColors) => c.pressure, label: t('night.pressureChart'), step: 1, yMin: 0 } as TrackSpec,
     snore: { color: (c: ChartColors) => c.snore, label: t('night.snoreChart'), bars: true, yMin: 0 } as TrackSpec,
+    flat: { color: (c: ChartColors) => c.flat, label: t('night.flatChart'), yMin: 0, points: true } as TrackSpec,
+    rate: { color: (c: ChartColors) => c.rate, label: t('night.rateChart'), yMin: 0, points: true } as TrackSpec,
+    spo2: { color: (c: ChartColors) => c.spo2, label: t('oximetry.spo2Chart') } as TrackSpec,
+    pulse: { color: (c: ChartColors) => c.pulse, label: t('oximetry.pulseChart') } as TrackSpec,
   }), [t]);
-  const tracks = useMemo(() => (['flow', 'leak', 'pressure', 'snore'] as const).filter((k) => chart?.[k]), [chart]);
+  const ORDER = ['flow', 'flat', 'rate', 'leak', 'pressure', 'snore', 'spo2', 'pulse'] as const;
+  type TrackKey = (typeof ORDER)[number];
+  const tracks = useMemo(() => ORDER.filter((k) => chart?.[k]), [chart]);
+  // chart data must keep its identity between renders: a new array makes the chart reset its scale and report it
+  const trackData = useMemo(() => Object.fromEntries(tracks.map((k) => [k, [chart![k]!.x, chart![k]!.y] as unknown as uPlot.AlignedData])) as Record<TrackKey, uPlot.AlignedData>, [chart, tracks]);
   const lastTrack = tracks.at(-1);
-  const opts = useMemo(() => Object.fromEntries((['flow', 'leak', 'pressure', 'snore'] as const).map((k) => [k, (c: ChartColors) => trackOptions(c, lang, mo, specs[k], k === lastTrack)])) as Record<'flow' | 'leak' | 'pressure' | 'snore', (c: ChartColors) => Omit<uPlot.Options, 'width' | 'height'>>, [lang, mo, specs, lastTrack]);
+  const opts = useMemo(() => Object.fromEntries(ORDER.map((k) => [k, (c: ChartColors) => trackOptions(c, lang, mo, specs[k], k === lastTrack)])) as Record<TrackKey, (c: ChartColors) => Omit<uPlot.Options, 'width' | 'height'>>, [lang, mo, specs, lastTrack]);
 
   const unmounted = loading && loadedDate !== date;
   if (unmounted && !chart) return <p>{t('common.loading')}</p>;
@@ -146,6 +158,8 @@ export function NightView({ date }: { date: string }) {
         <Findings findings={findings} />
         <JournalCard key={date} date={date} />
       </div>
+      <div style={{ marginTop: '0.9rem' }}><BreathingCard night={summary} base={base} /></div>
+      {summary.oximetry && oximetry && <div style={{ marginTop: '0.9rem' }}><OximetryCard date={date} stats={summary.oximetry} source={oximetry.source} /></div>}
 
       <section className="card detail" style={{ marginTop: '0.9rem' }} aria-labelledby="detail-title">
         <div className="detail-head">
@@ -160,6 +174,10 @@ export function NightView({ date }: { date: string }) {
                 {chart.leak && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-leak)' }} />{t('night.leakShort')} <b className="num">{fmt(read.leak)}</b></span>}
                 {chart.pressure && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-pressure)' }} />{t('night.pressureShort')} <b className="num">{fmt(read.pressure)}</b></span>}
                 {chart.snore && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-snore)' }} />{t('night.snoreShort')} <b className="num">{fmt(read.snore, 0)}</b></span>}
+                {chart.flat && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-flat)' }} />{t('night.flatShort')} <b className="num">{fmt(read.flat, 0)} %</b></span>}
+                {chart.rate && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-rate)' }} />{t('night.rateShort')} <b className="num">{fmt(read.rate, 1)}</b></span>}
+                {chart.spo2 && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-spo2)' }} />{t('oximetry.spo2Short')} <b className="num">{fmt(read.spo2, 0)} %</b></span>}
+                {chart.pulse && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-pulse)' }} />{t('oximetry.pulseShort')} <b className="num">{fmt(read.pulse, 0)}</b></span>}
               </>
             )}
           </div>
@@ -174,13 +192,12 @@ export function NightView({ date }: { date: string }) {
 
         {!chart.flow && <div className="track"><div className="track-label"><strong>{t('night.flowChart')}</strong></div><p className="muted track-body" style={{ padding: '0.8rem 1rem' }}>{t('night.noWaveform')}</p></div>}
         {tracks.map((k) => {
-          const s = chart[k]!;
-          const data = [s.x, s.y] as unknown as uPlot.AlignedData;
-          const unit = k === 'flow' ? t('metric.unitLeak') : k === 'leak' ? t('metric.unitLeak') : k === 'pressure' ? t('metric.unitPressure') : t('night.perInterval');
-          const explain = k === 'flow' ? t('explain.flow') : k === 'leak' ? t('explain.leak') : k === 'pressure' ? t('explain.pressure') : undefined;
+          const data = trackData[k];
+          const unit = { flow: t('metric.unitLeak'), leak: t('metric.unitLeak'), pressure: t('metric.unitPressure'), snore: t('night.perInterval'), flat: `% · ${t('night.perWindow')}`, rate: `${t('metric.unitPerMin')} · ${t('night.perWindow')}`, spo2: '%', pulse: t('metric.unitPerMin') }[k];
+          const explain = { flow: t('explain.flow'), leak: t('explain.leak'), pressure: t('explain.pressure'), snore: undefined, flat: t('explain.flat'), rate: t('explain.rate'), spo2: t('explain.spo2'), pulse: undefined }[k];
           return (
             <div className="track" key={k} data-track={k}>
-              <div className="track-label"><strong>{t(`night.${k}Short`)} {explain && <InfoTip text={explain} />}</strong><span className="u">{unit}</span></div>
+              <div className="track-label"><strong>{t(k === 'spo2' || k === 'pulse' ? `oximetry.${k}Short` : `night.${k}Short`)} {explain && <InfoTip text={explain} />}</strong><span className="u">{unit}</span></div>
               <div className="track-body">
                 <Chart options={opts[k]} data={data} height={k === 'flow' ? 150 : 104} ariaLabel={specs[k].label} domain={chart.extent} range={range} onRangeChange={setRange} syncKey={SYNC} onCursor={onCursor} />
               </div>
@@ -217,6 +234,18 @@ export function NightView({ date }: { date: string }) {
             </table>
           </div>
         )}
+      </section>
+
+      <div className="section-title"><h2>{t('export.title')}</h2></div>
+      <section className="card stack" aria-labelledby="export-title">
+        <h3 id="export-title" className="sr-only">{t('export.title')}</h3>
+        <div className="btn-row">
+          <button className="btn secondary" type="button" onClick={() => download(eventsCsv(sessions), `opencpap-events-${date}.csv`, 'text/csv;charset=utf-8')}>{t('export.events')}</button>
+          <button className="btn secondary" type="button" onClick={() => download(statisticsCsv(sessions), `opencpap-statistics-${date}.csv`, 'text/csv;charset=utf-8')}>{t('export.stats')}</button>
+          {oximetry && <button className="btn secondary" type="button" onClick={() => download(oximetryCsv(oximetry), `opencpap-oximetry-${date}.csv`, 'text/csv;charset=utf-8')}>{t('export.oximetry')}</button>}
+          {chart.flow && <button className="btn secondary" type="button" onClick={() => { const edf = flowEdf(waveforms); if (edf) download(edf as BlobPart, `opencpap-flow-${date}.edf`, 'application/octet-stream'); }}>{t('export.flow')}</button>}
+        </div>
+        <p className="muted" style={{ fontSize: '0.85rem' }}>{t('export.hint')}</p>
       </section>
 
       {rows.length > 0 && (

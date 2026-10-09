@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { compliance, configuredPressure, groupNights, intervalSeconds, nightOf, percentile, summarizeNight, weightedMean, weightedPercentile, type SessionLite } from './nights';
-import { generateDemoSessions, rng } from './demo';
+import { generateDemoOximetry, generateDemoSessions, rng } from './demo';
+import { oximetryStats } from './oximetry';
 
 const iso = (s: string) => Date.parse(`${s}Z`);
 const H = 3600_000;
@@ -132,7 +133,10 @@ describe('generateDemoSessions', () => {
       expect(s.events.every((e) => e.start >= s.start && e.start <= s.end)).toBe(true);
       expect(s.device.manufacturer).toBe('Demo');
     }
-    expect(a.filter((s) => s.waveforms.length).length).toBe(3);
+    // the last 3 calendar nights carry flow (a night can be skipped, so count by id)
+    expect(a.filter((s) => s.waveforms.length).map((s) => s.id).every((id) => id > 17)).toBe(true);
+    expect(a.filter((s) => s.waveforms.length).length).toBeGreaterThanOrEqual(2);
+    for (const s of a.filter((x) => x.waveforms.length)) expect(s.analysis?.breathing.breaths).toBeGreaterThan(500);
     const nights = groupNights(a);
     expect(nights.every((n) => n.usageHours > 0)).toBe(true);
   });
@@ -145,6 +149,17 @@ describe('generateDemoSessions', () => {
     const early = nightsList.slice(0, 30).map((n) => n.leak!.p95), late = nightsList.slice(34, 36).map((n) => n.leak!.p95);
     expect(Math.max(...early.slice(-5))).toBeGreaterThan(Math.min(...early.slice(0, 5))); // rising before the replacement
     expect(late.length).toBe(2);
+  });
+  it('makes a believable oximetry recording whose dips follow the events', () => {
+    const [s] = generateDemoSessions({ nights: 1, seed: 21, waveformNights: 0 });
+    const rec = generateDemoOximetry(s!);
+    const st = oximetryStats(rec);
+    expect(rec.times.length).toBe(Math.floor((s!.end - s!.start) / 1000));
+    expect(st.spo2Mean).toBeGreaterThan(93);
+    expect(st.spo2Mean).toBeLessThan(97);
+    const ev = s!.events.filter((e) => ['obstructive', 'hypopnea', 'central'].includes(e.type)).length;
+    expect(st.desaturations3).toBeGreaterThan(ev * 0.4);
+    expect(st.desaturations3).toBeLessThanOrEqual(ev);
   });
   it('rng is in [0,1)', () => {
     const r = rng(1);

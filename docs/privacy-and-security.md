@@ -20,6 +20,11 @@ The DreamStation 2 encrypts files with AES-256-GCM, but the key material is deri
 - Backup restore treats the file as untrusted input: validated rows only, size limits, no code evaluation ([backup-format.md](backup-format.md)).
 - Printing is done by the browser; nothing is sent anywhere.
 
+## Phase 4 data
+- **Oximeter files** are read in the browser and stored in IndexedDB like therapy data; they are in backups and removed by *Delete all data*. File names are kept as the "source" label.
+- **Breath analysis** is derived from data already on the device; nothing is uploaded.
+- **Exports** (CSV, EDF) contain health data and are written wherever the browser downloads; they have no notes. The serial number is not included in any export. Treat the files like the card contents.
+
 ## Threat model (browser app)
 - Malicious SD card or ZIP contents: file sizes are capped (`MAX_FILE_BYTES`), ZIP entries are inflated one at a time after checking their declared size, and paths are only used as map keys. Parsing runs in a Web Worker, isolated from the page.
 - Malicious SD card contents: parsers must bounds-check every length field, cap allocations, and never `eval` or interpolate file content into HTML.

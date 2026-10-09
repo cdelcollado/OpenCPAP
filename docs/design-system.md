@@ -27,7 +27,7 @@ Eight fixed hues in a fixed order; the dark column is the same hues re-stepped f
 | `--s-violet` | violet | `#4a3aa7` | `#9085e9` | leak, central apnea |
 | `--s-red` | red | `#e34948` | `#e66767` | snore, large leak |
 
-Measure aliases: `--m-usage` (blue), `--m-ahi` (orange), `--m-leak` (violet), `--m-pressure` (green), `--m-flow` (blue), `--m-snore` (red). Event types are mapped in `features/night/Timeline.tsx` (`EVENT_COLOR`); minor/noisy types (snore, variable breathing) use the muted grey.
+Measure aliases: `--m-usage` (blue), `--m-ahi` (orange), `--m-leak` (violet), `--m-pressure` (green), `--m-flow` (blue), `--m-snore` (red), and for Phase 4 `--m-flat` (magenta), `--m-rate` (aqua), `--m-spo2` (blue) and `--m-pulse` (orange). Eight hues cannot give every measure a unique one: the night tracks reuse blue and orange for oxygen and pulse. They are always separate, labelled tracks with their values in the readout, so colour is never the only cue; the light-mode contrast relief for aqua and magenta (below 3:1 on white) is covered the same way. Event types are mapped in `features/night/Timeline.tsx` (`EVENT_COLOR`); minor/noisy types (snore, variable breathing) use the muted grey.
 
 **Validation.** The palette was run through the six-check validator (lightness band, chroma floor, colour-vision separation of adjacent pairs, normal-vision floor, contrast) against this app's own surfaces (`#ffffff`, `#141e24`): all checks pass in both modes. Light-mode aqua, yellow and magenta fall below 3:1 on white (the validator's "relief required" warning); the app only uses them for thin marks in rows that are labelled and have a table twin (event timeline rows carry their name and count; the event table lists every event). When you change a colour, re-run the validator for both modes.
 
@@ -79,6 +79,9 @@ Six discrete steps are better than a continuous ramp (classes blur past ~7). On 
 | Paired bars | same | A in the muted grey, B in the event's colour, the value printed beside the bar (never over the colour) |
 | Equipment card | `features/equipment/EquipmentPage.tsx` | meter with a target marker at 100 % of the interval, status chip, action buttons |
 | Report SVG charts | `features/report/SvgCharts.tsx` | static SVG for print: thin bars, 2 px line, hairline grid, dashed reference lines and setting-change flags, titles on every mark |
+| Histogram | `components/Histogram.tsx` | inline SVG bars, a title on every bar, an accessible name listing the counts |
+| Breathing card, Oximeter card | `features/night/BreathingCard.tsx`, `features/oximetry/OximetryCard.tsx` | tiles in a four-column grid with explainers and the experimental/own-device notes |
+| Oximetry preview | `features/oximetry/OximetryImport.tsx` | a table of nights with an OK / warning / red chip (icon + text) for how well the recording covers the CPAP night |
 | Change markers | `components/annotations.ts` | dashed vertical line with a small flag on the uPlot trend charts |
 
 The report (`.report`) defines its own light tokens so that it looks the same on screen and in print whatever theme the app is in.
@@ -110,3 +113,5 @@ No decorative animation; `prefers-reduced-motion` disables transitions. While a 
 - **Never build `href` from a function.** Route builders that take parameters (`compare`, `report`) must be called; React silently drops a function-valued `href`.
 - **Mouse tests must scroll targets to the centre**; sticky headers hide elements scrolled to the viewport edge.
 - **A palette is not a contrast guarantee for text on tinted cells**: heatmap steps are tuned for the number inside them (`heatRamp`).
+- **Chart data must keep its identity between renders.** Passing a new `data` array to `Chart` on every render resets its scale and reports a "new" range, which with several linked charts can loop forever (it froze the night view once oximetry tracks were added). Memoise per track, and `Chart` no longer echoes a range the parent already holds.
+- **`opt?.(++counter)` skips the increment when there is no callback.** Increment before the optional call.

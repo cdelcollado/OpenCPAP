@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { equipmentStatus, isMajor, periodStats, type ChangeEvent, type EquipmentItem, type NightSummary, type PeriodStats } from '@opencpap/core';
+import { equipmentStatus, isMajor, percentile, periodStats, type ChangeEvent, type EquipmentItem, type NightSummary, type PeriodStats } from '@opencpap/core';
 import type { JournalRow } from '../../db/db';
 import { formatHours, formatNightDate, formatNumber } from '../../format';
 import { describeChanges, settingLabel, settingValue } from '../changes/format';
@@ -43,6 +43,9 @@ export function ReportDocument({ r }: { r: ReportInput }) {
   const types = EVENT_ORDER.filter((e) => (s.rates[e] ?? 0) > 0 || (p?.rates[e] ?? 0) > 0);
   const totals: Record<string, number> = {};
   for (const n of r.nights) for (const [k, v] of Object.entries(n.counts)) totals[k] = (totals[k] ?? 0) + v;
+  const med = (xs: (number | undefined)[]) => { const v = xs.filter((x): x is number => x !== undefined && !Number.isNaN(x)); return v.length ? percentile(v, 50) : undefined; };
+  const oxi = r.nights.filter((n) => n.oximetry);
+  const br = r.nights.filter((n) => n.breathing);
   const notes = r.options.includeNotes ? r.journal.filter((j) => j.date >= r.from && j.date <= r.to).sort((a, b) => (a.date < b.date ? -1 : 1)) : [];
 
   return (
@@ -72,6 +75,12 @@ export function ReportDocument({ r }: { r: ReportInput }) {
               </tbody>
             </table>
             {r.options.includeCompare && !p && <p className="muted">{t('report.noPrevious')}</p>}
+            {oxi.length > 0 && (
+              <p><b>{t('report.oximetry')}:</b> {t('report.oximetryLine', { count: oxi.length, mean: n1(oxi.reduce((a, n) => a + (n.oximetry!.spo2Mean ?? 0), 0) / oxi.length), min: n1(Math.min(...oxi.map((n) => n.oximetry!.spo2Min ?? 100)), 0), t90: n1(med(oxi.map((n) => n.oximetry!.t90))), odi: n1(oxi.reduce((a, n) => a + (n.oximetry!.odi3 ?? 0), 0) / oxi.length) })}</p>
+            )}
+            {br.length > 0 && (
+              <p><b>{t('report.breathing')}:</b> {t('report.breathingLine', { count: br.length, rate: n1(med(br.map((n) => n.breathing!.rate))), flat: n1(med(br.map((n) => n.breathing!.flatShare === undefined ? undefined : n.breathing!.flatShare * 100)), 0), cv: n1(med(br.map((n) => n.breathing!.periodCv === undefined ? undefined : n.breathing!.periodCv * 100)), 0) })}</p>
+            )}
           </section>
 
           <section>

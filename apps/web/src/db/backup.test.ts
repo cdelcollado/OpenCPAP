@@ -34,6 +34,27 @@ describe('typed-array serialisation', () => {
   });
 });
 
+describe('oximetry in backups', () => {
+  it('restores recordings with their samples, and keeps a newer local recording', async () => {
+    const times = Float64Array.from({ length: 120 }, (_, i) => Date.UTC(2026, 5, 29, 23) + i * 1000);
+    const recording = { times, spo2: new Float32Array(120).fill(95), pulse: new Float32Array(120).fill(60) };
+    await repo.saveOximetry(recording, { source: 'ring.csv', offsetMin: 3 });
+    const blob = await exportBackup(db, { includeWaveforms: false, app: 'test' });
+    const { d, r } = fresh();
+    const counts = await importBackup(d, blob);
+    expect(counts.oximetry).toBe(1);
+    const got = await r.oximetry('2026-06-29');
+    expect(got!.row).toMatchObject({ source: 'ring.csv', offsetMin: 3 });
+    expect(got!.samples.spo2.length).toBe(120);
+    // a newer local import is kept, together with its own samples
+    const other = fresh();
+    await other.r.saveOximetry({ ...recording, spo2: new Float32Array(120).fill(88) }, { source: 'newer.csv', offsetMin: 0 });
+    await importBackup(other.d, blob);
+    expect((await other.r.oximetry('2026-06-29'))!.row.source).toBe('newer.csv');
+    expect((await other.r.oximetry('2026-06-29'))!.samples.spo2[0]).toBe(88);
+  });
+});
+
 describe('backup export and import', () => {
   it('restores sessions, waveforms, journal and equipment into an empty database', async () => {
     const sessions = await seed();

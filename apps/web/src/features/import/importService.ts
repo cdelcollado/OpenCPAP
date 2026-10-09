@@ -1,4 +1,4 @@
-import { addDays, generateDemoSessions, nightOf } from '@opencpap/core';
+import { addDays, generateDemoOximetry, generateDemoSessions, nightOf } from '@opencpap/core';
 import { createImportWorker, importCard, type CardSource } from '@opencpap/browser';
 import { DEMO_DEVICE_ID, repository } from '../../db/repository';
 
@@ -22,8 +22,9 @@ export const DEMO_TAG = 'demo';
 
 /** Synthetic sessions plus a demo mask/cushion/filter and a few notes, so every feature has something to show. */
 export async function loadDemoData(): Promise<number> {
-  const sessions = generateDemoSessions({ nights: 75, waveformNights: 3 });
+  const sessions = generateDemoSessions({ nights: 75, waveformNights: 21 });
   for (const s of sessions) await repository.saveSession(s);
+  for (const s of sessions.slice(-3)) await repository.saveOximetry(generateDemoOximetry(s, s.id), { source: 'demo-oximeter.csv', offsetMin: 0 });
   const asOf = nightOf(sessions.at(-1)!.start);
   // the demo story replaces the cushion about 45 % of the way through the data (see generateDemoSessions)
   const cushionStart = nightOf((sessions.find((x) => x.id > Math.floor(75 * 0.45)) ?? sessions[0]!).start);
@@ -39,6 +40,7 @@ export async function loadDemoData(): Promise<number> {
 
 /** Removes the demo device together with the demo equipment and notes (identified by id prefix and tag). */
 export async function removeDemoData(): Promise<void> {
+  for (const n of await repository.nights()) if (n.oximetry && (await repository.oximetry(n.date))?.row.source === 'demo-oximeter.csv') await repository.deleteOximetry(n.date);
   await repository.deleteDevice(DEMO_DEVICE_ID);
   for (const e of await repository.equipment()) if (e.id.startsWith('demo-')) await repository.deleteEquipment(e.id);
   for (const j of await repository.journal()) if (j.tags.includes(DEMO_TAG)) await repository.deleteJournal(j.date);

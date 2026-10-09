@@ -63,3 +63,8 @@ Free-form keys with these conventions (set when the device reports them):
 
 ## Night-level model (analytics layer)
 `NightSummary` (core `nights.ts`) is not part of the device-facing model; it is derived from sessions. Besides use, AHI, counts, leak and pressure it carries `settings` (the settings of the night's first session) so that [setting changes](analytics.md#setting-changes) can be detected without reloading sessions. `EquipmentItem` (core `equipment.ts`) and the journal row (`apps/web/src/db/db.ts`) are user-entered data, not device data.
+
+## Phase 4 additions
+- `Session.analysis?: SessionAnalysis` (`analysis.ts`): `{ version, breathing: BreathingAnalysis, windows: WindowSeries }`. Not produced by loaders; it is computed from the flow waveform in the import worker. `BreathingAnalysis` = `BreathSummary` (breaths, rate, periodCv, volumeCv, ti, ieRatio, shape, flatShare) + `periodicityShare`, `periodicityPeriod`, `seconds`. `WindowSeries` = parallel typed arrays over ~5-minute windows (`times` in ms, `flatShare`, `rate`, `volumeCv`). All scale-free ([breathing-analysis.md](breathing-analysis.md)).
+- `NightSummary.breathing?: NightBreathing` (breath-count-weighted aggregate over the night's sessions) and `NightSummary.oximetry?: OximetryStats` (from a separate oximeter, [oximetry.md](oximetry.md)).
+- `OximetryRecording` `{ times (ms), spo2, pulse }` and `OximetryStats` (`seconds`, `spo2Mean/Min`, `t90`, `t88`, `odi3`, `odi4`, desaturation counts, pulse mean/min/max).

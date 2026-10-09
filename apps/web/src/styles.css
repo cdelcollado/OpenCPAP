@@ -9,7 +9,7 @@
   --info-bg: #e0f2fe; --info-text: #0c4a6e;
   /* series (validated): blue, orange, aqua, yellow, magenta, green, violet, red */
   --s-blue: #2a78d6; --s-orange: #eb6834; --s-aqua: #1baf7a; --s-yellow: #eda100; --s-magenta: #e87ba4; --s-green: #008300; --s-violet: #4a3aa7; --s-red: #e34948;
-  --m-usage: var(--s-blue); --m-ahi: var(--s-orange); --m-leak: var(--s-violet); --m-pressure: var(--s-green); --m-flow: var(--s-blue); --m-snore: var(--s-red);
+  --m-usage: var(--s-blue); --m-ahi: var(--s-orange); --m-leak: var(--s-violet); --m-pressure: var(--s-green); --m-flow: var(--s-blue); --m-snore: var(--s-red); --m-flat: var(--s-magenta); --m-rate: var(--s-aqua); --m-spo2: var(--s-blue); --m-pulse: var(--s-orange);
   --chart-grid: #e6eaed; --chart-axis: #c3cbd1; --chart-text: #50606b; --chart-band: rgba(100, 116, 139, 0.16); --chart-muted: #8d9aa4;
   --radius: 12px; --radius-sm: 8px; --shadow: 0 1px 2px rgba(15, 30, 40, 0.06), 0 1px 3px rgba(15, 30, 40, 0.04);
   --gutter: 11.5rem; --axis: 52px; --pad-r: 14px;
@@ -348,3 +348,10 @@ p, li, dd, dt, label { overflow-wrap: anywhere; }
   /* the explainer pops up centred in the viewport so it can never run off the screen edge */
   details.info p { position: fixed; left: 0.75rem; right: 0.75rem; top: 25vh; width: auto; z-index: 30; }
 }
+
+.tiles.four { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+.anomalies { display: grid; gap: 0.6rem; }
+.anomalies li { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; }
+.anomalies .badge { white-space: normal; text-align: left; }
+.histogram { width: 100%; height: auto; display: block; }

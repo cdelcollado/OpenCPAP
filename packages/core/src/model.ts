@@ -54,6 +54,10 @@ export interface SessionSettings {
   [key: string]: string | number | boolean | undefined;
 }
 
+/** Experimental waveform-derived analysis attached to a session (see analysis.ts). Not provided by loaders. */
+export type { SessionAnalysis } from './analysis';
+import type { SessionAnalysis } from './analysis';
+
 export interface Session {
   device: DeviceInfo;
   /** device-provided session id (unique per device) */
@@ -71,6 +75,8 @@ export interface Session {
   events: TherapyEvent[];
   waveforms: Waveform[];
   statistics: TimeSeries[];
+  /** breath analysis computed from the flow waveform when the session was imported */
+  analysis?: SessionAnalysis;
   /** number of device records that could not be interpreted (diagnostics) */
   unknownRecords?: number;
   /** statistics already summarized by the device, if any (used for cross-checking) */

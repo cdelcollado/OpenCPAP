@@ -8,6 +8,8 @@ A React + TypeScript single-page app, built with Vite, that is also an installab
 ![Notes and the plain-language summary](img/night-notes.png)
 ![Comparing two periods](img/compare.png)
 ![Equipment tracking with the leak-versus-age reading](img/equipment.png)
+![Breathing and oximeter cards](img/breathing.png)
+![Distributions](img/distribution.png)
 ![Night view in dark mode](img/night-dark.png)
 ![Night view on a phone](img/night-mobile.png)
 
@@ -38,6 +40,11 @@ The **header** has the language selector and a theme button (system → light �
 
 ### Dashboard additions (Phase 3)
 A **custom date range**; **equipment reminders** (only when something is due or overdue); **dashed markers with a flag** on the trend charts on nights when a setting changed (the tooltip names the change); a **Setting changes** list with a *Compare 30 nights before and after* link for each; and a note icon in the nights table for nights that have a note.
+
+### Phase 4 additions
+- **Dashboard**: a *Worth a look* panel (alerts, [analytics.md](analytics.md#alerts-worth-a-look)), a *7-night average* line on the usage and AHI charts (checkbox), a **Distribution** section (histograms of hours of use and AHI), a **Breathing (experimental)** section (flat-topped breaths and breath rate per night, only nights with flow) and **Export nights (CSV)**.
+- **Night**: a **Breathing (experimental)** card (breath rate, variation of breath length, flat-topped breaths with the change versus the 30-night average, periodic pattern, I:E ratio), two extra aligned tracks *Flat breaths* and *Breath rate* (5-minute windows), and — when an oximeter file was imported — an **Oximeter** card and *SpO₂* / *Pulse* tracks; the shared readout shows the values of every track. An **Export this night** section offers events, statistics, flow (EDF) and oximetry files ([exports.md](exports.md)).
+- **Import**: an optional **Oximeter data** card with a preview of how the recording lines up with your CPAP nights ([oximetry.md](oximetry.md)).
 
 ### Night additions (Phase 3)
 A **Summary of the night** in plain language (rules in [analytics.md](analytics.md#plain-language-summary-nightfindings), one icon per sentence, disclaimer) next to **Notes**: mood (1–5), free text and tags with suggestions from tags used before. Notes save automatically 0.7 s after the last edit and show "Saved on this device"; an entry with nothing in it is removed.

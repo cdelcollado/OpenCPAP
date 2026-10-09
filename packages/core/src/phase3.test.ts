@@ -138,3 +138,17 @@ describe('nightFindings', () => {
     expect(ids(night('d', 7, { ahi: 1, leak: { average: 0, median: 0, p95: 43, max: 0 } }))).not.toContain('leakHigh');
   });
 });
+
+describe('nightFindings: oximetry', () => {
+  const base = { usage: 7, ahi: 1, leak: 40 };
+  const withOx = (ox: Partial<NonNullable<NightSummary['oximetry']>>) => night('d', 7, { ahi: 1, oximetry: { seconds: 25000, desaturations3: 0, desaturations4: 0, spo2Min: 92, ...ox } });
+  it('reports frequent desaturations, time at low oxygen and steady nights', () => {
+    expect(nightFindings(withOx({ odi3: 8 }), { baseline: base }).map((f) => f.id)).toContain('desatFrequent');
+    expect(nightFindings(withOx({ odi3: 1, t90: 12 }), { baseline: base }).map((f) => f.id)).toContain('lowOxygenTime');
+    const steady = nightFindings(withOx({ odi3: 1, t90: 0.2 }), { baseline: base });
+    expect(steady.find((f) => f.id === 'oxygenSteady')!.params).toEqual({ min: 92 });
+  });
+  it('says nothing about oxygen without an hour of data', () => {
+    expect(nightFindings(withOx({ seconds: 600, odi3: 30 }), { baseline: base }).map((f) => f.id)).not.toContain('desatFrequent');
+  });
+});
