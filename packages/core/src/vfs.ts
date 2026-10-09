@@ -1,6 +1,6 @@
-/** Abstracció de la carpeta de la SD (File System Access, FileList, ZIP o disc en tests). */
+/** Abstraction of the SD card root (File System Access, FileList, ZIP, or in-memory in tests). */
 export interface VirtualFS {
-  /** Rutes relatives a l'arrel de la SD, amb '/' com a separador. */
+  /** Paths relative to the card root, using '/' as separator. */
   list(prefix?: string): Promise<string[]>;
   read(path: string): Promise<Uint8Array>;
   exists(path: string): Promise<boolean>;
@@ -13,7 +13,7 @@ export class MemoryFS implements VirtualFS {
   }
   async read(path: string) {
     const f = this.files.get(path);
-    if (!f) throw new Error(`No existeix: ${path}`);
+    if (!f) throw new Error(`File not found: ${path}`);
     return f;
   }
   async exists(path: string) {

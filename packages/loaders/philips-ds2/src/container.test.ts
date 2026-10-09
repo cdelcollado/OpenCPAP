@@ -9,7 +9,7 @@ const COMMON = Uint8Array.from([
   0x23, 0x20, 0x57, 0x69, 0x7e, 0x38, 0x0e, 0xc9, 0x4a, 0xdc, 0x46, 0x45, 0xb6, 0x92, 0x5a, 0x98,
 ]);
 
-/** Construeix un contenidor DS2 sintètic amb el mateix esquema que el dispositiu. */
+/** Builds a synthetic DS2 container using the same scheme as the device. */
 function build(plain: Uint8Array): Uint8Array {
   const iv = new Uint8Array(12).fill(7);
   const salt = new Uint8Array(16).fill(9);
@@ -24,7 +24,7 @@ function build(plain: Uint8Array): Uint8Array {
     ...u16(0x0d), ...u16(1), ...u16(1),
     ...field(new TextEncoder().encode('00000000-0000-0000-0000-000000000000')),
     ...field(iv), ...field(salt), ...u16(0), ...u16(1),
-    ...field(new Uint8Array(32)), ...field(new Uint8Array(16)), // import key (no s'usa)
+    ...field(new Uint8Array(32)), ...field(new Uint8Array(16)), // import key (unused)
     ...field(ek.subarray(0, 32)), ...field(ek.subarray(32)),
     ...field(pl.subarray(pl.length - 16)),
   ];
@@ -32,15 +32,15 @@ function build(plain: Uint8Array): Uint8Array {
   return Uint8Array.from([...head, ...pl.subarray(0, pl.length - 16)]);
 }
 
-describe('contenidor DS2', () => {
+describe('DS2 container', () => {
   const plain = new TextEncoder().encode('MN=420X150C\nCF=6\n');
-  it('desxifra el payload', () => {
+  it('decrypts the payload', () => {
     expect(new TextDecoder().decode(decryptDs2(build(plain)).payload)).toBe('MN=420X150C\nCF=6\n');
   });
-  it('rebutja capçaleres que no són DS2', () => {
+  it('rejects headers that are not DS2', () => {
     expect(() => parseDs2Header(new Uint8Array(0xca))).toThrow(/DS2/);
   });
-  it('detecta dades manipulades (tag GCM)', () => {
+  it('detects tampered data (GCM tag)', () => {
     const f = build(plain);
     f[0xca] = f[0xca]! ^ 1;
     expect(() => decryptDs2(f)).toThrow();

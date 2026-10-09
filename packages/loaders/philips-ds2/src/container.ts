@@ -3,9 +3,10 @@ import { pbkdf2 } from '@noble/hashes/pbkdf2.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 
 /**
- * Contenidor xifrat de la DreamStation 2 (fitxers *.BIN a l'arrel del dispositiu).
- * Format i claus adaptats del loader PRS1 d'OSCAR (GPLv3): prs1_loader.cpp, PRDS2File.
- * Dades pròpies del pacient; la "clau" no protegeix res, només ofusca.
+ * Encrypted DreamStation 2 container (used by *.BIN and *.B0x files).
+ * Format and constants adapted from OSCAR's PRS1 loader (GPLv3): prs1_loader.cpp, class PRDS2File.
+ * The key material is public, so this is obfuscation that lets patients read their own data.
+ * Full specification: docs/formats/ds2.md
  */
 
 const HEADER_SIZE = 0xca;
@@ -28,14 +29,14 @@ class Reader {
   pos = 0;
   constructor(private b: Uint8Array) {}
   u16() {
-    if (this.pos + 2 > this.b.length) throw new Error('DS2: capçalera truncada');
+    if (this.pos + 2 > this.b.length) throw new Error('DS2: truncated header');
     const v = this.b[this.pos]! | (this.b[this.pos + 1]! << 8);
     this.pos += 2;
     return v;
   }
   bytes() {
     const n = this.u16();
-    if (this.pos + n > this.b.length) throw new Error('DS2: capçalera truncada');
+    if (this.pos + n > this.b.length) throw new Error('DS2: truncated header');
     const r = this.b.subarray(this.pos, this.pos + n);
     this.pos += n;
     return r;
@@ -44,17 +45,17 @@ class Reader {
 
 export function parseDs2Header(data: Uint8Array): Ds2Header {
   const r = new Reader(data);
-  if (r.u16() !== 0x0d || r.u16() !== 1 || r.u16() !== 1) throw new Error('DS2: no és un contenidor DS2');
+  if (r.u16() !== 0x0d || r.u16() !== 1 || r.u16() !== 1) throw new Error('DS2: not a DS2 container');
   const guid = new TextDecoder().decode(r.bytes());
   const iv = r.bytes();
   const salt = r.bytes();
-  if (iv.length !== 12 || salt.length !== 16) throw new Error('DS2: IV/salt inesperats');
+  if (iv.length !== 12 || salt.length !== 16) throw new Error('DS2: unexpected IV/salt size');
   r.u16(); r.u16(); // 0, 1
-  r.bytes(); r.bytes(); // import key + tag (clau específica del dispositiu; no es fa servir)
+  r.bytes(); r.bytes(); // import key + tag (device-specific key; unused)
   const exportKey = r.bytes();
   const exportKeyTag = r.bytes();
   const payloadTag = r.bytes();
-  if (r.pos !== HEADER_SIZE) throw new Error(`DS2: mida de capçalera ${r.pos} != ${HEADER_SIZE}`);
+  if (r.pos !== HEADER_SIZE) throw new Error(`DS2: header size ${r.pos} != ${HEADER_SIZE}`);
   return { guid, iv, salt, exportKey, exportKeyTag, payloadTag };
 }
 
@@ -66,7 +67,7 @@ const concat = (...a: Uint8Array[]) => {
 };
 
 let commonKey: Uint8Array | undefined;
-const keyCache = new Map<string, Uint8Array>(); // la derivació és lenta (PBKDF2 10000); les claus es repeteixen entre fitxers
+const keyCache = new Map<string, Uint8Array>(); // derivation is slow (PBKDF2, 10000 iterations); keys repeat across files
 
 function payloadKey(h: Ds2Header): Uint8Array {
   const id = Array.from(concat(h.iv, h.salt, h.exportKey, h.exportKeyTag), (x) => x.toString(16).padStart(2, '0')).join('');
@@ -79,7 +80,7 @@ function payloadKey(h: Ds2Header): Uint8Array {
   return key;
 }
 
-/** Desxifra un fitxer DS2 i en retorna el contingut en clar. Llança si la clau o l'etiqueta no validen. */
+/** Decrypts a DS2 file and returns its plaintext. Throws if the key or a GCM tag fails to validate. */
 export function decryptDs2(data: Uint8Array): { header: Ds2Header; payload: Uint8Array } {
   const header = parseDs2Header(data);
   const key = payloadKey(header);
