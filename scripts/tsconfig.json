@@ -1,0 +1,2 @@
+{ "extends": "../tsconfig.base.json", "compilerOptions": { "outDir": "dist", "rootDir": ".", "types": ["node"], "noEmit": false },
+  "include": ["*.ts"], "references": [{ "path": "../packages/core" }, { "path": "../packages/loaders/philips-ds2" }] }

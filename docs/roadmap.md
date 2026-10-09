@@ -20,7 +20,9 @@ Legend: [x] done · [ ] pending
 - [x] `DeviceLoader` for DS2 (`detect` + `load`) producing canonical sessions
 - [x] Automated cross-check against the device's own statistics (333 sessions, 0 mismatches)
 - [x] Synthetic-fixture tests for every parser; real-card integration test (skipped without `fixtures/raw`)
-- [ ] Cross-validation vs OSCAR output (usage hours, AHI, P95 pressure/leak) — needs OSCAR's daily report for the same card
+- [x] OSCAR comparison tooling (`scripts/compare-oscar.ts`, [guide](oscar-comparison.md))
+- [ ] Run the comparison on the sample card — needs the maintainer's OSCAR "Sessions" CSV export
+- [ ] Pressure/leak comparison (OSCAR's unintentional-leak model)
 - [ ] Interpret `D/*.B03` (device settings log) and `E/*.B04` (device events)
 - [x] Browser `VirtualFS` implementations: directory handle, FileList, ZIP — `packages/browser`
 - [x] Web Worker import pipeline with progress, errors and cancellation — [browser-import.md](browser-import.md)
