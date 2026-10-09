@@ -31,5 +31,12 @@ export default defineConfig({
   ],
   // Workers are ES modules (they use top-level imports of the loaders).
   worker: { format: 'es' },
-  build: { target: 'es2022', sourcemap: true },
+  build: {
+    target: 'es2022',
+    sourcemap: true,
+    rollupOptions: {
+      // separate long-lived vendor code from the app so an app update does not invalidate the cached libraries
+      output: { manualChunks: { vendor: ['react', 'react-dom', 'i18next', 'react-i18next', 'dexie'], charts: ['uplot'] } },
+    },
+  },
 });

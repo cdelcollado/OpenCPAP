@@ -3,7 +3,14 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Changed
+- **UI redesign.** Hierarchy: AHI as the single hero figure with status chip and change versus the 30-night average; tiles with sparklines; compliance meter with a 70 % marker; calendar heatmap; nights table with mini bars. Charts: hover tooltips, click-through to a night, thin marks, validated per-measure colours. Night view: event timeline and flow/leak/pressure/snore tracks aligned on one time axis with a shared cursor readout, event bars and the therapy settings of the night. Header with language selector and theme button; mobile layout for the tracks.
+- Status and trend are always shown with an icon and text (never colour alone); event types no longer reuse status colours; large figures use proportional digits.
+- Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
+- Bundle split into app / vendor / charts chunks.
+
 ### Added
+- `docs/design-system.md`; ADR-0008; E2E tests for tooltips and click-through, calendar, hero, track alignment (pixel measurement), shared readout, therapy settings, date jump and no horizontal overflow on a 390 px phone; unit tests for the heat ramp, dashboard metrics, readout lookups, nice ticks and settings rows.
 - Time-weighted leak statistics (`weightedMean`, `weightedPercentile`, `intervalSeconds`) matching OSCAR; `NightSummary.leak.average`.
 - OSCAR comparison run on the sample card: 550/550 sessions match on hours, AHI, RDI, event counts and leak ([oscar-comparison.md](docs/oscar-comparison.md)); the comparison tool now reads OSCAR's real CSV format and matches sessions by start time.
 - **Web app (Phase 2)**: `apps/web` React/Vite PWA with dashboard, night view (timeline, flow/leak/pressure/snore charts, linked zoom), import screen (folder, ZIP, drag & drop, progress, cancel), settings (language, theme, delete data), demo mode, metric explainers, English/Català/Español, light/dark themes, offline precache.

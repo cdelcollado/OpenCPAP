@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { failOnConsoleErrors, loadDemo, resetApp } from './helpers';
+import { failOnConsoleErrors, loadDemo, resetApp, scrollToCenter } from './helpers';
 
 test.describe('app shell', () => {
   test('shows the empty state, then demo data on the dashboard', async ({ page }) => {
@@ -22,15 +22,15 @@ test.describe('app shell', () => {
     await resetApp(page);
     await loadDemo(page);
     await page.getByRole('row').nth(1).getByRole('link').click(); // most recent night (has waveform in demo data)
-    await expect(page.getByRole('heading', { level: 1, name: /Night of/ })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('2026');
     await expect(page.getByRole('group', { name: 'Event timeline' })).toBeVisible();
-    await expect(page.locator('section[aria-label="Flow"] canvas').first()).toBeVisible();
-    await expect(page.locator('section[aria-label="Total leak (L/min)"] canvas').first()).toBeVisible();
+    await expect(page.locator('[data-track="flow"] canvas').first()).toBeVisible();
+    await expect(page.locator('[data-track="leak"] canvas').first()).toBeVisible();
 
     const reset = page.getByRole('button', { name: 'Reset zoom' });
     await expect(reset).toBeDisabled();
-    const flow = page.locator('section[aria-label="Flow"] .u-over');
-    await flow.scrollIntoViewIfNeeded(); // mouse events only reach what is inside the viewport
+    const flow = page.locator('[data-track="flow"] .u-over');
+    await scrollToCenter(flow); // mouse events only reach what is visible (not under the sticky headers)
     const box = (await flow.boundingBox())!;
     await page.mouse.move(box.x + box.width * 0.3, box.y + box.height / 2);
     await page.mouse.down();
@@ -54,15 +54,22 @@ test.describe('app shell', () => {
 
   test('language and theme switches persist across reloads', async ({ page }) => {
     await resetApp(page);
-    await page.getByRole('link', { name: 'Settings', exact: true }).click();
-    await page.getByRole('combobox', { name: 'Language' }).selectOption('ca');
+    await page.locator('#hdr-lang').selectOption('ca');
+    await page.getByRole('link', { name: 'Configuració', exact: true }).click();
     await expect(page.getByRole('heading', { level: 1, name: 'Configuració' })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'ca');
-    await page.getByRole('combobox', { name: 'Tema' }).selectOption('dark');
+    // the header button cycles system -> light -> dark
+    const toggle = page.getByRole('button', { name: /^Tema:/ });
+    await toggle.click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await toggle.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await page.reload();
     await expect(page.getByRole('heading', { level: 1, name: 'Configuració' })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    // the settings page offers the same choices
+    await page.getByRole('combobox', { name: 'Tema' }).selectOption('system');
+    await expect(page.locator('html')).not.toHaveAttribute('data-theme', /.+/);
   });
 
   test('data persists after a reload and can be deleted', async ({ page }) => {
@@ -86,6 +93,115 @@ test.describe('app shell', () => {
     const active = await page.evaluate(async () => !!(await navigator.serviceWorker.ready).active);
     expect(active).toBe(true);
   });
+});
+
+test.describe('dashboard interaction', () => {
+  test('hover shows a tooltip with the values and clicking a bar opens that night', async ({ page }) => {
+    const errors = failOnConsoleErrors(page);
+    await resetApp(page);
+    await loadDemo(page);
+    const plot = page.locator('.chart-card').first().locator('.u-over');
+    await scrollToCenter(plot);
+    const box = (await plot.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.5);
+    const tip = page.locator('.chart-tip').first();
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText(/\d+ h \d{2} min/); // value first
+    await expect(tip).toContainText('2026');
+    await page.mouse.click(box.x + box.width * 0.6, box.y + box.height * 0.5);
+    await expect(page).toHaveURL(/#\/night\/\d{4}-\d{2}-\d{2}$/);
+    expect(errors).toEqual([]);
+  });
+
+  test('calendar cells link to nights and the measure can be switched', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    const cells = page.locator('.heat-cell.has');
+    expect(await cells.count()).toBeGreaterThan(15);
+    const before = await cells.first().getAttribute('style');
+    await page.getByRole('radio', { name: 'AHI', exact: true }).check({ force: true });
+    await expect.poll(async () => cells.first().getAttribute('style')).not.toBe(before);
+    await cells.first().click();
+    await expect(page).toHaveURL(/#\/night\//);
+  });
+
+  test('last night is the hero figure with a status chip and a comparison', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    await expect(page.getByTestId('hero-ahi')).toContainText(/\d/);
+    await expect(page.locator('.hero .badge').first()).toContainText(/per hour/); // icon + text, not colour alone
+    await expect(page.locator('.hero')).toContainText('30-night avg');
+    await expect(page.getByText('Meets the common 4 h / 70 % rule').or(page.getByText('Below the common 4 h / 70 % rule'))).toBeVisible();
+  });
+});
+
+test.describe('night view', () => {
+  test('tracks share the same plot area as the event timeline', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await resetApp(page);
+    await loadDemo(page);
+    await page.getByRole('row').nth(1).getByRole('link').click();
+    await expect(page.locator('[data-track="flow"] canvas').first()).toBeVisible();
+    const edges = async (sel: string) => (await page.locator(sel).first().evaluate((e) => { const r = e.getBoundingClientRect(); return [r.left, r.right]; })) as [number, number];
+    const timeline = await edges('.timeline-row .plot svg');
+    for (const track of ['flow', 'leak', 'pressure', 'snore']) {
+      const [l, r] = await edges(`[data-track="${track}"] .u-over`);
+      expect(Math.abs(l - timeline[0]), `${track} left edge`).toBeLessThan(1.5);
+      expect(Math.abs(r - timeline[1]), `${track} right edge`).toBeLessThan(1.5);
+    }
+  });
+
+  test('hovering a chart shows one readout with the value of every track', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    await page.getByRole('row').nth(1).getByRole('link').click();
+    const over = page.locator('[data-track="leak"] .u-over');
+    await scrollToCenter(over);
+    const box = (await over.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.4, box.y + box.height / 2, { steps: 4 });
+    const readout = page.getByTestId('readout');
+    await expect(readout).toContainText(/\d{2}:\d{2}:\d{2}/);
+    await expect(readout).toContainText('Flow');
+    await expect(readout).toContainText('Leak');
+    await expect(readout).toContainText('Pressure');
+    // the crosshair is synchronised: the flow chart shows a cursor line too
+    await expect(page.locator('[data-track="flow"] .u-cursor-x')).toBeVisible();
+  });
+
+  test('shows the therapy settings and the event bars', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    await page.getByRole('row').nth(1).getByRole('link').click();
+    await expect(page.getByRole('heading', { name: 'Therapy settings' })).toBeVisible();
+    await expect(page.locator('.kv')).toContainText('Ramp time');
+    await expect(page.locator('.event-bar').first()).toBeVisible();
+  });
+
+  test('jumping to a date with the date picker', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    await page.getByRole('row').nth(2).getByRole('link').click();
+    const date = await page.locator('#jump').inputValue();
+    await page.getByRole('link', { name: /Next night/ }).click();
+    await expect(page.locator('#jump')).not.toHaveValue(date);
+    await page.locator('#jump').fill(date);
+    await expect(page).toHaveURL(new RegExp(`night/${date}$`));
+  });
+});
+
+test.describe('responsive layout', () => {
+  for (const [name, route] of [['dashboard', ''], ['night', 'night']] as const) {
+    test(`${name} does not overflow horizontally on a 390 px phone`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await resetApp(page);
+      await loadDemo(page);
+      if (route === 'night') await page.getByRole('row').nth(1).getByRole('link').click();
+      await expect(page.locator('main h1')).toBeVisible();
+      await page.waitForTimeout(400);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+    });
+  }
 });
 
 test.describe('accessibility (axe, WCAG 2.1 A/AA)', () => {

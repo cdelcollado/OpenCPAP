@@ -42,6 +42,7 @@ fixtures/raw/                  real SD data, git-ignored, never committed
 ## Screenshots
 ![Dashboard](docs/img/dashboard.png)
 ![Night view](docs/img/night.png)
+![Calendar](docs/img/calendar.png)
 
 *(Synthetic demo data.)* Try it without a card: **Import → Load demo data**.
 
@@ -66,6 +67,7 @@ Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrom
 
 - [Architecture](docs/architecture.md)
 - [Web application (screens, charts, i18n, a11y, PWA)](docs/web-app.md)
+- [Design system (tokens, palette, chart rules, accessibility checklist)](docs/design-system.md)
 - [Browser import (card sources, worker protocol)](docs/browser-import.md)
 - [Local storage (IndexedDB schema)](docs/storage.md)
 - [Analytics definitions (nights, AHI, leak, pressure, compliance)](docs/analytics.md)

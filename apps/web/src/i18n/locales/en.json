@@ -1,8 +1,7 @@
 {
  "app": {
   "name": "OpenCPAP",
-  "skip": "Skip to content",
-  "tagline": "Your CPAP data stays on your device."
+  "skip": "Skip to content"
  },
  "nav": {
   "label": "Main navigation",
@@ -17,21 +16,16 @@
  "common": {
   "loading": "Loading…",
   "back": "Back",
-  "hoursShort": "h",
   "minutesShort": "min",
   "none": "—",
-  "night": "Night",
   "date": "Date",
-  "session": "Session",
-  "cancel": "Cancel",
-  "delete": "Delete",
-  "close": "Close",
-  "details": "Details",
-  "explain": "What does this mean?"
+  "explain": "What does this mean?",
+  "yes": "Yes",
+  "no": "No",
+  "off": "Off"
  },
  "import": {
   "title": "Import CPAP data",
-  "intro": "Insert the SD card of your CPAP, then choose its folder. For a Philips DreamStation 2, select the folder that contains P-SERIES.",
   "privacy": "The files are read and decoded locally by your browser. They are never uploaded.",
   "chooseFolder": "Choose card folder",
   "chooseFolderFallback": "Choose card folder (any browser)",
@@ -51,7 +45,13 @@
   "demoBody": "Explore the app with synthetic example data.",
   "demoButton": "Load demo data",
   "demoRemove": "Remove demo data",
-  "demoLoaded": "Demo data loaded."
+  "demoLoaded": "Demo data loaded.",
+  "step1Title": "Take out the SD card",
+  "step1": "Remove the card from your CPAP and put it in your computer, or copy its contents to a folder.",
+  "step2Title": "Choose the card's folder",
+  "step2": "For a Philips DreamStation 2 pick the folder that contains P-SERIES. You can also drop it here or use a ZIP.",
+  "step3Title": "Wait a few seconds",
+  "step3": "Sessions are decoded on this device and stored in your browser."
  },
  "dashboard": {
   "title": "Dashboard",
@@ -69,8 +69,6 @@
   "complianceDetail": "{{ok}} of {{total}} nights with at least 4 h",
   "meets": "Meets the common 4 h / 70 % rule",
   "notMeets": "Below the common 4 h / 70 % rule",
-  "avgUsage": "Average use",
-  "avgAhi": "Average AHI",
   "trends": "Trends",
   "usageChart": "Hours of use per night",
   "ahiChart": "AHI per night",
@@ -79,22 +77,23 @@
   "viewNight": "Open night {{date}}",
   "noNightsInRange": "No nights in this range.",
   "tableHint": "Select a night to see details.",
-  "complianceShort": "Nights with at least 4 h"
+  "subtitle": "{{count}} nights stored · latest {{date}}",
+  "emptyPrivacy": "Your data is read in your browser and stays on this device.",
+  "complianceRule": "Common target: 4 h on 70 % of nights",
+  "calendar": "Calendar",
+  "calendarMeasure": "Measure shown in the calendar",
+  "chartHint": "Hover for values, click a bar to open that night.",
+  "ahiRef": "The dashed line marks {{value}} events per hour."
  },
  "metric": {
   "usage": "Use",
   "ahi": "AHI",
-  "leak": "Leak",
   "leakP95": "Leak (95 %)",
   "leakMedian": "Leak (median)",
   "pressure": "Pressure",
-  "snore": "Snore index",
-  "rera": "RERA index",
   "events": "Events",
   "mode": "Mode",
-  "sessions": "Sessions",
   "start": "Start",
-  "end": "End",
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
@@ -125,19 +124,16 @@
   "usage": "Hours with the mask on. Many insurers and clinics look for at least 4 hours on at least 70 % of nights.",
   "leak": "Total air leak, in litres per minute. It includes the deliberate leak of the mask vents, so a steady non-zero value is normal; sustained high peaks may mean a poor mask seal.",
   "pressure": "Therapy pressure in cmH₂O set on the device or chosen automatically.",
-  "rera": "Respiratory Effort Related Arousals: breathing effort events that disturb sleep without being a full apnea or hypopnea. They are not part of the AHI.",
-  "snore": "Snore events reported by the device per hour of use.",
   "compliance": "Share of nights with at least 4 hours of use over the last 30 nights.",
-  "flow": "Breathing flow measured by the device (positive: breathing in). Scaling is approximate."
+  "flow": "Breathing flow measured by the device (positive: breathing in). Scaling is approximate.",
+  "rera": "Respiratory Effort Related Arousals: breathing effort events that disturb sleep without being a full apnea or hypopnea. They are not part of the AHI."
  },
  "night": {
-  "title": "Night of {{date}}",
   "notFound": "No data for this night.",
   "prev": "Previous night",
   "next": "Next night",
   "sessionsCount_one": "{{count}} session",
   "sessionsCount_other": "{{count}} sessions",
-  "summary": "Summary",
   "timeline": "Event timeline",
   "flowChart": "Flow",
   "leakChart": "Total leak (L/min)",
@@ -149,9 +145,19 @@
   "showTable": "Show data table",
   "hideTable": "Hide data table",
   "eventCounts": "Event counts",
-  "count": "Count",
-  "maskOff": "Mask off",
-  "altHypopnea": "Includes hypopneas that the device itself does not count."
+  "altHypopnea": "Includes hypopneas that the device itself does not count.",
+  "heroHeading": "This night",
+  "detail": "Night detail",
+  "flowShort": "Flow",
+  "leakShort": "Leak",
+  "pressureShort": "Pressure",
+  "snoreShort": "Snore",
+  "perInterval": "per 2 min",
+  "noEvents": "No events were recorded this night.",
+  "navLabel": "Night navigation",
+  "jump": "Go to date",
+  "settingsTitle": "Therapy settings",
+  "settingsHint": "As reported by the device for this night"
  },
  "settings": {
   "title": "Settings",
@@ -174,7 +180,48 @@
   "privacyTitle": "Privacy",
   "privacyBody": "OpenCPAP runs entirely in your browser. Imported data is stored in this browser only (IndexedDB) and is never sent anywhere."
  },
- "chart": {
-  "empty": "No data to plot."
+ "chart": {},
+ "hero": {
+  "vsAvg": "vs {{n}}-night avg",
+  "trendAhi": "AHI over the last 30 nights",
+  "trendUsage": "Hours of use over the last 30 nights",
+  "trendLeak": "95 % leak over the last 30 nights"
+ },
+ "status": {
+  "ahiGood": "Under 5 per hour",
+  "ahiWarn": "5 to 15 per hour",
+  "ahiBad": "15 or more per hour",
+  "useGood": "4 h or more",
+  "useWarn": "Under 4 h"
+ },
+ "setting": {
+  "mode": "Mode",
+  "rampTime": "Ramp time",
+  "rampType": "Ramp type",
+  "rampType_linear": "Linear",
+  "rampType_smart-ramp": "SmartRamp",
+  "rampType_ramp-plus": "Ramp+",
+  "rampPressure": "Ramp starting pressure",
+  "flex": "Pressure relief",
+  "flex_none": "Off",
+  "flex_flex": "Flex",
+  "flex_flex-plus": "Flex+",
+  "flex_rise-time": "Rise time",
+  "flex_p-flex": "P-Flex",
+  "flexLevel": "Relief level",
+  "ezStart": "EZ-Start",
+  "humidifier": "Humidifier",
+  "humid_fixed": "Fixed",
+  "humid_adaptive": "Adaptive",
+  "humid_heated-tube": "Heated tube",
+  "humid_passover": "Passover",
+  "humid_error": "Error",
+  "humidLevel": "Humidity level",
+  "tubeTemp": "Tube temperature",
+  "tubing": "Tube diameter",
+  "maskResistance": "Mask resistance",
+  "autoStart": "Auto start",
+  "autoStop": "Auto stop",
+  "humid_none": "None"
  }
 }

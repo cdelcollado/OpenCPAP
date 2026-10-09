@@ -38,3 +38,8 @@ export async function loadDemo(page: Page) {
   await page.getByRole('button', { name: 'Load demo data' }).click();
   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 }
+
+/** Scrolls an element to the middle of the viewport. `scrollIntoViewIfNeeded` can leave it under a sticky header, where mouse events never reach it. */
+export async function scrollToCenter(locator: import('@playwright/test').Locator) {
+  await locator.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+}

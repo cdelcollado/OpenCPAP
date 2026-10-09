@@ -1,8 +1,7 @@
 {
  "app": {
   "name": "OpenCPAP",
-  "skip": "Salta al contingut",
-  "tagline": "Les teves dades de CPAP es queden al teu dispositiu."
+  "skip": "Salta al contingut"
  },
  "nav": {
   "label": "Navegació principal",
@@ -17,21 +16,16 @@
  "common": {
   "loading": "Carregant…",
   "back": "Enrere",
-  "hoursShort": "h",
   "minutesShort": "min",
   "none": "—",
-  "night": "Nit",
   "date": "Data",
-  "session": "Sessió",
-  "cancel": "Cancel·la",
-  "delete": "Elimina",
-  "close": "Tanca",
-  "details": "Detalls",
-  "explain": "Què vol dir?"
+  "explain": "Què vol dir?",
+  "yes": "Sí",
+  "no": "No",
+  "off": "Desactivat"
  },
  "import": {
   "title": "Importa dades de la CPAP",
-  "intro": "Insereix la targeta SD de la CPAP i tria'n la carpeta. En una Philips DreamStation 2, selecciona la carpeta que conté P-SERIES.",
   "privacy": "El navegador llegeix i descodifica els fitxers en local. No es pugen mai enlloc.",
   "chooseFolder": "Tria la carpeta de la targeta",
   "chooseFolderFallback": "Tria la carpeta de la targeta (qualsevol navegador)",
@@ -51,7 +45,13 @@
   "demoBody": "Explora l'aplicació amb dades d'exemple sintètiques.",
   "demoButton": "Carrega dades de demostració",
   "demoRemove": "Elimina les dades de demostració",
-  "demoLoaded": "Dades de demostració carregades."
+  "demoLoaded": "Dades de demostració carregades.",
+  "step1Title": "Treu la targeta SD",
+  "step1": "Treu la targeta de la CPAP i posa-la a l'ordinador, o copia'n el contingut a una carpeta.",
+  "step2Title": "Tria la carpeta de la targeta",
+  "step2": "En una Philips DreamStation 2 selecciona la carpeta que conté P-SERIES. També pots deixar-la anar aquí o fer servir un ZIP.",
+  "step3Title": "Espera uns segons",
+  "step3": "Les sessions es descodifiquen en aquest dispositiu i es desen al teu navegador."
  },
  "dashboard": {
   "title": "Tauler",
@@ -69,8 +69,6 @@
   "complianceDetail": "{{ok}} de {{total}} nits amb almenys 4 h",
   "meets": "Compleix la regla habitual de 4 h / 70 %",
   "notMeets": "Per sota de la regla habitual de 4 h / 70 %",
-  "avgUsage": "Ús mitjà",
-  "avgAhi": "IAH mitjà",
   "trends": "Tendències",
   "usageChart": "Hores d'ús per nit",
   "ahiChart": "IAH per nit",
@@ -79,22 +77,23 @@
   "viewNight": "Obre la nit del {{date}}",
   "noNightsInRange": "No hi ha nits en aquest interval.",
   "tableHint": "Selecciona una nit per veure'n els detalls.",
-  "complianceShort": "Nits amb almenys 4 h"
+  "subtitle": "{{count}} nits desades · darrera {{date}}",
+  "emptyPrivacy": "Les teves dades es llegeixen al navegador i es queden en aquest dispositiu.",
+  "complianceRule": "Objectiu habitual: 4 h el 70 % de les nits",
+  "calendar": "Calendari",
+  "calendarMeasure": "Mesura mostrada al calendari",
+  "chartHint": "Passa el ratolí per veure els valors; fes clic en una barra per obrir aquella nit.",
+  "ahiRef": "La línia discontínua marca {{value}} esdeveniments per hora."
  },
  "metric": {
   "usage": "Ús",
   "ahi": "IAH",
-  "leak": "Fuita",
   "leakP95": "Fuita (95 %)",
   "leakMedian": "Fuita (mediana)",
   "pressure": "Pressió",
-  "snore": "Índex de ronc",
-  "rera": "Índex de RERA",
   "events": "Esdeveniments",
   "mode": "Mode",
-  "sessions": "Sessions",
   "start": "Inici",
-  "end": "Final",
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
@@ -125,19 +124,16 @@
   "usage": "Hores amb la mascareta posada. Moltes asseguradores i clíniques demanen almenys 4 hores en almenys el 70 % de les nits.",
   "leak": "Fuita total d'aire, en litres per minut. Inclou la fuita deliberada de les ventilacions de la mascareta, per tant un valor estable diferent de zero és normal; pics alts sostinguts poden indicar un mal segellat.",
   "pressure": "Pressió de la teràpia en cmH₂O, fixada al dispositiu o triada automàticament.",
-  "rera": "Despertars relacionats amb l'esforç respiratori: esdeveniments d'esforç que pertorben el son sense ser una apnea o hipopnea completes. No formen part de l'IAH.",
-  "snore": "Esdeveniments de ronc informats pel dispositiu per hora d'ús.",
   "compliance": "Proporció de nits amb almenys 4 hores d'ús durant les darreres 30 nits.",
-  "flow": "Flux respiratori mesurat pel dispositiu (positiu: inspiració). L'escala és aproximada."
+  "flow": "Flux respiratori mesurat pel dispositiu (positiu: inspiració). L'escala és aproximada.",
+  "rera": "Despertars relacionats amb l'esforç respiratori: esdeveniments d'esforç que pertorben el son sense ser una apnea o hipopnea completes. No formen part de l'IAH."
  },
  "night": {
-  "title": "Nit del {{date}}",
   "notFound": "No hi ha dades d'aquesta nit.",
   "prev": "Nit anterior",
   "next": "Nit següent",
   "sessionsCount_one": "{{count}} sessió",
   "sessionsCount_other": "{{count}} sessions",
-  "summary": "Resum",
   "timeline": "Cronologia d'esdeveniments",
   "flowChart": "Flux",
   "leakChart": "Fuita total (L/min)",
@@ -149,9 +145,19 @@
   "showTable": "Mostra la taula de dades",
   "hideTable": "Amaga la taula de dades",
   "eventCounts": "Recompte d'esdeveniments",
-  "count": "Recompte",
-  "maskOff": "Mascareta treta",
-  "altHypopnea": "Inclou hipopnees que el propi dispositiu no compta."
+  "altHypopnea": "Inclou hipopnees que el propi dispositiu no compta.",
+  "heroHeading": "Aquesta nit",
+  "detail": "Detall de la nit",
+  "flowShort": "Flux",
+  "leakShort": "Fuita",
+  "pressureShort": "Pressió",
+  "snoreShort": "Ronc",
+  "perInterval": "cada 2 min",
+  "noEvents": "Aquesta nit no s'ha registrat cap esdeveniment.",
+  "navLabel": "Navegació entre nits",
+  "jump": "Ves a la data",
+  "settingsTitle": "Ajustos de la teràpia",
+  "settingsHint": "Tal com els informa el dispositiu per a aquesta nit"
  },
  "settings": {
   "title": "Configuració",
@@ -174,7 +180,48 @@
   "privacyTitle": "Privadesa",
   "privacyBody": "OpenCPAP s'executa íntegrament al teu navegador. Les dades importades es desen només en aquest navegador (IndexedDB) i no s'envien enlloc."
  },
- "chart": {
-  "empty": "No hi ha dades per mostrar."
+ "chart": {},
+ "hero": {
+  "vsAvg": "vs mitjana de {{n}} nits",
+  "trendAhi": "IAH de les darreres 30 nits",
+  "trendUsage": "Hores d'ús de les darreres 30 nits",
+  "trendLeak": "Fuita (95 %) de les darreres 30 nits"
+ },
+ "status": {
+  "ahiGood": "Menys de 5 per hora",
+  "ahiWarn": "De 5 a 15 per hora",
+  "ahiBad": "15 o més per hora",
+  "useGood": "4 h o més",
+  "useWarn": "Menys de 4 h"
+ },
+ "setting": {
+  "mode": "Mode",
+  "rampTime": "Temps de rampa",
+  "rampType": "Tipus de rampa",
+  "rampType_linear": "Lineal",
+  "rampType_smart-ramp": "SmartRamp",
+  "rampType_ramp-plus": "Ramp+",
+  "rampPressure": "Pressió inicial de la rampa",
+  "flex": "Alleujament de pressió",
+  "flex_none": "Desactivat",
+  "flex_flex": "Flex",
+  "flex_flex-plus": "Flex+",
+  "flex_rise-time": "Temps de pujada",
+  "flex_p-flex": "P-Flex",
+  "flexLevel": "Nivell d'alleujament",
+  "ezStart": "EZ-Start",
+  "humidifier": "Humidificador",
+  "humid_fixed": "Fix",
+  "humid_adaptive": "Adaptatiu",
+  "humid_heated-tube": "Tub escalfat",
+  "humid_passover": "Passover",
+  "humid_error": "Error",
+  "humidLevel": "Nivell d'humitat",
+  "tubeTemp": "Temperatura del tub",
+  "tubing": "Diàmetre del tub",
+  "maskResistance": "Resistència de la mascareta",
+  "autoStart": "Inici automàtic",
+  "autoStop": "Aturada automàtica",
+  "humid_none": "Cap"
  }
 }
