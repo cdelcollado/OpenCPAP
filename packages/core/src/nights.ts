@@ -15,6 +15,48 @@ export function percentile(values: ArrayLike<number>, p: number): number {
   return sorted[lo]! + (sorted[hi]! - sorted[lo]!) * (pos - lo);
 }
 
+/**
+ * Percentile of values that each cover a different amount of time (nearest rank on the cumulative weight):
+ * the smallest value whose cumulative weight reaches p % of the total. This matches OSCAR's time-weighted
+ * statistics (a 31 s partial interval counts for less than a full 120 s one). Equal weights are used when the
+ * total weight is not positive.
+ */
+export function weightedPercentile(values: ArrayLike<number>, weights: ArrayLike<number>, p: number): number {
+  const n = values.length;
+  if (n === 0) return NaN;
+  let total = 0;
+  for (let i = 0; i < n; i++) total += Math.max(0, weights[i]!);
+  const equal = total <= 0;
+  const w = (i: number) => (equal ? 1 : Math.max(0, weights[i]!));
+  if (equal) total = n;
+  const order = Array.from({ length: n }, (_, i) => i).sort((a, b) => values[a]! - values[b]!);
+  const target = (Math.min(100, Math.max(0, p)) / 100) * total;
+  let cum = 0;
+  for (const i of order) {
+    cum += w(i);
+    if (cum >= target - 1e-9) return values[i]!;
+  }
+  return values[order[n - 1]!]!;
+}
+
+export function weightedMean(values: ArrayLike<number>, weights: ArrayLike<number>): number {
+  let sum = 0, total = 0;
+  for (let i = 0; i < values.length; i++) { const w = Math.max(0, weights[i]!); sum += values[i]! * w; total += w; }
+  if (total > 0) return sum / total;
+  if (values.length === 0) return NaN;
+  let plain = 0;
+  for (let i = 0; i < values.length; i++) plain += values[i]!;
+  return plain / values.length;
+}
+
+/**
+ * Seconds covered by each sample of a statistics series: from the previous sample (or from `startMs` for the first
+ * one) to its own time. The last interval of a session is usually shorter than a full interval.
+ */
+export function intervalSeconds(times: ArrayLike<number>, startMs: number): number[] {
+  return Array.from({ length: times.length }, (_, i) => Math.max(0, (times[i]! - (i === 0 ? startMs : times[i - 1]!)) / 1000));
+}
+
 const HALF_DAY_MS = 12 * 3600_000;
 
 /**
@@ -56,8 +98,8 @@ export interface NightSummary {
   ahi?: number;
   /** RERA per hour (not part of the AHI) */
   reraIndex?: number;
-  /** total leak statistics, L/min */
-  leak?: { median: number; p95: number; max: number };
+  /** total leak statistics in L/min, weighted by the time each interval covers (as OSCAR does) */
+  leak?: { average: number; median: number; p95: number; max: number };
   /** therapy pressure in cmH2O: the configured pressure (min/max for auto and bi-level modes), without the ramp */
   pressure?: { min: number; max: number; median: number };
   /** snore events reported per hour */
@@ -79,11 +121,15 @@ export function summarizeNight(date: string, sessions: SessionLite[], opts: { ha
   const apneas = (counts.obstructive ?? 0) + (counts.central ?? 0) + (counts.hypopnea ?? 0) + (counts['unclassified-apnea'] ?? 0);
 
   const leaks: number[] = [];
+  const leakWeights: number[] = [];
   const pressures: number[] = [];
   let snores = 0;
   for (const s of sessions) {
     const leak = seriesOf(s, 'leak-total');
-    if (leak) leaks.push(...leak.values);
+    if (leak) {
+      leaks.push(...leak.values);
+      leakWeights.push(...intervalSeconds(leak.times, s.start));
+    }
     const sn = seriesOf(s, 'snore-count');
     if (sn) for (const v of sn.values) snores += v;
     const cfg = configuredPressure(s.settings);
@@ -104,7 +150,7 @@ export function summarizeNight(date: string, sessions: SessionLite[], opts: { ha
     counts,
     ahi: usage > 0 ? apneas / usage : undefined,
     reraIndex: usage > 0 ? (counts.rera ?? 0) / usage : undefined,
-    leak: leaks.length ? { median: percentile(leaks, 50), p95: percentile(leaks, 95), max: Math.max(...leaks) } : undefined,
+    leak: leaks.length ? { average: weightedMean(leaks, leakWeights), median: weightedPercentile(leaks, leakWeights, 50), p95: weightedPercentile(leaks, leakWeights, 95), max: Math.max(...leaks) } : undefined,
     pressure: pressures.length ? { min: Math.min(...pressures), max: Math.max(...pressures), median: percentile(pressures, 50) } : undefined,
     snoreIndex: usage > 0 && snores > 0 ? snores / usage : undefined,
     mode: typeof sorted[0]?.settings.mode === 'string' ? sorted[0].settings.mode : undefined,

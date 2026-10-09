@@ -215,11 +215,11 @@ On the sample card there is a **single signal per chunk**: flow, 5 samples/s (`i
 - Zero unknown record codes were encountered in summaries or events.
 
 ## 10. Cross-validation
-`real-card.test.ts` (runs only when `fixtures/raw/P-SERIES` exists) compares, per session, the event counts parsed from `B02` with the counts the device wrote in its own statistics record: **333 sessions × 5 event types, 0 mismatches** after (a) summing one record per mask-on period, (b) using word 3 for central apneas, and (c) excluding code `0x0B` hypopneas. This is an independent check on the event parser; comparison of usage hours/AHI/P95 with OSCAR's own output is still pending (see roadmap).
+`real-card.test.ts` (runs only when `fixtures/raw/P-SERIES` exists) compares, per session, the event counts parsed from `B02` with the counts the device wrote in its own statistics record: **333 sessions × 5 event types, 0 mismatches** after (a) summing one record per mask-on period, (b) using word 3 for central apneas, and (c) excluding code `0x0B` hypopneas. This is an independent check on the event parser. A second, external check against OSCAR 2.1.0's CSV export (550/550 sessions, all metrics) is in [oscar-comparison.md](../oscar-comparison.md).
 
 ## 11. Open questions
 - [ ] Meaning of statistics words 2, 4, 7, 12–14; code `0x0B` hypopnea semantics (OSCAR also marks this as unknown).
-- [ ] Physical scaling of the flow samples.
+- [ ] Physical scaling of the flow samples (OSCAR does not publish a calibration either).
 - [ ] Content of `D/B03` and `E/B04` records and `LOG.SEQ`.
 - [ ] Time-zone / DST behaviour of the device clock.
 - [ ] Zero-tag handling decision (see §2.2).

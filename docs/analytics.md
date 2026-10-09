@@ -16,14 +16,16 @@ Single reference for every number the UI shows. Code: `packages/core/src/stats.t
 - Colour hints on the AHI figure (green < 5, amber < 15, red ≥ 15) are a visual aid, **not a diagnosis**; the explainer text tells users that targets are for their clinician.
 
 ## Leak
-Total leak (L/min) from the device's per-interval statistics (about every 2 minutes). `median`, `p95` and `max` use all intervals of the night. It is **total** leak: it includes the deliberate vent leak, so a steady non-zero value is normal. OSCAR displays an *unintentional* leak derived with a mask-specific model that OpenCPAP does not implement yet, so numbers will differ.
+Total leak (L/min) from the device's per-interval statistics (one value about every 2 minutes). `average`, `median`, `p95` and `max` are **time-weighted**: each value counts for the seconds its interval covers (from the previous sample, or from the session start for the first), so a partial last interval weighs less. This is exactly what OSCAR does and reproduces its `Leak_Avg`/`Leak_95th` ([oscar-comparison.md](oscar-comparison.md)). `weightedPercentile` is nearest rank on the cumulative weight.
+
+It is **total** leak: it includes the deliberate vent leak, so a steady non-zero value is normal (about 40 L/min on the sample device). OSCAR shows the same total-leak figure for this device.
 
 ## Pressure
 `pressure` is the **configured** therapy pressure, deliberately ignoring the ramp:
 fixed CPAP → that value; auto-CPAP → min–max; bi-level → EPAP–IPAP; auto bi-level → EPAP min – IPAP max. Only when the settings are missing does it fall back to the pressure changes logged by the device, which include the ramp (visible in the night's pressure chart). `median` of a range is its midpoint.
 
 ## Percentiles
-Linear interpolation between closest ranks (`percentile(values, p)`). OSCAR uses a weighted percentile, so tiny differences are possible.
+`percentile(values, p)` interpolates linearly between closest ranks and is for unweighted data. Leak statistics use the time-weighted nearest-rank variant described above (verified against OSCAR).
 
 ## Compliance
 Over the last `days` calendar nights ending at the most recent night (default 30): a night is compliant if `usageHours ≥ 4`; nights without data count as 0 h. `ratio` = compliant / days. The common rule "≥ 4 h on ≥ 70 % of nights" is reported as met/not met. The window slides by calendar days, not by nights with data, so gaps lower compliance as they would for a payer.
@@ -32,4 +34,4 @@ Over the last `days` calendar nights ending at the most recent night (default 30
 `generateDemoSessions` (seeded PRNG) produces plausible but fictitious sessions; nothing is derived from real data.
 
 ## Tests
-`nights.test.ts` (percentile, night boundary at noon, merging sessions, pressure rules, compliance window, demo generator) and `stats.test.ts`.
+`nights.test.ts` (percentile, time-weighted statistics, night boundary at noon, merging sessions, pressure rules, compliance window, demo generator) and `stats.test.ts`.

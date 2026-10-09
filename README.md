@@ -8,7 +8,7 @@ A local-first web application for reading and visualizing the therapy data that 
 
 - **Privacy first.** All parsing and analysis runs in your browser. Your data is never uploaded unless you explicitly opt in to a future sharing feature.
 - **Device-agnostic core.** Every device loader outputs the same canonical data model, so the UI and analytics never depend on a manufacturer's format.
-- **Verified against OSCAR.** Parsers are validated against [OSCAR](https://www.sleepfiles.com/OSCAR/) results on the same SD card.
+- **Verified against OSCAR.** Results are compared with [OSCAR](https://www.sleepfiles.com/OSCAR/) on the same SD card: on the sample card every session matches on hours, AHI, event counts and leak ([details](docs/oscar-comparison.md)).
 - **Open.** GPL-3.0-or-later.
 
 ## Status
@@ -16,7 +16,7 @@ A local-first web application for reading and visualizing the therapy data that 
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Foundations, model, DS2 container decryption | Done (CI/lint pending) |
-| 1 | DS2 chunk parser and data loader | Parser validated; browser import (folder/files/ZIP + Web Worker) done; OSCAR comparison and device-log files pending (see [roadmap](docs/roadmap.md)) |
+| 1 | DS2 chunk parser and data loader | Parser validated against OSCAR 2.1.0 (550/550 sessions, all metrics); browser import done; device-log files (`D`/`E`) and anonymizer pending (see [roadmap](docs/roadmap.md)) |
 | 2 | Web app: import, dashboard, night view, local storage, PWA, i18n, accessibility | Done (see [web-app.md](docs/web-app.md)); manual screen-reader and Firefox/Safari checks pending |
 | 3–6 | Trends and reports, advanced analytics, multi-device, sharing | Planned |
 
