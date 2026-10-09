@@ -16,4 +16,4 @@ Thanks for helping! Please read [docs/development.md](docs/development.md) first
 4. Open a PR describing what changed, why, and how it was verified.
 
 ## Adding device support
-See "Adding a device loader" in the development guide. Format documentation is as important as code.
+See [docs/adding-a-device.md](docs/adding-a-device.md) and [docs/devices.md](docs/devices.md) (support levels). Format documentation is as important as code. The most valuable contribution right now is running the app on a **real card of another device** and comparing it with OSCAR — never attach the card itself: it contains health data and the serial number.

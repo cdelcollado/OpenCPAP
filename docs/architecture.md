@@ -12,10 +12,11 @@
 |---|---|
 | `@opencpap/core` | Canonical model (`model.ts`), `VirtualFS` abstraction (`vfs.ts`), `DeviceLoader` interface (`loader.ts`). No device-specific code, no DOM dependencies. |
 | `@opencpap/loader-philips-ds2` | DS2 loader. Layers, bottom-up: `container.ts` (decrypt) → `chunk.ts` + `crc.ts` (framing, integrity) → `summary.ts` / `events.ts` / `waveform.ts` (record decoders) → `index.ts` (session assembly, `DeviceLoader`). `device.ts` reads `PROP.BIN`. `testing/` holds synthetic builders and a Node `VirtualFS` used only by tests. |
+| `@opencpap/loader-resmed` | ResMed loader. `identification.ts` (`Identification.tgt` / `.json`), `str.ts` (`STR.edf` daily settings and summary), `index.ts` (file discovery, grouping files into sessions, EDF+ signals and annotations → canonical model). Reads EDF through `readEdf` in core. `testing/` builds synthetic cards. See [formats/resmed.md](formats/resmed.md). |
 | `@opencpap/browser` | Card sources (`FileListFS`, `DirectoryHandleFS`, `ZipFS`), path re-rooting, import pipeline (`runImport`), Web Worker entry and client (`importCard`). See [browser-import.md](browser-import.md). |
 | `apps/web` (planned) | React + Vite PWA: import, storage, charts, reports. |
 
-Planned: `packages/loaders/resmed`, `packages/ui-charts`, further loaders.
+Planned: `packages/ui-charts`, further loaders ([devices.md](devices.md), [adding-a-device.md](adding-a-device.md)). Every loader's output is checked by the shared `checkSessions` conformance suite in core.
 
 ## Data flow
 

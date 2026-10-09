@@ -25,6 +25,18 @@ export interface SessionAnalysis { version: number; breathing: BreathingAnalysis
 
 const MIN_SEGMENT_SECONDS = 120;
 
+/** The breath detector was tuned and validated on 5 Hz flow; faster signals (e.g. ResMed's 25 Hz) are block-averaged down to it. */
+const ANALYSIS_RATE = 5;
+
+function toAnalysisRate(w: Waveform): { samples: Float32Array; rate: number } {
+  const k = Math.round(w.sampleRate / ANALYSIS_RATE);
+  if (k <= 1 || Math.abs(w.sampleRate - k * ANALYSIS_RATE) > 1e-6) return { samples: w.samples, rate: w.sampleRate };
+  const n = Math.floor(w.samples.length / k);
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) { let t = 0; for (let j = 0; j < k; j++) t += w.samples[i * k + j]!; out[i] = t / k; }
+  return { samples: out, rate: ANALYSIS_RATE };
+}
+
 /**
  * Experimental breath analysis of the flow waveform of one session (see `breath.ts`). Returns undefined when there is
  * not enough flow. Each contiguous segment is analysed on its own so gaps never create fake breaths.
@@ -37,7 +49,8 @@ export function analyzeSession(waveforms: Waveform[]): SessionAnalysis | undefin
   let seconds = 0, perWeight = 0, perShare = 0;
   const periods: number[] = [];
   for (const w of segments) {
-    const b = detectBreaths(w.samples, w.sampleRate);
+    const { samples, rate: sampleRate } = toAnalysisRate(w);
+    const b = detectBreaths(samples, sampleRate);
     const dur = w.samples.length / w.sampleRate;
     seconds += dur;
     all.push(...b);

@@ -94,7 +94,7 @@ function toWaveforms(chunks: Chunk[]): Waveform[] {
 function toSeries(stats: { channel: TimeSeries['channel']; t: number; value: number }[]): TimeSeries[] {
   const units: Record<TimeSeries['channel'], string> = {
     'pressure-set': 'cmH2O', 'epap-set': 'cmH2O', 'ipap-set': 'cmH2O', 'pressure-avg': 'cmH2O',
-    'flex-pressure-avg': 'cmH2O', 'leak-total': 'L/min', 'snore-count': 'count',
+    'flex-pressure-avg': 'cmH2O', 'leak-total': 'L/min', 'leak-unintentional': 'L/min', 'snore-count': 'count',
   };
   const by = new Map<TimeSeries['channel'], { t: number; value: number }[]>();
   for (const s of stats) by.set(s.channel, [...(by.get(s.channel) ?? []), s]);

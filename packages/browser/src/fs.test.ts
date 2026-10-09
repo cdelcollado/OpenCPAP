@@ -6,6 +6,8 @@ import { syntheticCardFiles } from '@opencpap/loader-philips-ds2/testing';
 import { FileListFS } from './fileListFs';
 import { DirectoryHandleFS, type DirEntry, type FileEntry } from './directoryHandleFs';
 import { ZipFS } from './zipFs';
+import { resmedLoader } from '@opencpap/loader-resmed';
+import { buildResmedCard } from '@opencpap/loader-resmed/testing';
 
 const card = syntheticCardFiles();
 const expectedPaths = [...card.keys()].sort();
@@ -80,5 +82,28 @@ describe('ZipFS limits', () => {
     const { MAX_FILE_BYTES } = await import('./fileListFs');
     expect(MAX_FILE_BYTES).toBeGreaterThan(1024); // sanity: the limit is not trivially hit
     expect(await new ZipFS(zip).read('P-SERIES/D/big.bin')).toHaveLength(1024);
+  });
+});
+
+describe('ResMed card (root files STR.edf and Identification.tgt next to DATALOG)', async () => {
+  const built = buildResmedCard({ sessions: [{ start: Date.UTC(2026, 2, 5, 22, 0), minutes: 5 }], serial: 'FS-TEST' });
+  const rm = new Map<string, Uint8Array>();
+  for (const p of await built.list()) rm.set(p, await built.read(p));
+  const rmSources: [string, () => VirtualFS][] = [
+    ['FileListFS', () => new FileListFS([...rm].map(([p, d]) => fileWithPath(`NO NAME/${p}`, d)))],
+    ['DirectoryHandleFS', () => new DirectoryHandleFS(fakeDir('NO NAME', new Map([...rm, ['DCIM/img.jpg', new Uint8Array(3)]])))],
+    ['ZipFS', () => new ZipFS(zipSync(Object.fromEntries([...rm].map(([p, d]) => [`NO NAME/${p}`, d]))))],
+  ];
+  it.each(rmSources)('%s keeps the root files, so settings and serial are read', async (_n, make) => {
+    const fs = make();
+    const listed = await fs.list();
+    expect(listed).toContain('STR.edf');
+    expect(listed).toContain('Identification.tgt');
+    expect(listed.some((p) => p.includes('DCIM'))).toBe(false);
+    const sessions: Session[] = [];
+    for await (const s of loadCard(fs, [philipsDs2Loader, resmedLoader])) sessions.push(s);
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0]!.device.serial).toBe('FS-TEST');
+    expect(sessions[0]!.settings).toMatchObject({ mode: 'auto-cpap', pressureMin: 6, pressureMax: 12 });
   });
 });

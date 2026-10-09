@@ -35,7 +35,7 @@ export interface Waveform {
 
 /** Irregularly sampled series (e.g. per-interval statistics reported by the device). */
 export interface TimeSeries {
-  channel: 'pressure-set' | 'epap-set' | 'ipap-set' | 'pressure-avg' | 'flex-pressure-avg' | 'leak-total' | 'snore-count';
+  channel: 'pressure-set' | 'epap-set' | 'ipap-set' | 'pressure-avg' | 'flex-pressure-avg' | 'leak-total' | 'leak-unintentional' | 'snore-count';
   unit: string;
   /** UTC ms, ascending */
   times: Float64Array;

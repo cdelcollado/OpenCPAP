@@ -14,3 +14,6 @@ export * from './trends';
 export * from './anomalies';
 export * from './edf';
 export * from './oximetry';
+export * from './edfRead';
+export * from './edfBuild';
+export * from './conformance';

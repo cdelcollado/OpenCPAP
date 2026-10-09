@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { zipSync } from 'fflate';
 import { syntheticCardFiles } from '@opencpap/loader-philips-ds2/testing';
+import { buildResmedCard } from '@opencpap/loader-resmed/testing';
 
 /** Fails the test on uncaught errors and console errors (the app must be silent when healthy). */
 export function failOnConsoleErrors(page: Page) {
@@ -16,6 +17,24 @@ export function syntheticZip(dir: string): string {
   mkdirSync(dir, { recursive: true });
   const path = join(dir, 'synthetic-card.zip');
   writeFileSync(path, zipSync(Object.fromEntries(syntheticCardFiles())));
+  return path;
+}
+
+/** A small synthetic ResMed card: `nights` consecutive nights of 40 minutes with a few events. */
+export async function resmedZip(dir: string, nights = 6): Promise<string> {
+  mkdirSync(dir, { recursive: true });
+  const path = join(dir, 'synthetic-resmed.zip');
+  const sessions = Array.from({ length: nights }, (_, i) => ({
+    start: Date.UTC(2026, 2, 1 + i, 23, 0), minutes: 40, leak: 0.04 + 0.01 * i, pressure: 8 + (i % 3),
+    events: [
+      { text: 'Obstructive Apnea' as const, onset: 300, duration: 14 }, { text: 'Hypopnea' as const, onset: 900, duration: 18 },
+      { text: 'Central Apnea' as const, onset: 1500, duration: 11 },
+    ],
+  }));
+  const card = buildResmedCard({ sessions, serial: 'E2E-RESMED' });
+  const files: Record<string, Uint8Array> = {};
+  for (const p of await card.list()) files[p] = await card.read(p);
+  writeFileSync(path, zipSync(files));
   return path;
 }
 

@@ -90,7 +90,19 @@ Legend: [x] done · [ ] pending
 - [ ] JSON export of the canonical model
 
 ## Phase 5 — Multi-device
-ResMed (EDF+) first, then others; conformance suite; compatibility matrix.
+- [x] Generic EDF / EDF+ reader in core (`readEdf`) and an EDF+ builder (`buildEdfPlus`) for synthetic cards
+- [x] ResMed AirSense 10 / AirCurve 10 / S9 loader: identity, `STR.edf` settings, sessions, events, 25 Hz flow and pressure, unintentional leak, CSR episodes ([formats/resmed.md](formats/resmed.md))
+- [x] Shared loader conformance suite (`checkSessions`), applied to the Philips and ResMed loaders
+- [x] Card sources keep root files such as `STR.edf` and `Identification.tgt` (found by the browser-level tests)
+- [x] Leak kinds (`leak-total` vs `leak-unintentional`, `NightSummary.leakKind`) and neutral wording in the UI
+- [x] Compatibility matrix ([devices.md](devices.md)) and contributor guide ([adding-a-device.md](adding-a-device.md))
+- [x] Tests: loader (19), EDF reader (8), conformance (4), card sources with root files, worker with analysis, E2E on a synthetic ResMed ZIP
+- [ ] **Validate the ResMed loader on real AirSense 10 / AirCurve 10 / AirSense 11 cards against OSCAR** (needs a volunteer's card); only then mark it *Verified*
+- [ ] Derive sessions and mask-off periods from `STR.edf` mask times like OSCAR
+- [ ] Import `RespRate`, `TidVol`, `MinVent`, `Snore`, `FlowLim` and the device oximeter (SAD)
+- [ ] Bi-level and ASV modes (names, settings)
+- [ ] Per-device filter / device-change marker on the timeline
+- [ ] Philips DreamStation 1 / System One (unencrypted `.00n`), Fisher & Paykel, BMC, Löwenstein
 
 ## Phase 6 — Connectivity and sharing (optional)
 E2E-encrypted share links, Wi-Fi SD companion, MQTT/Home Assistant, opt-in LLM summaries.

@@ -72,3 +72,6 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 18 | CSV (nights, events, statistics, oximetry) and EDF (flow) export | [exports.md](exports.md) |
 | 28 | "Worth a look" alerts (missed nights, short runs, leak and AHI rises) | [analytics.md](analytics.md#alerts-worth-a-look) |
 | 9 | Rolling averages and distributions on the trends | [analytics.md](analytics.md) |
+| 35 | Compatibility matrix with support levels (Synthetic / Verified) | [devices.md](devices.md) |
+| 4 | Second device family: ResMed AirSense/AirCurve (EDF+) behind the same canonical model | [formats/resmed.md](formats/resmed.md) |
+| 32 | Contributor path for new devices: conformance suite and checklist | [adding-a-device.md](adding-a-device.md) |

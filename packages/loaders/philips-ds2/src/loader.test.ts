@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MemoryFS, summarizeSession, type Session } from '@opencpap/core';
+import { checkSessions, MemoryFS, summarizeSession, type Session } from '@opencpap/core';
 import { philipsDs2Loader } from './index';
 import { syntheticCardFiles } from './testing/builders';
 
@@ -29,6 +29,10 @@ describe('philipsDs2Loader (synthetic card)', () => {
     const sum = summarizeSession(s!);
     expect(sum.usageHours).toBeCloseTo(1);
     expect(sum.ahi).toBeCloseTo(2);
+  });
+
+  it('passes the shared loader conformance checks', async () => {
+    expect(checkSessions(await collect(new MemoryFS(syntheticCardFiles())))).toEqual([]);
   });
 
   it('skips sessions that have no summary file', async () => {

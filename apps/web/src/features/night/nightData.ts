@@ -77,7 +77,8 @@ export function buildNightData(sessions: SessionLite[], waveforms: Waveform[], o
 
   const win = sessions.flatMap((s) => (s.analysis ? [...s.analysis.windows.times].map((t, i) => ({ t: t / 1000, flat: s.analysis!.windows.flatShare[i]!, rate: s.analysis!.windows.rate[i]! })) : []))
     .filter((w) => !Number.isNaN(w.flat) && !Number.isNaN(w.rate)).sort((a, b) => a.t - b.t);
-  const leak = merge(sessions, 'leak-total');
+  // total leak (Philips) when the sessions have it, else unintentional leak (ResMed)
+  const leak = merge(sessions, sessions.some((s) => s.statistics.some((t) => t.channel === 'leak-total')) ? 'leak-total' : 'leak-unintentional');
   const snore = merge(sessions, 'snore-count');
   return {
     extent: [start, end], events, maskOff, pressure,

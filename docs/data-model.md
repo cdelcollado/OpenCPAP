@@ -68,3 +68,10 @@ Free-form keys with these conventions (set when the device reports them):
 - `Session.analysis?: SessionAnalysis` (`analysis.ts`): `{ version, breathing: BreathingAnalysis, windows: WindowSeries }`. Not produced by loaders; it is computed from the flow waveform in the import worker. `BreathingAnalysis` = `BreathSummary` (breaths, rate, periodCv, volumeCv, ti, ieRatio, shape, flatShare) + `periodicityShare`, `periodicityPeriod`, `seconds`. `WindowSeries` = parallel typed arrays over ~5-minute windows (`times` in ms, `flatShare`, `rate`, `volumeCv`). All scale-free ([breathing-analysis.md](breathing-analysis.md)).
 - `NightSummary.breathing?: NightBreathing` (breath-count-weighted aggregate over the night's sessions) and `NightSummary.oximetry?: OximetryStats` (from a separate oximeter, [oximetry.md](oximetry.md)).
 - `OximetryRecording` `{ times (ms), spo2, pulse }` and `OximetryStats` (`seconds`, `spo2Mean/Min`, `t90`, `t88`, `odi3`, `odi4`, desaturation counts, pulse mean/min/max).
+
+## Phase 5 additions
+- `TimeSeries.channel` gained `leak-unintentional` (L/min): leak with the mask's vent flow subtracted (ResMed). `leak-total` includes it (Philips). `NightSummary.leakKind` (`'total' | 'unintentional'`) tells which one a night's `leak` describes; the two are never comparable in absolute terms. `leakSeriesOf(session)` returns the right series (total preferred).
+- Waveform units are fixed by the conformance suite: flow in **L/min**, pressure in **cmH2O**. A loader converts (ResMed stores flow in L/s).
+- `Session.id` must be unique per device; ResMed uses the start time in epoch seconds.
+- Settings keys shared by all loaders: `mode` (`cpap`, `auto-cpap`, `bilevel`, `auto-bilevel`, or a device-specific string), `pressure`, `pressureMin`, `pressureMax`, `epap`, `ipap`, `rampTimeMinutes`, `rampPressure`, `flexMode` (`none`, `flex`, `epr`, …), `flexLevel`. See [adding-a-device.md](adding-a-device.md).
+- `Waveform.sampleRate` may be any positive number; analysis reduces multiples of 5 Hz to 5 Hz, and EDF export needs an integer rate.

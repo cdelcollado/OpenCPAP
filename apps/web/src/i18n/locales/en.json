@@ -49,7 +49,7 @@
   "viewDashboard": "View dashboard",
   "cancelImport": "Cancel import",
   "cancelled": "Import cancelled.",
-  "errorUnsupported": "No supported CPAP data was found. Select the folder that contains P-SERIES (Philips DreamStation 2).",
+  "errorUnsupported": "No supported CPAP data was found. Select the card's root folder: it contains P-SERIES for a Philips DreamStation 2, or DATALOG and STR.edf for a ResMed AirSense/AirCurve.",
   "errorGeneric": "The import failed: {{message}}",
   "errorDnd": "Drop a folder or a ZIP file.",
   "demoTitle": "No card at hand?",
@@ -60,7 +60,7 @@
   "step1Title": "Take out the SD card",
   "step1": "Remove the card from your CPAP and put it in your computer, or copy its contents to a folder.",
   "step2Title": "Choose the card's folder",
-  "step2": "For a Philips DreamStation 2 pick the folder that contains P-SERIES. You can also drop it here or use a ZIP.",
+  "step2": "Pick the card's root folder: it contains P-SERIES for a Philips DreamStation 2, or DATALOG and STR.edf for a ResMed AirSense/AirCurve. You can also drop it here or use a ZIP.",
   "step3Title": "Wait a few seconds",
   "step3": "Sessions are decoded on this device and stored in your browser."
  },
@@ -155,7 +155,7 @@
  "explain": {
   "ahi": "Apnea–Hypopnea Index: apneas and hypopneas per hour of use. Many guidelines treat under 5 per hour as well controlled, but what is right for you is a decision for your clinician.",
   "usage": "Hours with the mask on. Many insurers and clinics look for at least 4 hours on at least 70 % of nights.",
-  "leak": "Total air leak, in litres per minute. It includes the deliberate leak of the mask vents, so a steady non-zero value is normal; sustained high peaks may mean a poor mask seal.",
+  "leak": "Air leak, in litres per minute. Philips devices report total leak, which includes the deliberate leak of the mask vents, so a steady non-zero value is normal. ResMed devices report unintentional leak, with the vent flow already subtracted, so their values are lower and start near zero. Sustained high peaks may mean a poor mask seal. The two kinds should not be compared with each other.",
   "pressure": "Therapy pressure in cmH₂O set on the device or chosen automatically.",
   "compliance": "Share of nights with at least 4 hours of use over the last 30 nights.",
   "flow": "Breathing flow measured by the device (positive: breathing in). Scaling is approximate.",
@@ -177,7 +177,7 @@
   "sessionsCount_other": "{{count}} sessions",
   "timeline": "Event timeline",
   "flowChart": "Flow",
-  "leakChart": "Total leak (L/min)",
+  "leakChart": "Leak (L/min)",
   "pressureChart": "Pressure (cmH₂O)",
   "snoreChart": "Snore events per interval",
   "noWaveform": "This night has no detailed flow data on the card; only summary statistics are shown.",
@@ -286,7 +286,8 @@
   "maskResistance": "Mask resistance",
   "autoStart": "Auto start",
   "autoStop": "Auto stop",
-  "humid_none": "None"
+  "humid_none": "None",
+  "flex_epr": "EPR (pressure relief)"
  },
  "settingKey": {
   "mode": "Mode",
@@ -505,7 +506,7 @@
   "nightsTable": "Nights",
   "vsPrevious": "Previous period ({{from}} to {{to}})",
   "noPrevious": "No data in the previous period.",
-  "limits": "Figures come from the device's own records. Leak is total leak, including the mask's intentional vent flow. This summary is not a diagnosis.",
+  "limits": "Figures come from the device's own records. Leak is the device's own figure: total leak including the mask's intentional vent flow for Philips, unintentional leak for ResMed. This summary is not a diagnosis.",
   "refHint": "Dashed horizontal lines mark 4 hours of use and 5 events per hour.",
   "oximetry": "Oximetry (your own oximeter)",
   "oximetryLine": "{{count}} night(s) with data: average SpO₂ {{mean}} %, lowest {{min}} %, time under 90 % {{t90}} % (median), desaturations ≥ 3 % {{odi}} per hour (mean).",
@@ -539,7 +540,7 @@
   "events": "Events (CSV)",
   "stats": "Statistics (CSV)",
   "flow": "Flow (EDF)",
-  "hint": "Times are the device's clock without a time zone. Flow is exported with the device's own numbers (the unit is not verified).",
+  "hint": "Times are the device's clock without a time zone. Flow is exported with the device's own numbers: ResMed flow is in L/min, for Philips the unit is not verified.",
   "oximetry": "Oximetry (CSV)"
  },
  "oximetry": {
