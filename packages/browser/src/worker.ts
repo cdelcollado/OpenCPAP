@@ -1,10 +1,11 @@
 /// <reference lib="webworker" />
 // Entry point of the import Web Worker. Add new device loaders to LOADERS.
 import { philipsDs2Loader } from '@opencpap/loader-philips-ds2';
+import { resmedLoader } from '@opencpap/loader-resmed';
 import { runImport } from './importer';
 import type { FromWorker, ToWorker } from './protocol';
 
-const LOADERS = [philipsDs2Loader];
+const LOADERS = [philipsDs2Loader, resmedLoader];
 
 let cancelled = false;
 const scope = self as unknown as {

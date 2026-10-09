@@ -8,6 +8,9 @@
       "path": "packages/loaders/philips-ds2"
     },
     {
+      "path": "packages/loaders/resmed"
+    },
+    {
       "path": "packages/browser"
     },
     {

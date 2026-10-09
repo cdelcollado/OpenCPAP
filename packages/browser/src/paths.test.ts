@@ -24,6 +24,19 @@ describe('rerootPaths', () => {
   });
 });
 
+describe('rerootPaths: root files', () => {
+  it('keeps device files that sit next to a marker folder', () => {
+    expect(reroot(['SD/DATALOG/20260101/a.edf', 'SD/STR.edf', 'SD/Identification.tgt', 'SD/photos/STR.edf', 'SD/other.txt']).sort())
+      .toEqual(['DATALOG/20260101/a.edf', 'Identification.tgt', 'STR.edf']);
+  });
+  it('drops them when no marker folder shares their root', () => {
+    expect(reroot(['SD/STR.edf', 'elsewhere/DATALOG/x/a.edf'])).toEqual(['DATALOG/x/a.edf']);
+  });
+  it('works when the card root is the selected folder itself', () => {
+    expect(reroot(['STR.edf', 'DATALOG/x/a.edf']).sort()).toEqual(['DATALOG/x/a.edf', 'STR.edf']);
+  });
+});
+
 describe('cleanPath', () => {
   it('normalizes separators', () => expect(cleanPath('.\\P-SERIES//DEV\\a')).toBe('P-SERIES/DEV/a'));
 });

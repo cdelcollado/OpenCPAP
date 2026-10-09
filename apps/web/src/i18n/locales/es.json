@@ -49,7 +49,7 @@
   "viewDashboard": "Ver el panel",
   "cancelImport": "Cancelar la importación",
   "cancelled": "Importación cancelada.",
-  "errorUnsupported": "No se encontraron datos de CPAP compatibles. Selecciona la carpeta que contiene P-SERIES (Philips DreamStation 2).",
+  "errorUnsupported": "No se encontraron datos de CPAP compatibles. Selecciona la carpeta raíz de la tarjeta: contiene P-SERIES en una Philips DreamStation 2, o DATALOG y STR.edf en una ResMed AirSense/AirCurve.",
   "errorGeneric": "La importación ha fallado: {{message}}",
   "errorDnd": "Suelta una carpeta o un archivo ZIP.",
   "demoTitle": "¿No tienes la tarjeta a mano?",
@@ -60,7 +60,7 @@
   "step1Title": "Saca la tarjeta SD",
   "step1": "Saca la tarjeta de la CPAP y ponla en el ordenador, o copia su contenido a una carpeta.",
   "step2Title": "Elige la carpeta de la tarjeta",
-  "step2": "En una Philips DreamStation 2 selecciona la carpeta que contiene P-SERIES. También puedes soltarla aquí o usar un ZIP.",
+  "step2": "Elige la carpeta raíz de la tarjeta: contiene P-SERIES en una Philips DreamStation 2, o DATALOG y STR.edf en una ResMed AirSense/AirCurve. También puedes arrastrarla aquí o usar un ZIP.",
   "step3Title": "Espera unos segundos",
   "step3": "Las sesiones se decodifican en este dispositivo y se guardan en tu navegador."
  },
@@ -155,7 +155,7 @@
  "explain": {
   "ahi": "Índice de apneas–hipopneas: apneas e hipopneas por hora de uso. Muchas guías consideran bien controlado un valor inferior a 5 por hora, pero lo adecuado para ti lo decide tu profesional sanitario.",
   "usage": "Horas con la mascarilla puesta. Muchas aseguradoras y clínicas piden al menos 4 horas en al menos el 70 % de las noches.",
-  "leak": "Fuga total de aire, en litros por minuto. Incluye la fuga deliberada de las salidas de la mascarilla, por lo que un valor estable distinto de cero es normal; picos altos sostenidos pueden indicar un mal sellado.",
+  "leak": "Fuga de aire, en litros por minuto. Los equipos Philips informan de la fuga total, que incluye la fuga deliberada de las salidas de la mascarilla, por lo que un valor estable distinto de cero es normal. Los ResMed informan de la fuga no intencionada, con el flujo de ventilación ya restado, por eso sus valores son más bajos y parten de casi cero. Picos altos sostenidos pueden indicar un mal sellado. Los dos tipos no deben compararse entre sí.",
   "pressure": "Presión de la terapia en cmH₂O, fijada en el dispositivo o elegida automáticamente.",
   "compliance": "Proporción de noches con al menos 4 horas de uso durante las últimas 30 noches.",
   "flow": "Flujo respiratorio medido por el dispositivo (positivo: inspiración). La escala es aproximada.",
@@ -177,7 +177,7 @@
   "sessionsCount_other": "{{count}} sesiones",
   "timeline": "Cronología de eventos",
   "flowChart": "Flujo",
-  "leakChart": "Fuga total (L/min)",
+  "leakChart": "Fuga (L/min)",
   "pressureChart": "Presión (cmH₂O)",
   "snoreChart": "Eventos de ronquido por intervalo",
   "noWaveform": "Esta noche no tiene datos detallados de flujo en la tarjeta; solo se muestran estadísticas de resumen.",
@@ -286,7 +286,8 @@
   "maskResistance": "Resistencia de la mascarilla",
   "autoStart": "Inicio automático",
   "autoStop": "Parada automática",
-  "humid_none": "Ninguno"
+  "humid_none": "Ninguno",
+  "flex_epr": "EPR (alivio de presión)"
  },
  "settingKey": {
   "mode": "Modo",
@@ -505,7 +506,7 @@
   "nightsTable": "Noches",
   "vsPrevious": "Periodo anterior (del {{from}} al {{to}})",
   "noPrevious": "No hay datos en el periodo anterior.",
-  "limits": "Las cifras proceden de los registros del propio dispositivo. La fuga es fuga total, incluida la ventilación intencionada de la mascarilla. Este resumen no es un diagnóstico.",
+  "limits": "Las cifras proceden de los registros del propio dispositivo. La fuga es la cifra del propio equipo: fuga total, incluida la ventilación intencionada de la mascarilla, en Philips; fuga no intencionada en ResMed. Este resumen no es un diagnóstico.",
   "refHint": "Las líneas horizontales discontinuas marcan 4 horas de uso y 5 eventos por hora.",
   "oximetry": "Oximetría (tu propio oxímetro)",
   "oximetryLine": "{{count}} noche(s) con datos: SpO₂ media {{mean}} %, mínima {{min}} %, tiempo por debajo del 90 % {{t90}} % (mediana), desaturaciones ≥ 3 % {{odi}} por hora (media).",
@@ -539,7 +540,7 @@
   "events": "Eventos (CSV)",
   "stats": "Estadísticas (CSV)",
   "flow": "Flujo (EDF)",
-  "hint": "Las horas son las del reloj del dispositivo, sin zona horaria. El flujo se exporta con los números propios del dispositivo (la unidad no está verificada).",
+  "hint": "Las horas son las del reloj del dispositivo, sin zona horaria. El flujo se exporta con los números propios del equipo: el de ResMed está en L/min; en Philips la unidad no está verificada.",
   "oximetry": "Oximetría (CSV)"
  },
  "oximetry": {

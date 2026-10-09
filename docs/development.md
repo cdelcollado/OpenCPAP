@@ -35,6 +35,8 @@ npm run e2e         # build + Playwright E2E and accessibility tests (needs Goog
 4. Add synthetic-fixture tests and an OSCAR cross-check script.
 5. Update the supported-devices table in `README.md`.
 
+The complete checklist (conformance checks, root files, settings keys, units, validation against OSCAR) is in [adding-a-device.md](adding-a-device.md).
+
 ## Commits
 English messages, imperative mood, explain the why. Documentation updates ship in the same commit as the code they describe.
 

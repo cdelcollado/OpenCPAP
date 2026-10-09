@@ -20,19 +20,25 @@ A local-first web application for reading and visualizing the therapy data that 
 | 2 | Web app: import, dashboard, night view, local storage, PWA, i18n, accessibility | Done (see [web-app.md](docs/web-app.md)); manual screen-reader and Firefox/Safari checks pending |
 | 3 | Notes, summary in plain language, setting changes, period comparison, equipment tracking, clinician report (print/PDF), backup and restore | Done (see [roadmap](docs/roadmap.md)) |
 | 4 | Breath analysis (flat-topped breaths, rate, regularity, periodic pattern), oximeter import (ODI, T90), alerts, rolling averages and distributions, CSV/EDF exports | Done; **experimental** measures, see [breathing-analysis.md](docs/breathing-analysis.md) and [oximetry.md](docs/oximetry.md) |
-| 5–6 | Multi-device, sharing | Planned |
+| 5 | Multi-device: generic EDF reader, ResMed AirSense/AirCurve loader, shared loader conformance suite, compatibility matrix, guide for adding devices | Done; ResMed is tested on **synthetic** cards only, see [devices.md](docs/devices.md) |
+| 6 | Sharing and connectivity | Planned |
 
 ## Supported devices
 
 | Device | Detect | Decrypt | Parse | Notes |
 |---|---|---|---|---|
-| Philips DreamStation 2 | yes | yes | yes — sessions, settings, events, flow waveform, statistics | Verified on a 420X150C, firmware V1.0.6; other DS2 variants untested |
+| Philips DreamStation 2 | yes | yes | yes — sessions, settings, events, flow waveform, statistics | **Verified** on a 420X150C, firmware V1.0.6 (matches OSCAR); other DS2 variants untested |
+| ResMed AirSense 10 / AirCurve 10 / S9 | yes | n/a (plain EDF+) | yes — sessions, settings, events, flow (25 Hz), pressure, leak | **Synthetic only**: built from OSCAR's behaviour and the EDF spec, never run on a real card ([formats/resmed.md](docs/formats/resmed.md)) |
+| ResMed AirSense 11 | best effort | n/a | best effort | Unverified |
+
+Full matrix, support levels and how to help: [docs/devices.md](docs/devices.md).
 
 ## Repository layout
 
 ```
 packages/core/                 canonical model, VirtualFS, DeviceLoader interface
 packages/loaders/philips-ds2/  DreamStation 2 loader (decryption, chunk parsing, sessions)
+packages/loaders/resmed/       ResMed loader (EDF+ files, STR.edf settings)
 packages/browser/              card sources (folder, files, ZIP), Web Worker import pipeline
 apps/web/                      the web app (React + Vite PWA)
 e2e/                           Playwright end-to-end and accessibility tests
@@ -62,7 +68,7 @@ npm run e2e        # build + end-to-end and accessibility tests in Chrome
 Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrome. See [docs/development.md](docs/development.md) and [docs/testing.md](docs/testing.md).
 
 ## Using it
-1. Open the app, go to **Import** and choose the SD card's folder (the one that contains `P-SERIES`), drop it, or pick a ZIP of it.
+1. Open the app, go to **Import** and choose the SD card's root folder (it contains `P-SERIES` for a Philips DreamStation 2, or `DATALOG` and `STR.edf` for a ResMed), drop it, or pick a ZIP of it.
 2. Browse the **Dashboard** and open any **night** for the timeline and waveforms.
 3. Add a **note** (mood, text, tags) to a night, track your **equipment**, **compare** two periods (for example before and after a setting change) and print a **report** for your clinician.
 4. Everything stays in your browser. **Settings** lets you change language/theme, **back up and restore** your data, and delete all stored data.
@@ -74,6 +80,9 @@ Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrom
 - [Design system (tokens, palette, chart rules, accessibility checklist)](docs/design-system.md)
 - [Clinician report (print / PDF)](docs/report.md)
 - [Backup file format](docs/backup-format.md)
+- [Supported devices and support levels](docs/devices.md)
+- [Adding a device](docs/adding-a-device.md)
+- [ResMed format](docs/formats/resmed.md)
 - [Browser import (card sources, worker protocol)](docs/browser-import.md)
 - [Local storage (IndexedDB schema)](docs/storage.md)
 - [Analytics definitions (nights, AHI, leak, pressure, compliance)](docs/analytics.md)

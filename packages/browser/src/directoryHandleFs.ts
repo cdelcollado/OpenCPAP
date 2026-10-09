@@ -1,5 +1,5 @@
 import type { VirtualFS } from '@opencpap/core';
-import { isMarker } from './paths';
+import { isMarker, isRootFile } from './paths';
 import { MAX_FILE_BYTES } from './fileListFs';
 
 /** The subset of the File System Access API that we use (also easy to fake in tests). */
@@ -32,11 +32,14 @@ export class DirectoryHandleFS implements VirtualFS {
       const findMarkers = async (dir: DirEntry, depth: number): Promise<boolean> => {
         let found = false;
         const subdirs: DirEntry[] = [];
+        const rootFiles: FileEntry[] = [];
         for await (const e of dir.values()) {
-          if (e.kind !== 'directory') continue;
+          if (e.kind === 'file') { if (isRootFile(e.name)) rootFiles.push(e); continue; }
           if (isMarker(e.name)) { await walk(e, `${e.name}/`); found = true; }
           else subdirs.push(e);
         }
+        // device files that sit next to the marker folder (ResMed's STR.edf, Identification.tgt)
+        if (found) for (const f of rootFiles) this.files.set(f.name, f);
         if (found || depth >= MAX_MARKER_DEPTH) return found;
         for (const d of subdirs) if (await findMarkers(d, depth + 1)) found = true;
         return found;

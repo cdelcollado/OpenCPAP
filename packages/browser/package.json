@@ -8,6 +8,7 @@
   "dependencies": {
     "@opencpap/core": "*",
     "@opencpap/loader-philips-ds2": "*",
+    "@opencpap/loader-resmed": "*",
     "fflate": "^0.8.2"
   }
 }

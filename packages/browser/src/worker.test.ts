@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import type { Session } from '@opencpap/core';
 import { philipsDs2Loader } from '@opencpap/loader-philips-ds2';
+import { resmedLoader } from '@opencpap/loader-resmed';
+import { buildResmedCard } from '@opencpap/loader-resmed/testing';
 import { syntheticCardFiles } from '@opencpap/loader-philips-ds2/testing';
 import { importCard, type WorkerLike } from './client';
 import { runImport } from './importer';
@@ -17,7 +19,7 @@ function fakeWorker(opts: { delayMs?: number } = {}): WorkerLike & { terminated:
     postMessage(msg: ToWorker) {
       w.received.push(msg);
       if (msg.type === 'cancel') { cancelled = true; return; }
-      void runImport(msg.source, [philipsDs2Loader], (m, transfer) => {
+      void runImport(msg.source, [philipsDs2Loader, resmedLoader], (m, transfer) => {
         const data = structuredClone(m, { transfer }) as FromWorker;
         setTimeout(() => listeners.forEach((l) => l({ data })), opts.delayMs ?? 0);
       }, () => cancelled);
@@ -50,6 +52,23 @@ describe('importCard (worker protocol)', () => {
     // typed arrays survive the structured clone / transfer
     expect([...sessions[0]!.waveforms[0]!.samples]).toEqual([1, 2, 3, 4, 5, -1, -2, 0, 1, 2]);
     expect(w.terminated).toBe(true);
+  });
+
+  it('picks the ResMed loader for a ResMed card and analyses its 25 Hz flow', async () => {
+    const card = buildResmedCard({ sessions: [{ start: Date.UTC(2026, 2, 5, 22, 0), minutes: 10, events: [{ text: 'Hypopnea', onset: 100, duration: 12 }] }] });
+    const files = new Map<string, Uint8Array>();
+    for (const p of await card.list()) files.set(p, await card.read(p));
+    const w = fakeWorker();
+    const detected: string[] = [];
+    const sessions: Session[] = [];
+    for await (const sess of importCard(w, await zipSource(files), { onDetected: (d) => detected.push(`${d.loader}:${d.manufacturer}`) })) sessions.push(sess);
+    expect(detected).toEqual(['resmed:ResMed']);
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0]!.settings).toMatchObject({ mode: 'auto-cpap', pressureMin: 6, pressureMax: 12 });
+    expect(sessions[0]!.waveforms[0]!.samples).toBeInstanceOf(Float32Array);
+    // breaths are detected on the 25 Hz flow after it is reduced to the analysed rate (one breath every 4 s)
+    expect(sessions[0]!.analysis?.breathing.rate).toBeGreaterThan(10);
+    expect(sessions[0]!.analysis?.breathing.rate).toBeLessThan(20);
   });
 
   it('reports unsupported cards as an UnsupportedCardError', async () => {

@@ -9,6 +9,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
 - Bundle split into app / vendor / charts chunks.
 
+### Added (Phase 5)
+- **ResMed loader** (`@opencpap/loader-resmed`): AirSense 10 / AirCurve 10 / S9 (AirSense 11 best effort) — identity, `STR.edf` settings, sessions, events, 25 Hz flow and pressure, unintentional leak, CSR episodes. **Tested on synthetic cards only**; see [docs/formats/resmed.md](docs/formats/resmed.md) and [docs/devices.md](docs/devices.md).
+- **Generic EDF/EDF+ reader** (`readEdf`) and EDF+ builder (`buildEdfPlus`) in core.
+- **Loader conformance suite** (`checkSessions`), applied to both loaders.
+- Leak kinds: `leak-unintentional` series and `NightSummary.leakKind`; neutral leak wording in the UI and report in en/ca/es; EPR shown with the other pressure-relief settings.
+- Breath analysis reduces faster flow (25 Hz) to 5 Hz before detection.
+- Docs: `devices.md`, `adding-a-device.md`, `formats/resmed.md`, ADR-0011.
+
+### Fixed (Phase 5)
+- Card sources dropped files that sit beside the marker folder (`STR.edf`, `Identification.tgt`); they are now kept (`ROOT_FILES`) in folder, file-list and ZIP imports.
+
 ### Added (Phase 4)
 - **Breath analysis** (`breath.ts`, `analysis.ts`): breath rate, variation of breath length and volume, I:E, flat-topped share and a periodic-pattern measure from the 5 Hz flow, scale-free; computed in the import worker with a background backfill for older data. Validated on the real card ([breathing-analysis.md](docs/breathing-analysis.md)).
 - **Oximeter import**: CSV parsing, alignment with the CPAP night, ODI3/ODI4, T90/T88, preview with an overlap check, SpO₂/pulse tracks and card ([oximetry.md](docs/oximetry.md)).

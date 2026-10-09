@@ -32,7 +32,8 @@ Users select different things: the card root (`NO NAME/`), its parent, or the ma
 - The marker is searched in the first three path segments, case-insensitively (cards show `P-SERIES`, `P-Series`, `p-series`); the card's own spelling is kept.
 - Everything before the marker is dropped; files with no marker are ignored, which keeps photos or documents on the card out of the virtual file system.
 - `DirectoryHandleFS` additionally walks **only** marker folders (searching up to two levels below the chosen directory), so a large card is not enumerated.
-- **When adding a device family, add its root marker to `ROOT_MARKERS`.**
+- **Root files.** Some devices keep files beside the marker folder (ResMed: `STR.edf`, `Identification.tgt`, `Identification.json`). `ROOT_FILES` lists them; they are kept (as `STR.edf`, …) only when they share a folder with a marker folder, in `FileListFS`, `ZipFS` and `DirectoryHandleFS` alike. Selecting only the marker folder therefore loses them (ResMed: no settings, no serial).
+- **When adding a device family, add its root marker to `ROOT_MARKERS` and its root files to `ROOT_FILES`.**
 
 ### Limits (defence against hostile input)
 - Individual files above `MAX_FILE_BYTES` (256 MiB) are refused by all adapters; real card files are under 1 MB.
@@ -75,7 +76,7 @@ for await (const session of importCard(createImportWorker(), source, {
 
 ## Verification
 - `paths.test.ts`: re-rooting rules.
-- `fs.test.ts`: 8 source variants (card root / marker folder / parent folder / extra files / zip with and without folder name) each list, read and load a synthetic card identically.
+- `fs.test.ts`: 8 source variants (and a ResMed card through three sources, to prove the root files survive) (card root / marker folder / parent folder / extra files / zip with and without folder name) each list, read and load a synthetic card identically.
 - `worker.test.ts`: protocol with an in-process fake worker that clones messages like a real one (including transferred typed arrays); unsupported card, corrupt data, pre-aborted and mid-import cancellation.
 - `real-card.test.ts` (needs `fixtures/raw`): `FileListFS`, `DirectoryHandleFS` and `ZipFS` produce identical fingerprints for all 550 sessions of the sample card (ids, times, event counts, waveform sample counts, statistics, usage). Observed on the dev machine: ~3 s via ZIP (30 MB archive).
 - **Not yet verified in a real browser.** The Worker, `showDirectoryPicker` and drag-and-drop code paths are exercised through fakes only; a Playwright smoke test arrives with the web app (Phase 2).
