@@ -1,8 +1,7 @@
 {
  "app": {
   "name": "OpenCPAP",
-  "skip": "Saltar al contenido",
-  "tagline": "Tus datos de CPAP se quedan en tu dispositivo."
+  "skip": "Saltar al contenido"
  },
  "nav": {
   "label": "Navegación principal",
@@ -17,21 +16,16 @@
  "common": {
   "loading": "Cargando…",
   "back": "Atrás",
-  "hoursShort": "h",
   "minutesShort": "min",
   "none": "—",
-  "night": "Noche",
   "date": "Fecha",
-  "session": "Sesión",
-  "cancel": "Cancelar",
-  "delete": "Eliminar",
-  "close": "Cerrar",
-  "details": "Detalles",
-  "explain": "¿Qué significa?"
+  "explain": "¿Qué significa?",
+  "yes": "Sí",
+  "no": "No",
+  "off": "Desactivado"
  },
  "import": {
   "title": "Importar datos de la CPAP",
-  "intro": "Inserta la tarjeta SD de la CPAP y elige su carpeta. En una Philips DreamStation 2, selecciona la carpeta que contiene P-SERIES.",
   "privacy": "El navegador lee y decodifica los archivos en local. Nunca se suben a ningún sitio.",
   "chooseFolder": "Elegir carpeta de la tarjeta",
   "chooseFolderFallback": "Elegir carpeta de la tarjeta (cualquier navegador)",
@@ -51,7 +45,13 @@
   "demoBody": "Explora la aplicación con datos de ejemplo sintéticos.",
   "demoButton": "Cargar datos de demostración",
   "demoRemove": "Eliminar los datos de demostración",
-  "demoLoaded": "Datos de demostración cargados."
+  "demoLoaded": "Datos de demostración cargados.",
+  "step1Title": "Saca la tarjeta SD",
+  "step1": "Saca la tarjeta de la CPAP y ponla en el ordenador, o copia su contenido a una carpeta.",
+  "step2Title": "Elige la carpeta de la tarjeta",
+  "step2": "En una Philips DreamStation 2 selecciona la carpeta que contiene P-SERIES. También puedes soltarla aquí o usar un ZIP.",
+  "step3Title": "Espera unos segundos",
+  "step3": "Las sesiones se decodifican en este dispositivo y se guardan en tu navegador."
  },
  "dashboard": {
   "title": "Panel",
@@ -69,8 +69,6 @@
   "complianceDetail": "{{ok}} de {{total}} noches con al menos 4 h",
   "meets": "Cumple la regla habitual de 4 h / 70 %",
   "notMeets": "Por debajo de la regla habitual de 4 h / 70 %",
-  "avgUsage": "Uso medio",
-  "avgAhi": "IAH medio",
   "trends": "Tendencias",
   "usageChart": "Horas de uso por noche",
   "ahiChart": "IAH por noche",
@@ -79,22 +77,23 @@
   "viewNight": "Abrir la noche del {{date}}",
   "noNightsInRange": "No hay noches en este intervalo.",
   "tableHint": "Selecciona una noche para ver los detalles.",
-  "complianceShort": "Noches con al menos 4 h"
+  "subtitle": "{{count}} noches guardadas · última {{date}}",
+  "emptyPrivacy": "Tus datos se leen en el navegador y se quedan en este dispositivo.",
+  "complianceRule": "Objetivo habitual: 4 h el 70 % de las noches",
+  "calendar": "Calendario",
+  "calendarMeasure": "Medida mostrada en el calendario",
+  "chartHint": "Pasa el ratón para ver los valores; haz clic en una barra para abrir esa noche.",
+  "ahiRef": "La línea discontinua marca {{value}} eventos por hora."
  },
  "metric": {
   "usage": "Uso",
   "ahi": "IAH",
-  "leak": "Fuga",
   "leakP95": "Fuga (95 %)",
   "leakMedian": "Fuga (mediana)",
   "pressure": "Presión",
-  "snore": "Índice de ronquidos",
-  "rera": "Índice de RERA",
   "events": "Eventos",
   "mode": "Modo",
-  "sessions": "Sesiones",
   "start": "Inicio",
-  "end": "Fin",
   "unitHours": "h",
   "unitPerHour": "/h",
   "unitLeak": "L/min",
@@ -125,19 +124,16 @@
   "usage": "Horas con la mascarilla puesta. Muchas aseguradoras y clínicas piden al menos 4 horas en al menos el 70 % de las noches.",
   "leak": "Fuga total de aire, en litros por minuto. Incluye la fuga deliberada de las salidas de la mascarilla, por lo que un valor estable distinto de cero es normal; picos altos sostenidos pueden indicar un mal sellado.",
   "pressure": "Presión de la terapia en cmH₂O, fijada en el dispositivo o elegida automáticamente.",
-  "rera": "Despertares relacionados con el esfuerzo respiratorio: eventos de esfuerzo que alteran el sueño sin ser una apnea o hipopnea completas. No forman parte del IAH.",
-  "snore": "Eventos de ronquido informados por el dispositivo por hora de uso.",
   "compliance": "Proporción de noches con al menos 4 horas de uso durante las últimas 30 noches.",
-  "flow": "Flujo respiratorio medido por el dispositivo (positivo: inspiración). La escala es aproximada."
+  "flow": "Flujo respiratorio medido por el dispositivo (positivo: inspiración). La escala es aproximada.",
+  "rera": "Despertares relacionados con el esfuerzo respiratorio: eventos de esfuerzo que alteran el sueño sin ser una apnea o hipopnea completas. No forman parte del IAH."
  },
  "night": {
-  "title": "Noche del {{date}}",
   "notFound": "No hay datos de esta noche.",
   "prev": "Noche anterior",
   "next": "Noche siguiente",
   "sessionsCount_one": "{{count}} sesión",
   "sessionsCount_other": "{{count}} sesiones",
-  "summary": "Resumen",
   "timeline": "Cronología de eventos",
   "flowChart": "Flujo",
   "leakChart": "Fuga total (L/min)",
@@ -149,9 +145,19 @@
   "showTable": "Mostrar la tabla de datos",
   "hideTable": "Ocultar la tabla de datos",
   "eventCounts": "Recuento de eventos",
-  "count": "Recuento",
-  "maskOff": "Mascarilla quitada",
-  "altHypopnea": "Incluye hipopneas que el propio dispositivo no cuenta."
+  "altHypopnea": "Incluye hipopneas que el propio dispositivo no cuenta.",
+  "heroHeading": "Esta noche",
+  "detail": "Detalle de la noche",
+  "flowShort": "Flujo",
+  "leakShort": "Fuga",
+  "pressureShort": "Presión",
+  "snoreShort": "Ronquido",
+  "perInterval": "cada 2 min",
+  "noEvents": "Esta noche no se registró ningún evento.",
+  "navLabel": "Navegación entre noches",
+  "jump": "Ir a la fecha",
+  "settingsTitle": "Ajustes de la terapia",
+  "settingsHint": "Tal como los informa el dispositivo para esta noche"
  },
  "settings": {
   "title": "Ajustes",
@@ -174,7 +180,48 @@
   "privacyTitle": "Privacidad",
   "privacyBody": "OpenCPAP se ejecuta íntegramente en tu navegador. Los datos importados se guardan solo en este navegador (IndexedDB) y no se envían a ningún sitio."
  },
- "chart": {
-  "empty": "No hay datos para mostrar."
+ "chart": {},
+ "hero": {
+  "vsAvg": "vs media de {{n}} noches",
+  "trendAhi": "IAH de las últimas 30 noches",
+  "trendUsage": "Horas de uso de las últimas 30 noches",
+  "trendLeak": "Fuga (95 %) de las últimas 30 noches"
+ },
+ "status": {
+  "ahiGood": "Menos de 5 por hora",
+  "ahiWarn": "De 5 a 15 por hora",
+  "ahiBad": "15 o más por hora",
+  "useGood": "4 h o más",
+  "useWarn": "Menos de 4 h"
+ },
+ "setting": {
+  "mode": "Modo",
+  "rampTime": "Tiempo de rampa",
+  "rampType": "Tipo de rampa",
+  "rampType_linear": "Lineal",
+  "rampType_smart-ramp": "SmartRamp",
+  "rampType_ramp-plus": "Ramp+",
+  "rampPressure": "Presión inicial de la rampa",
+  "flex": "Alivio de presión",
+  "flex_none": "Desactivado",
+  "flex_flex": "Flex",
+  "flex_flex-plus": "Flex+",
+  "flex_rise-time": "Tiempo de subida",
+  "flex_p-flex": "P-Flex",
+  "flexLevel": "Nivel de alivio",
+  "ezStart": "EZ-Start",
+  "humidifier": "Humidificador",
+  "humid_fixed": "Fijo",
+  "humid_adaptive": "Adaptativo",
+  "humid_heated-tube": "Tubo calefactado",
+  "humid_passover": "Passover",
+  "humid_error": "Error",
+  "humidLevel": "Nivel de humedad",
+  "tubeTemp": "Temperatura del tubo",
+  "tubing": "Diámetro del tubo",
+  "maskResistance": "Resistencia de la mascarilla",
+  "autoStart": "Inicio automático",
+  "autoStop": "Parada automática",
+  "humid_none": "Ninguno"
  }
 }

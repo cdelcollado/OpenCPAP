@@ -45,7 +45,8 @@ Legend: [x] done · [ ] pending
 - [x] Accessibility: axe checks (WCAG 2.1 A/AA) in light and dark themes
 - [x] Dark mode and responsive layout (desktop and 390 px mobile checked)
 - [x] End-to-end tests in real Chrome, including the real card ([testing.md](testing.md))
-- [ ] Manual accessibility pass with a screen reader; keyboard walkthrough of the charts
+- [x] Visual and interaction redesign (hero hierarchy, hover/click, calendar, aligned night tracks, readout, therapy settings; [design-system.md](design-system.md))
+- [ ] Manual accessibility pass with a screen reader; keyboard walkthrough of the charts (keyboard access to chart readouts is not implemented: tables are the keyboard path)
 - [ ] Firefox and Safari smoke tests; iOS file access
 - [ ] Request persistent storage; surface quota problems
 - [ ] Dashboard "pressure/leak distribution" for auto-titrating modes

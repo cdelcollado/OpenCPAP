@@ -63,7 +63,7 @@ test.describe('import in a real browser (Web Worker, IndexedDB)', () => {
     // open the most recent night: real waveform data must render
     await page.getByRole('row').nth(1).getByRole('link').click();
     await expect(page.getByRole('group', { name: 'Event timeline' })).toBeVisible();
-    await expect(page.locator('section[aria-label="Flow"] canvas').first()).toBeVisible();
+    await expect(page.locator('[data-track="flow"] canvas').first()).toBeVisible();
     expect(errors).toEqual([]);
   });
 });

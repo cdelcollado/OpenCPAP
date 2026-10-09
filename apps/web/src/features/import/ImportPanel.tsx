@@ -65,13 +65,17 @@ export function ImportPanel() {
     <div className="stack">
       <h1>{t('import.title')}</h1>
       <div className="card stack">
-        <p>{t('import.intro')}</p>
+        <ol className="steps">
+          <li><div><strong>{t('import.step1Title')}</strong><p className="muted">{t('import.step1')}</p></div></li>
+          <li><div><strong>{t('import.step2Title')}</strong><p className="muted">{t('import.step2')}</p></div></li>
+          <li><div><strong>{t('import.step3Title')}</strong><p className="muted">{t('import.step3')}</p></div></li>
+        </ol>
         <p className="muted">{t('import.privacy')}</p>
         <div className="btn-row">
           {hasDirectoryPicker && (
-            <button className="btn" type="button" disabled={working} onClick={() => void pickDirectory()}>{t('import.chooseFolder')}</button>
+            <button className="btn large" type="button" disabled={working} onClick={() => void pickDirectory()}>{t('import.chooseFolder')}</button>
           )}
-          <button className={hasDirectoryPicker ? 'btn secondary' : 'btn'} type="button" disabled={working} onClick={() => folderInput.current?.click()}>
+          <button className={hasDirectoryPicker ? 'btn secondary' : 'btn large'} type="button" disabled={working} onClick={() => folderInput.current?.click()}>
             {hasDirectoryPicker ? t('import.chooseFolderFallback') : t('import.chooseFolder')}
           </button>
           <button className="btn secondary" type="button" disabled={working} onClick={() => zipInput.current?.click()}>{t('import.chooseZip')}</button>
@@ -118,7 +122,7 @@ export function ImportPanel() {
       </div>
 
       <div className="card stack">
-        <h2>{t('import.demoTitle')}</h2>
+        <h2 style={{ margin: 0 }}>{t('import.demoTitle')}</h2>
         <p>{t('import.demoBody')}</p>
         <div className="btn-row">
           <button className="btn secondary" type="button" disabled={working} onClick={async () => { await loadDemoData(); await reload(); setStatus({ kind: 'done', count: 0 }); window.location.hash = href.dashboard; }}>{t('import.demoButton')}</button>
