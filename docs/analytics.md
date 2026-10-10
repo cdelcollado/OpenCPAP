@@ -95,5 +95,8 @@ They are prompts to look at the data, worded neutrally with a note that they are
 ### Breathing and oxygen
 See [breathing-analysis.md](breathing-analysis.md) and [oximetry.md](oximetry.md). The plain-language summary gained three rules: `flatHigh` (flat-topped share ≥ 1.5× the usual and ≥ 20 % and ≥ 5 points above it, on ≥ 30 min of flow), `periodicPattern` (≥ 15 % of the night), and oximeter rules (`desatFrequent` ODI3 ≥ 5/h, `lowOxygenTime` T90 ≥ 5 %, otherwise `oxygenSteady`; only with ≥ 1 h of valid data).
 
+## Reference ranges (Phase 7 polish)
+The orientative ranges shown next to AHI, usage, leak and ODI4 are defined in `packages/core/src/reference.ts` (`REFERENCE`, `ahiReference`, `usageReference`, `leakReference`, `odi4Reference`). They are chosen by the device family of the night (`NightSummary.manufacturer`, `deviceFamily`). Leak is judged on the night's 70th percentile: the 24 L/min line is a ResMed figure and never applies to Philips, which has its own working band (30 to 50 L/min, unsourced). Full values, status and open items: [reference-ranges.md](reference-ranges.md).
+
 ## Leak across manufacturers (Phase 5)
 `NightSummary.leak` is computed from `leak-total` when a session has it and from `leak-unintentional` otherwise (`leakSeriesOf`), with the same time-weighted statistics. `leakKind` records which, because the quantities differ: Philips total leak includes the mask's intentional vent flow, ResMed unintentional leak does not. Do not compare absolute values between devices; the app's explanations say so. Trends, the leak-versus-age equipment chart and the leak-rise alert all compare a user's nights with their own earlier nights, so they are meaningful within one device and **not across a device change**.

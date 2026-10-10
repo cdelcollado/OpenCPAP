@@ -25,6 +25,7 @@ Two IndexedDB tables ([storage.md](storage.md)): `oximetry` (night, source file 
 ## What is shown
 - **Night tracks** *SpO₂* and *Pulse* aligned with the therapy tracks, with their values in the shared cursor readout.
 - **Oximeter card**: average SpO₂, lowest SpO₂, time under 90 %, desaturations ≥ 3 % and ≥ 4 % per hour, pulse range and mean, hours of valid data, source file.
+- **References** ([reference-ranges.md](reference-ranges.md)): ODI4 has a three-state badge (within range below 5 per hour, attention from 5, out of range from 15; adult sleep-lab bands, unverified). The other figures show a note that no verified reference exists.
 - **Plain-language summary** sentences: frequent desaturations (≥ 5 per hour), time under 90 % (≥ 5 % of the recording), or steady oxygen. Only for recordings with ≥ 1 h of valid data.
 - Columns in the nights CSV, a per-night **Oximetry (CSV)** export, and a line in the clinician report ([report.md](report.md)).
 

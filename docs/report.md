@@ -16,7 +16,7 @@ The report is a normal HTML page with a print stylesheet; the user chooses **Pri
 
 ## Contents, in order
 1. Title, period, patient name (if given), device model(s) (no serial number), generation date.
-2. **Summary**: average use, nights with ≥ 4 h (count and %), AHI (all events / all hours), median nightly AHI, median 95 % leak, configured pressure; with the previous period alongside when enabled. When the period has them, one line each for **oximetry** (nights with data, average and lowest SpO₂, median time under 90 %, mean desaturations ≥ 3 % per hour) and **breathing** (nights with flow, median breath rate, median flat-topped share, median variation of breath length; labelled experimental).
+2. **Summary**: average use, nights with ≥ 4 h (count and %), AHI (all events / all hours), median nightly AHI, median 95 % leak, configured pressure; with the previous period alongside when enabled. The table has fixed column widths so that measure names and figures stay on one line in A4. A **Reference** column gives the reference for each measure, with a three-state status where a range exists (a plain-text status: the icon carries the colour, the words stay in black, so the figures keep the visual weight; the median AHI row shows the status only, as the AHI row above gives the text), and a footnote says the references are orientative (see [reference-ranges.md](reference-ranges.md)). When the period has them, one line each for **oximetry** (nights with data, average and lowest SpO₂, median time under 90 %, mean desaturations ≥ 3 % per hour) and **breathing** (nights with flow, median breath rate, median flat-topped share, median variation of breath length; labelled experimental).
 3. **Trends**: three static SVG figures — hours of use (reference at 4 h), AHI (reference at 5/h), 95 % leak — with dashed markers on nights when a therapy setting changed.
 4. **Events**: counts and rates per hour of use by type, previous period alongside.
 5. **Therapy settings** of the latest night and **setting changes** within the period (before → after).
@@ -38,3 +38,4 @@ The report is a normal HTML page with a print stylesheet; the user chooses **Pri
 - The report is as accurate as the device's own records; leak is *total* leak (it includes the mask's intentional vent flow) and the footer says so.
 - No signature block, patient date of birth or clinic logo yet; add them as optional fields if clinicians ask.
 - Page numbers are not printed (browser headers/footers can be switched on in the print dialog).
+- The references in the Reference column have no cited sources yet; they are marked as orientative in the footnote ([reference-ranges.md](reference-ranges.md)).

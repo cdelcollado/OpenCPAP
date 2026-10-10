@@ -115,6 +115,18 @@ Legend: [x] done · [ ] pending
 - [ ] Context from external sources (room temperature, noise, position) via Home Assistant
 - [ ] Multi-patient clinic mode, batch import
 
+## Reference ranges (Phase 7 polish, after Phase 6)
+- [x] Reference registry in core, per device family (`reference.ts`), with boundary tests
+- [x] Three-state badges with Lucide icons (leak for ResMed, ODI4) and reference lines (AHI, usage, leak, ODI4), web app and oximetry card
+- [x] PDF report: Reference column and footnote
+- [x] E2E: demo references, report column, oximetry badge, ResMed leak status
+- [ ] Cite and verify a source for every reference value ([reference-ranges.md](reference-ranges.md)); remove *unverified* from the UI when done
+- [x] Leak judged on the 70th percentile (ResMed seal rule from the primary guide); Philips working band 30 to 50 L/min, marked unsourced
+- [ ] Confirm the Philips band edges and find a source for them
+- [ ] Decide whether T90 / T88 should carry a status
+- [ ] Reference badges on the night view and the Compare page
+- [ ] Review the Catalan and Spanish wording of the references with a native reader
+
 ## Risks
 - DS2 format is proprietary; OSCAR is the living reference.
 - File System Access API is Chromium-only; fallback required.
