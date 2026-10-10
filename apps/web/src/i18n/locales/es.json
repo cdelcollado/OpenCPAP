@@ -648,6 +648,6 @@
   "oximetryNote": "Las bandas del ODI provienen de datos de polisomnografía de laboratorio. Un oxímetro doméstico puede dar valores distintos. SpO₂, T90 y ODI3 no tienen referencia verificada.",
   "column": "Referencia",
   "footnote": "Las referencias son orientativas y no sustituyen el criterio del clínico. Las fuentes están en revisión.",
-  "p70": "Percentil 70 de la noche: {{value}} L/min"
+  "p70": "Se evalúa con el percentil 70 de la noche: {{value}} L/min"
  }
 }
