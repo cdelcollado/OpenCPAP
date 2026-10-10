@@ -6,7 +6,7 @@
 3. Any future network feature (sharing, sync, LLM) is opt-in, explained in the UI, and end-to-end encrypted where applicable.
 
 ## Self-hosting
-When the app is served from your own server ([deployment.md](deployment.md)), the server only delivers the static build. It receives no health data, has no logs of user data and runs no application code. Access logging is nginx's default, which records requests for files, not any content the user has imported. Keep the server on your local network unless you add HTTPS and access control yourself.
+When the app is served from your own server ([deployment.md](deployment.md)), the server only delivers the static build over HTTPS. It receives no health data, runs no application code, and its access log records only requests for files, not any content the user has imported. The URL fragment (`#/…`) is never sent to the server, so hash routes and shared-snapshot payloads stay in the browser. The host is reachable only on the local network; its Cloudflare token is stored on the host with restricted permissions ([ADR-0015](decisions/0015-https-caddy-cloudflare-dns.md)).
 
 ## Repository hygiene
 - `fixtures/raw/` contains real SD data and is git-ignored. Never force-add it.

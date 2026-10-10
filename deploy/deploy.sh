@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the web app and publish it to a host prepared by deploy/provision.sh.
 #
-#   deploy/deploy.sh root@192.168.1.50
+#   deploy/deploy.sh root@192.168.1.50 cpap.example.com
 #
 # Environment:
 #   SKIP_BUILD=1   publish the existing apps/web/dist without rebuilding
@@ -10,7 +10,8 @@
 # ever contain the built app.
 set -euo pipefail
 
-HOST="${1:?usage: deploy/deploy.sh <user@host>}"
+HOST="${1:?usage: deploy/deploy.sh <user@host> <domain>}"
+DOMAIN="${2:?usage: deploy/deploy.sh <user@host> <domain>}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REMOTE_DIR="/var/www/opencpap"
 DIST="$ROOT/apps/web/dist"
@@ -35,13 +36,11 @@ fi
 echo "==> Syncing $DIST to $HOST:$REMOTE_DIR"
 rsync -av --delete -e "ssh -o BatchMode=yes" "$DIST/" "$HOST:$REMOTE_DIR/" >/dev/null
 
-echo "==> Checking the site from inside the host"
-ssh -o BatchMode=yes "$HOST" 'set -e
-  curl -sfo /dev/null http://localhost/
-  curl -sfo /dev/null http://localhost/manifest.webmanifest
-  curl -sfo /dev/null http://localhost/sw.js
-  printf "index: %s\nmanifest: %s\n" \
-    "$(curl -s -o /dev/null -w "%{http_code} %{content_type}" http://localhost/)" \
-    "$(curl -s -o /dev/null -w "%{http_code} %{content_type}" http://localhost/manifest.webmanifest)"'
+echo "==> Checking the site from inside the host (HTTPS, certificate for $DOMAIN)"
+ssh -o BatchMode=yes "$HOST" "set -e
+  check() { curl -s -o /dev/null -w '%{http_code} %{content_type}' --resolve $DOMAIN:443:127.0.0.1 \"https://$DOMAIN\$1\"; }
+  printf 'index: %s\n' \"\$(check /)\"
+  printf 'manifest: %s\n' \"\$(check /manifest.webmanifest)\"
+  printf 'service worker: %s\n' \"\$(check /sw.js)\""
 
-echo "==> Deployed. Open http://${HOST#*@}/ in a browser on the local network."
+echo "==> Deployed. Open https://$DOMAIN/ in a browser on your network."
