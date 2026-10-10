@@ -3,6 +3,9 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Added (deployment)
+- **Self-hosting on nginx**: `deploy/provision.sh` (installs and configures nginx on a Debian host or LXC over SSH, idempotent), `deploy/deploy.sh` (builds the web app, syncs it with `rsync --delete`, checks the site from the host) and `deploy/nginx-opencpap.conf` (SPA fallback, manifest MIME type, no-cache for the service worker). Guide: [docs/deployment.md](docs/deployment.md); decision: [ADR-0014](docs/decisions/0014-static-hosting-with-nginx.md).
+
 ### Changed
 - **UI redesign.** Hierarchy: AHI as the single hero figure with status chip and change versus the 30-night average; tiles with sparklines; compliance meter with a 70 % marker; calendar heatmap; nights table with mini bars. Charts: hover tooltips, click-through to a night, thin marks, validated per-measure colours. Night view: event timeline and flow/leak/pressure/snore tracks aligned on one time axis with a shared cursor readout, event bars and the therapy settings of the night. Header with language selector and theme button; mobile layout for the tracks.
 - Status and trend are always shown with an icon and text (never colour alone); event types no longer reuse status colours; large figures use proportional digits.
