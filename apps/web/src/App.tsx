@@ -40,6 +40,7 @@ export function App() {
       <footer className="app-footer">
         <p>{t('footer.privacy')}</p>
         <p>{t('footer.disclaimer')}</p>
+        <p><a href="https://github.com/cdelcollado/OpenCPAP" target="_blank" rel="noopener noreferrer">{t('footer.source')}</a></p>
       </footer>
     </DataProvider>
   );

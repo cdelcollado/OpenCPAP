@@ -14,7 +14,8 @@
  },
  "footer": {
   "disclaimer": "OpenCPAP es una herramienta informativa, no un producto sanitario. No diagnostica ni recomienda cambios de terapia. Habla de tus datos con tu profesional sanitario.",
-  "privacy": "Todo el procesamiento se hace en tu navegador. No se sube nada."
+  "privacy": "Todo el procesamiento se hace en tu navegador. No se sube nada.",
+  "source": "Código fuente en GitHub"
  },
  "common": {
   "loading": "Cargando…",
