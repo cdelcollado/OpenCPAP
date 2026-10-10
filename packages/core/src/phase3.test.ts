@@ -32,10 +32,10 @@ describe('settingsChanges', () => {
 describe('periodStats and comparePeriods', () => {
   const ev = (n: number) => n;
   const a = [
-    night('2026-01-01', 8, { ahi: 1, counts: { obstructive: ev(4), hypopnea: ev(4) }, leak: { average: 30, median: 28, p95: 40, max: 50 } }),
-    night('2026-01-02', 2, { ahi: 3, counts: { obstructive: ev(3), rera: ev(2) }, leak: { average: 32, median: 30, p95: 44, max: 55 } }),
+    night('2026-01-01', 8, { ahi: 1, counts: { obstructive: ev(4), hypopnea: ev(4) }, leak: { average: 30, median: 28, p70: 40, p95: 40, max: 50 } }),
+    night('2026-01-02', 2, { ahi: 3, counts: { obstructive: ev(3), rera: ev(2) }, leak: { average: 32, median: 30, p70: 44, p95: 44, max: 55 } }),
   ];
-  const b = [night('2026-02-01', 6, { ahi: 0.5, counts: { hypopnea: ev(3) }, leak: { average: 20, median: 18, p95: 30, max: 40 } })];
+  const b = [night('2026-02-01', 6, { ahi: 0.5, counts: { hypopnea: ev(3) }, leak: { average: 20, median: 18, p70: 30, p95: 30, max: 40 } })];
   it('summarises a period with total-based rates', () => {
     const s = periodStats(a);
     expect(s).toMatchObject({ nights: 2, totalHours: 10, usageMean: 5, nightsOverMin: 1, compliance: 0.5 });
@@ -88,7 +88,7 @@ describe('equipment', () => {
     for (const v of Object.values(DEFAULT_INTERVAL_DAYS)) expect(v).toBeGreaterThan(0);
   });
 
-  const nights = Array.from({ length: 40 }, (_, i) => night(addDays('2026-01-01', i), 7, { leak: { average: 0, median: 0, p95: 30 + i * 0.5, max: 0 } }));
+  const nights = Array.from({ length: 40 }, (_, i) => night(addDays('2026-01-01', i), 7, { leak: { average: 0, median: 0, p70: 30 + i * 0.5, p95: 30 + i * 0.5, max: 0 } }));
   it('fits the leak trend over the age of an item', () => {
     const r = leakByAge(nights, item());
     expect(r.points).toHaveLength(40);
@@ -100,7 +100,7 @@ describe('equipment', () => {
   it('respects the item period and needs enough nights', () => {
     expect(leakByAge(nights, item({ endDate: '2026-01-05' })).trend).toBeUndefined();
     expect(leakByAge(nights, item({ startDate: '2026-02-05', endDate: '2026-02-09' })).points).toHaveLength(5);
-    const flat = nights.map((n) => ({ ...n, leak: { average: 0, median: 0, p95: 40, max: 0 } }));
+    const flat = nights.map((n) => ({ ...n, leak: { average: 0, median: 0, p70: 40, p95: 40, max: 0 } }));
     expect(leakByAge(flat, item()).trend).toBe('flat');
   });
 });
@@ -109,7 +109,7 @@ describe('nightFindings', () => {
   const base = { usage: 7, ahi: 1, leak: 40 };
   const ids = (n: NightSummary, ctx = {}) => nightFindings(n, { baseline: base, ...ctx }).map((f) => f.id);
   it('describes a normal night', () => {
-    expect(ids(night('2026-03-05', 7.2, { ahi: 0.8, leak: { average: 0, median: 0, p95: 41, max: 0 } }))).toEqual(['usageOk', 'ahiLow']);
+    expect(ids(night('2026-03-05', 7.2, { ahi: 0.8, leak: { average: 0, median: 0, p70: 41, p95: 41, max: 0 } }))).toEqual(['usageOk', 'ahiLow']);
   });
   it('flags short use, in two degrees', () => {
     expect(ids(night('d', 3, { ahi: 1 }))[0]).toBe('usageShort');
@@ -123,7 +123,7 @@ describe('nightFindings', () => {
     expect(ids(night('d', 7, { ahi: 20 }))).toContain('ahiHigh');
   });
   it('notices high leak, large-leak time, interruptions, periodic breathing and changes', () => {
-    const n = night('2026-03-05', 7, { ahi: 1, reraIndex: 6, leak: { average: 0, median: 0, p95: 60, max: 0 } });
+    const n = night('2026-03-05', 7, { ahi: 1, reraIndex: 6, leak: { average: 0, median: 0, p70: 60, p95: 60, max: 0 } });
     const sessions = [{
       slices: [{ start: 0, end: 600_000, status: 'mask-on' as const }, { start: 600_000, end: 780_000, status: 'mask-off' as const }],
       events: [{ type: 'large-leak' as const, start: 0, duration: 400 }, { type: 'periodic-breathing' as const, start: 0, duration: 360 }],
@@ -135,7 +135,7 @@ describe('nightFindings', () => {
     expect(f.find((x) => x.id === 'largeLeak')!.params).toEqual({ minutes: 7 });
   });
   it('does not call a small leak increase high', () => {
-    expect(ids(night('d', 7, { ahi: 1, leak: { average: 0, median: 0, p95: 43, max: 0 } }))).not.toContain('leakHigh');
+    expect(ids(night('d', 7, { ahi: 1, leak: { average: 0, median: 0, p70: 43, p95: 43, max: 0 } }))).not.toContain('leakHigh');
   });
 });
 

@@ -630,5 +630,24 @@
   "remoteWarning": "Esta dirección no es de este ordenador. Tus cifras agregadas de terapia se enviarían allí.",
   "allowRemote": "Lo entiendo y permito enviar las cifras a este servidor",
   "whatIsSent": "Solo se envían totales de los dos últimos periodos de 30 días: noches de uso, horas medias, AHI, tasas de eventos, fuga y cambios de ajustes. Nunca notas, nombres, números de serie ni noches individuales."
+ },
+ "reference": {
+  "label": "Referencia",
+  "state": {
+   "good": "Dentro del rango",
+   "warn": "Atención",
+   "bad": "Fuera de rango"
+  },
+  "ahi": "Referencia: menos de {{normal}} por hora",
+  "usage": "Referencia: al menos {{hours}} h por noche",
+  "compliance": "Referencia: al menos {{hours}} h en el {{share}} % de las noches",
+  "leak": "Referencia (ResMed): percentil 70 de la noche por debajo de {{limit}} L/min",
+  "leakPhilips": "Fuga total de Philips (incluye el flujo del vent). Referencia de trabajo: de 30 a 50 L/min dentro del rango, por encima de 60 L/min fuera de rango; aún sin fuente.",
+  "odi4": "Referencia: menos de {{normal}} por hora (bandas de adultos de polisomnografía)",
+  "none": "Sin referencia verificada para esta métrica",
+  "oximetryNote": "Las bandas del ODI provienen de datos de polisomnografía de laboratorio. Un oxímetro doméstico puede dar valores distintos.",
+  "column": "Referencia",
+  "footnote": "Las referencias son orientativas y no sustituyen el criterio del clínico. Las fuentes están en revisión.",
+  "p70": "Percentil 70 de la noche: {{value}} L/min"
  }
 }

@@ -630,5 +630,24 @@
   "remoteWarning": "Aquesta adreça no és d'aquest ordinador. Les teves xifres agregades de teràpia s'hi enviarien.",
   "allowRemote": "Ho entenc i permeto enviar les xifres a aquest servidor",
   "whatIsSent": "Només s'envien totals dels dos últims períodes de 30 dies: nits d'ús, hores mitjanes, AHI, taxes d'esdeveniments, fuita i canvis d'ajustos. Mai notes, noms, números de sèrie ni nits individuals."
+ },
+ "reference": {
+  "label": "Referència",
+  "state": {
+   "good": "Dins del rang",
+   "warn": "Atenció",
+   "bad": "Fora de rang"
+  },
+  "ahi": "Referència: menys de {{normal}} per hora",
+  "usage": "Referència: almenys {{hours}} h per nit",
+  "compliance": "Referència: almenys {{hours}} h en el {{share}} % de les nits",
+  "leak": "Referència (ResMed): percentil 70 de la nit per sota de {{limit}} L/min",
+  "leakPhilips": "Fuga total de Philips (inclou el flux del vent). Referència de treball: de 30 a 50 L/min dins del rang, per sobre de 60 L/min fora de rang; encara sense font.",
+  "odi4": "Referència: menys de {{normal}} per hora (bandes adultes de polisomnografia)",
+  "none": "Sense referència verificada per a aquesta mètrica",
+  "oximetryNote": "Les bandes de l'ODI provenen de dades de polisomnografia a laboratori. Un oxímetre domèstic pot donar valors diferents.",
+  "column": "Referència",
+  "footnote": "Les referències són orientatives i no substitueixen el criteri del clínic. Les fonts estan en revisió.",
+  "p70": "Percentil 70 de la nit: {{value}} L/min"
  }
 }

@@ -16,6 +16,8 @@ export interface PeriodStats {
   ahiMedian?: number;
   /** events per hour of use, by type */
   rates: Partial<Record<EventType, number>>;
+  /** median of the nightly 70th-percentile leak (L/min), the figure the leak reference uses */
+  leakP70?: number;
   /** median of the nightly 95th-percentile leak (L/min) */
   leakP95?: number;
   /** median of the nightly median leak (L/min) */
@@ -43,6 +45,7 @@ export function periodStats(nights: NightSummary[], minHours = 4): PeriodStats {
     ahi: totalHours > 0 ? apneas / totalHours : undefined,
     ahiMedian: median(defined(nights.map((n) => n.ahi))),
     rates,
+    leakP70: median(defined(nights.map((n) => n.leak?.p70))),
     leakP95: median(defined(nights.map((n) => n.leak?.p95))),
     leakMedian: median(defined(nights.map((n) => n.leak?.median))),
   };

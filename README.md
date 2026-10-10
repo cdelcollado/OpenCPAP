@@ -22,6 +22,7 @@ A local-first web application for reading and visualizing the therapy data that 
 | 4 | Breath analysis (flat-topped breaths, rate, regularity, periodic pattern), oximeter import (ODI, T90), alerts, rolling averages and distributions, CSV/EDF exports | Done; **experimental** measures, see [breathing-analysis.md](docs/breathing-analysis.md) and [oximetry.md](docs/oximetry.md) |
 | 5 | Multi-device: generic EDF reader, ResMed AirSense/AirCurve loader, shared loader conformance suite, compatibility matrix, guide for adding devices | Done; ResMed is tested on **synthetic** cards only, see [devices.md](docs/devices.md) |
 | 6 | Serverless share links (optionally passphrase-encrypted), opt-in local language-model summary, JSON summary for other tools | Done for what a static app can do; companion/MQTT/Home Assistant and server-based sharing **not built** ([integrations.md](docs/integrations.md)) |
+| 6+ | Orientative reference ranges next to the metrics (three states, per device family), in the app and the PDF report | Done; **sources not cited yet**, values marked unverified ([reference-ranges.md](docs/reference-ranges.md)) |
 
 ## Supported devices
 

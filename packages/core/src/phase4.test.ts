@@ -5,7 +5,7 @@ import type { NightSummary } from './nights';
 import { histogram, rollingMean } from './trends';
 
 const night = (date: string, usageHours: number, o: Partial<NightSummary> = {}): NightSummary => ({
-  date, sessionIds: [1], start: 0, end: 0, usageHours, counts: {}, hasWaveforms: false, settings: {}, ahi: 1, leak: { average: 30, median: 30, p95: 40, max: 50 }, ...o,
+  date, sessionIds: [1], start: 0, end: 0, usageHours, counts: {}, hasWaveforms: false, settings: {}, ahi: 1, leak: { average: 30, median: 30, p70: 40, p95: 40, max: 50 }, ...o,
 });
 /** `n` consecutive nights ending at `end`, built by `make(i)` (i = 0 for the oldest) */
 const run = (end: string, n: number, make: (i: number, date: string) => NightSummary) => Array.from({ length: n }, (_, i) => { const d = addDays(end, -(n - 1 - i)); return make(i, d); });
@@ -54,10 +54,10 @@ describe('detectAnomalies', () => {
     expect(ids(steady().map((n) => (n.date >= '2026-03-30' ? { ...n, usageHours: 2.5 } : n)))).not.toContain('shortRun');
   });
   it('notices a leak rise but not a small one', () => {
-    const rise = steady().map((n) => (n.date >= '2026-03-29' ? { ...n, leak: { average: 0, median: 0, p95: 60, max: 70 } } : n));
+    const rise = steady().map((n) => (n.date >= '2026-03-29' ? { ...n, leak: { average: 0, median: 0, p70: 60, p95: 60, max: 70 } } : n));
     const a = detectAnomalies(rise).find((x) => x.id === 'leakRise')!;
     expect(a.params).toEqual({ now: 60, usual: 40 });
-    const small = steady().map((n) => (n.date >= '2026-03-29' ? { ...n, leak: { average: 0, median: 0, p95: 46, max: 70 } } : n));
+    const small = steady().map((n) => (n.date >= '2026-03-29' ? { ...n, leak: { average: 0, median: 0, p70: 46, p95: 46, max: 70 } } : n));
     expect(ids(small)).not.toContain('leakRise');
   });
   it('notices an AHI rise over the last week', () => {
