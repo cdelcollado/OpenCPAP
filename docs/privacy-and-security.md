@@ -5,6 +5,9 @@
 2. No analytics, no third-party scripts that see user data, no remote fonts that leak usage.
 3. Any future network feature (sharing, sync, LLM) is opt-in, explained in the UI, and end-to-end encrypted where applicable.
 
+## Self-hosting
+When the app is served from your own server ([deployment.md](deployment.md)), the server only delivers the static build. It receives no health data, has no logs of user data and runs no application code. Access logging is nginx's default, which records requests for files, not any content the user has imported. Keep the server on your local network unless you add HTTPS and access control yourself.
+
 ## Repository hygiene
 - `fixtures/raw/` contains real SD data and is git-ignored. Never force-add it.
 - Device serial numbers, GUIDs and file dumps must not appear in commits, issues, logs, tests or docs.
