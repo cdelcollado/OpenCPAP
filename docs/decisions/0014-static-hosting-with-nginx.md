@@ -1,6 +1,6 @@
 # ADR-0014: Host the web app as static files on nginx, deployed by rsync
 
-Status: accepted (October 2026)
+Status: accepted (October 2026). Partly superseded by [ADR-0015](0015-https-caddy-cloudflare-dns.md): the static hosting and rsync publishing remain, but nginx is replaced by Caddy with HTTPS.
 
 ## Context
 OpenCPAP has no backend. All parsing, storage (IndexedDB) and analysis run in the browser, and the server only delivers the built files ([architecture.md](../architecture.md), [privacy-and-security.md](../privacy-and-security.md)). The maintainer wants to serve it from a Debian LXC on Proxmox on the home network, and to be able to update it from the development machine.

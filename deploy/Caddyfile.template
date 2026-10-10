@@ -1,0 +1,27 @@
+# Caddy site for OpenCPAP (static files only, no backend).
+# deploy/provision.sh replaces __DOMAIN__ and installs this file as /etc/caddy/Caddyfile.
+#
+# The certificate is obtained from Let's Encrypt with the DNS-01 challenge through
+# the Cloudflare API, so the host does not need to be reachable from the internet.
+# Keep the DNS record for the domain pointing to the host's LAN address and
+# "DNS only" (not proxied) in Cloudflare.
+
+__DOMAIN__ {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+	}
+
+	root * /var/www/opencpap
+	encode gzip
+
+	# Hash routing (#/night/...) happens in the browser; the fallback keeps
+	# direct paths working as the app's index.
+	try_files {path} /index.html
+	file_server
+
+	# The service worker must be revalidated on every visit so that a new
+	# deploy reaches users without a manual cache clear.
+	header /sw.js Cache-Control "no-cache"
+
+	header Strict-Transport-Security "max-age=31536000"
+}

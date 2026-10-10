@@ -4,7 +4,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 ### Added (deployment)
-- **Self-hosting on nginx**: `deploy/provision.sh` (installs and configures nginx on a Debian host or LXC over SSH, idempotent), `deploy/deploy.sh` (builds the web app, syncs it with `rsync --delete`, checks the site from the host) and `deploy/nginx-opencpap.conf` (SPA fallback, manifest MIME type, no-cache for the service worker). Guide: [docs/deployment.md](docs/deployment.md); decision: [ADR-0014](docs/decisions/0014-static-hosting-with-nginx.md).
+- **Self-hosting with HTTPS**: `deploy/provision.sh` (installs Caddy with the Cloudflare DNS plugin, the Caddyfile and the systemd service on a Debian host or LXC over SSH, idempotent), `deploy/deploy.sh` (builds the web app, syncs it with `rsync --delete`, checks the site over HTTPS from the host). The certificate is issued by a DNS challenge, so the host is not exposed to the internet. Guide: [docs/deployment.md](docs/deployment.md); decisions: [ADR-0014](docs/decisions/0014-static-hosting-with-nginx.md) (static hosting) and [ADR-0015](docs/decisions/0015-https-caddy-cloudflare-dns.md) (HTTPS).
 
 ### Changed
 - **UI redesign.** Hierarchy: AHI as the single hero figure with status chip and change versus the 30-night average; tiles with sparklines; compliance meter with a 70 % marker; calendar heatmap; nights table with mini bars. Charts: hover tooltips, click-through to a night, thin marks, validated per-measure colours. Night view: event timeline and flow/leak/pressure/snore tracks aligned on one time axis with a shared cursor readout, event bars and the therapy settings of the night. Header with language selector and theme button; mobile layout for the tracks.
