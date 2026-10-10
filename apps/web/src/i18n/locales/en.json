@@ -645,7 +645,7 @@
   "leakPhilips": "Philips total leak (vent flow included). Working reference: 30 to 50 L/min within range, above 60 L/min out of range; not yet sourced.",
   "odi4": "Reference: under {{normal}} per hour (adult sleep-lab bands)",
   "none": "No verified reference for this metric",
-  "oximetryNote": "The ODI bands come from sleep-lab (polysomnography) data. A home oximeter can give different values.",
+  "oximetryNote": "The ODI bands come from sleep-lab (polysomnography) data. A home oximeter can give different values. SpO₂, T90 and ODI3 have no verified reference.",
   "column": "Reference",
   "footnote": "References are orientative reading aids, not targets, and do not replace your clinician's judgement. The sources are being confirmed.",
   "p70": "70th percentile of the night: {{value}} L/min"
