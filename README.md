@@ -7,6 +7,8 @@ A local-first web application for reading and visualizing the therapy data that 
 > **Medical disclaimer.** OpenCPAP is an informational tool. It is not a medical device and does not provide medical advice, diagnosis or therapy recommendations. Discuss your data and any setting changes with your clinician.
 >
 
+
+
 [![Ask DeepWiki](docs/img/ask-deepwiki.svg)](https://deepwiki.com/cdelcollado/OpenCPAP)
 
 ## Principles
