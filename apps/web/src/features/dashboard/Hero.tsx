@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { deviceFamily, leakReference, REFERENCE, type NightSummary } from '@opencpap/core';
 import { Badge } from '../../components/Badge';
-import { leakNote, RefBadge } from '../../components/RefBadge';
+import { leakNote } from '../../components/leakNote';
+import { RefBadge } from '../../components/RefBadge';
 import { Delta } from '../../components/Delta';
 import { InfoTip } from '../../components/InfoTip';
 import { Sparkline } from '../../components/Sparkline';
