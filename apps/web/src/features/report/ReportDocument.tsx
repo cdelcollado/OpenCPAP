@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { equipmentStatus, isMajor, percentile, periodStats, type ChangeEvent, type EquipmentItem, type NightSummary, type PeriodStats } from '@opencpap/core';
+import { ahiReference, deviceFamily, equipmentStatus, isMajor, leakReference, percentile, periodStats, REFERENCE, usageReference, type ChangeEvent, type EquipmentItem, type NightSummary, type PeriodStats } from '@opencpap/core';
+import { leakNote } from '../../components/leakNote';
+import { RefBadge } from '../../components/RefBadge';
 import type { JournalRow } from '../../db/db';
 import { formatHours, formatNightDate, formatNumber } from '../../format';
 import { describeChanges, settingLabel, settingValue } from '../changes/format';
@@ -34,6 +36,11 @@ export function ReportDocument({ r }: { r: ReportInput }) {
   const s = periodStats(r.nights);
   const p: PeriodStats | undefined = r.previous && r.previous.nights.length ? periodStats(r.previous.nights) : undefined;
   const last = r.nights.at(-1);
+  const family = deviceFamily(last?.manufacturer);
+  /** Reference cell: an optional three-state badge, then the reference text (never a status alone). */
+  const ref = (state: ReturnType<typeof ahiReference>, text?: string) => (
+    <td className="ref">{state && <RefBadge state={state} />}{text && <div className="muted">{text}</div>}</td>
+  );
   const n1 = (v: number | undefined, d = 1) => formatNumber(v, lang, d);
   const pct = (v: number | undefined) => (v === undefined ? '—' : `${formatNumber(v * 100, lang, 0)} %`);
   const hrs = (v: number | undefined) => (v === undefined ? '—' : formatHours(v));
@@ -63,18 +70,25 @@ export function ReportDocument({ r }: { r: ReportInput }) {
           <section>
             <h2>{t('report.summary')}</h2>
             <p className="muted">{t('report.nightsWithData', { count: s.nights, total: r.totalDays })}</p>
-            <table className="report-table">
-              <thead><tr><th scope="col">{t('compare.metric')}</th><th scope="col" className="num">{formatNightDate(r.from, lang, 'short')} – {formatNightDate(r.to, lang, 'short')}</th>{p && r.previous && <th scope="col" className="num">{t('report.vsPrevious', { from: formatNightDate(r.previous.from, lang, 'short'), to: formatNightDate(r.previous.to, lang, 'short') })}</th>}</tr></thead>
+            <table className="report-table summary">
+              <colgroup>
+                <col style={{ width: '42%' }} />
+                <col style={{ width: '16%' }} />
+                {p && r.previous && <col style={{ width: '16%' }} />}
+                <col style={{ width: p && r.previous ? '26%' : '42%' }} />
+              </colgroup>
+              <thead><tr><th scope="col">{t('compare.metric')}</th><th scope="col" className="num">{formatNightDate(r.from, lang, 'short')} – {formatNightDate(r.to, lang, 'short')}</th>{p && r.previous && <th scope="col" className="num">{t('report.vsPrevious', { from: formatNightDate(r.previous.from, lang, 'short'), to: formatNightDate(r.previous.to, lang, 'short') })}</th>}<th scope="col">{t('reference.column')}</th></tr></thead>
               <tbody>
-                <tr><th scope="row">{t('compare.usage')}</th><td className="num">{hrs(s.usageMean)}</td>{p && <td className="num">{hrs(p.usageMean)}</td>}</tr>
-                <tr><th scope="row">{t('compare.over4')}</th><td className="num">{s.nightsOverMin} / {s.nights} ({pct(s.compliance)})</td>{p && <td className="num">{p.nightsOverMin} / {p.nights} ({pct(p.compliance)})</td>}</tr>
-                <tr><th scope="row">{t('compare.ahi')}</th><td className="num">{n1(s.ahi, 2)}</td>{p && <td className="num">{n1(p.ahi, 2)}</td>}</tr>
-                <tr><th scope="row">{t('compare.ahiMedian')}</th><td className="num">{n1(s.ahiMedian, 2)}</td>{p && <td className="num">{n1(p.ahiMedian, 2)}</td>}</tr>
-                <tr><th scope="row">{t('compare.leakP95')} ({t('metric.unitLeak')})</th><td className="num">{n1(s.leakP95)}</td>{p && <td className="num">{n1(p.leakP95)}</td>}</tr>
-                <tr><th scope="row">{t('metric.pressure')}</th><td className="num">{pressure}</td>{p && <td />}</tr>
+                <tr><th scope="row">{t('compare.usage')}</th><td className="num">{hrs(s.usageMean)}</td>{p && <td className="num">{hrs(p.usageMean)}</td>}{ref(usageReference(s.usageMean), t('reference.usage', { hours: REFERENCE.usageHours }))}</tr>
+                <tr><th scope="row">{t('compare.over4')}</th><td className="num">{s.nightsOverMin} / {s.nights} ({pct(s.compliance)})</td>{p && <td className="num">{p.nightsOverMin} / {p.nights} ({pct(p.compliance)})</td>}{ref(undefined, t('reference.compliance', { hours: REFERENCE.usageHours, share: REFERENCE.complianceShare * 100 }))}</tr>
+                <tr><th scope="row">{t('compare.ahi')}</th><td className="num">{n1(s.ahi, 2)}</td>{p && <td className="num">{n1(p.ahi, 2)}</td>}{ref(ahiReference(s.ahi), t('reference.ahi', { normal: REFERENCE.ahi.normal }))}</tr>
+                <tr><th scope="row">{t('compare.ahiMedian')}</th><td className="num">{n1(s.ahiMedian, 2)}</td>{p && <td className="num">{n1(p.ahiMedian, 2)}</td>}{ref(ahiReference(s.ahiMedian))}</tr>
+                <tr><th scope="row">{t('compare.leakP95')} ({t('metric.unitLeak')})</th><td className="num">{n1(s.leakP95)}</td>{p && <td className="num">{n1(p.leakP95)}</td>}{ref(leakReference(s.leakP70, family), leakNote(t, family))}</tr>
+                <tr><th scope="row">{t('metric.pressure')}</th><td className="num">{pressure}</td>{p && <td />}{ref(undefined, t('reference.none'))}</tr>
               </tbody>
             </table>
             {r.options.includeCompare && !p && <p className="muted">{t('report.noPrevious')}</p>}
+            <p className="muted">{t('reference.footnote')}</p>
             {oxi.length > 0 && (
               <p><b>{t('report.oximetry')}:</b> {t('report.oximetryLine', { count: oxi.length, mean: n1(oxi.reduce((a, n) => a + (n.oximetry!.spo2Mean ?? 0), 0) / oxi.length), min: n1(Math.min(...oxi.map((n) => n.oximetry!.spo2Min ?? 100)), 0), t90: n1(med(oxi.map((n) => n.oximetry!.t90))), odi: n1(oxi.reduce((a, n) => a + (n.oximetry!.odi3 ?? 0), 0) / oxi.length) })}</p>
             )}

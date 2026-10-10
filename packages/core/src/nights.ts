@@ -125,8 +125,11 @@ export interface NightSummary {
   ahi?: number;
   /** RERA per hour (not part of the AHI) */
   reraIndex?: number;
-  /** total leak statistics in L/min, weighted by the time each interval covers (as OSCAR does) */
-  leak?: { average: number; median: number; p95: number; max: number };
+  /**
+   * total leak statistics in L/min, weighted by the time each interval covers (as OSCAR does). `p70` is the
+   * 70th percentile, the figure ResMed's seal rule uses and the one the leak reference is judged on (see reference.ts).
+   */
+  leak?: { average: number; median: number; p70: number; p95: number; max: number };
   /** which leak the figures above describe: `total` (includes the vent flow) or `unintentional` (vent flow subtracted) */
   leakKind?: 'total' | 'unintentional';
   /** therapy pressure in cmH2O: the configured pressure (min/max for auto and bi-level modes), without the ramp */
@@ -135,6 +138,8 @@ export interface NightSummary {
   snoreIndex?: number;
   /** device mode of the first session */
   mode?: string;
+  /** manufacturer of the first session's device (selects the reference ranges, see reference.ts) */
+  manufacturer?: string;
   /** therapy settings of the first session of the night (used to detect setting changes) */
   settings: SessionSettings;
   /** experimental breath analysis over all sessions of the night that have flow data */
@@ -185,11 +190,12 @@ export function summarizeNight(date: string, sessions: SessionLite[], opts: { ha
     counts,
     ahi: usage > 0 ? apneas / usage : undefined,
     reraIndex: usage > 0 ? (counts.rera ?? 0) / usage : undefined,
-    leak: leaks.length ? { average: weightedMean(leaks, leakWeights), median: weightedPercentile(leaks, leakWeights, 50), p95: weightedPercentile(leaks, leakWeights, 95), max: Math.max(...leaks) } : undefined,
+    leak: leaks.length ? { average: weightedMean(leaks, leakWeights), median: weightedPercentile(leaks, leakWeights, 50), p70: weightedPercentile(leaks, leakWeights, 70), p95: weightedPercentile(leaks, leakWeights, 95), max: Math.max(...leaks) } : undefined,
     leakKind: leaks.length ? (sessions.some((s) => seriesOf(s, 'leak-total')) ? 'total' : 'unintentional') : undefined,
     pressure: pressures.length ? { min: Math.min(...pressures), max: Math.max(...pressures), median: percentile(pressures, 50) } : undefined,
     snoreIndex: usage > 0 && snores > 0 ? snores / usage : undefined,
     mode: typeof sorted[0]?.settings.mode === 'string' ? sorted[0].settings.mode : undefined,
+    manufacturer: sorted[0]?.device.manufacturer,
     settings: sorted[0]?.settings ?? {},
     breathing: nightBreathing(sessions),
     oximetry: opts.oximetry,

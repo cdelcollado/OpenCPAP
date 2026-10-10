@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Leak/pressure/etc. charts use one hue per measure from the validated series palette ([design-system.md](docs/design-system.md)).
 - Bundle split into app / vendor / charts chunks.
 
+### Added (reference ranges)
+- **Reference ranges next to the metrics**: AHI, usage, leak and ODI4 show an orientative reference. Leak and ODI4 use a three-state badge (within range, attention, out of range) with an icon, colour and text; AHI and usage add a reference line to the existing badges. Leak is judged on the night's 70th percentile: ResMed below 24 L/min (ResMed seal rule), Philips working band from the maintainer's clinical experience, not yet sourced: 30 to 50 L/min within range, 50 to 60 attention, above 60 out of range. Metrics without a verified range show a note instead of a status ([docs/reference-ranges.md](docs/reference-ranges.md), [ADR-0013](docs/decisions/0013-reference-ranges.md)).
+- **PDF report**: a Reference column in the summary table and a footnote that the references are orientative. The summary table has fixed column widths so measure names and figures stay on one line, and the statuses are plain text with a coloured icon instead of filled chips.
+- **Oximetry**: ODI4 reference and a note that the bands come from sleep-lab data.
+- The sources of the reference values are not cited yet; they are marked *unverified*.
+- Dependency: `lucide-react` (ISC) for the state icons.
+- Tests: 8 unit tests (`reference.test.ts`) and 4 E2E tests (`reference.e2e.ts`).
+
 ### Added (Phase 6)
 - **Share a snapshot**: serverless link carrying the report figures in the URL fragment, optional passphrase encryption (PBKDF2-SHA-256 + AES-256-GCM), read-only viewer at `#/shared/<payload>`, strict validation of incoming links ([docs/sharing.md](docs/sharing.md)).
 - **Written summary** from a user-run Ollama-compatible model: off by default, local first, consent required for non-local servers, aggregate-only prompt ([docs/llm-summaries.md](docs/llm-summaries.md)).

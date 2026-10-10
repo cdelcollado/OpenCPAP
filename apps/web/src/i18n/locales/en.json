@@ -630,5 +630,26 @@
   "remoteWarning": "This address is not on this computer. Your aggregate therapy figures would be sent to it.",
   "allowRemote": "I understand and allow sending the figures to this server",
   "whatIsSent": "Only totals for the last two 30-day periods are sent: nights of use, average hours, AHI, event rates, leak and setting changes. Never notes, names, serial numbers or individual nights."
+ },
+ "reference": {
+  "label": "Reference",
+  "state": {
+   "good": "Within range",
+   "warn": "Attention",
+   "bad": "Out of range"
+  },
+  "ahi": "Reference: under {{normal}} per hour",
+  "usage": "Reference: at least {{hours}} h per night",
+  "compliance": "Reference: at least {{hours}} h on {{share}} % of nights",
+  "leak": "Reference (ResMed): 70th percentile of the night under {{limit}} L/min",
+  "leakPhilips": "Philips total leak (vent flow included). Working reference: 30 to 50 L/min within range, above 60 L/min out of range; not yet sourced.",
+  "odi4": "Reference: under {{normal}} per hour (adult sleep-lab bands)",
+  "none": "No verified reference for this metric",
+  "oximetryNote": "The ODI bands come from sleep-lab (polysomnography) data. A home oximeter can give different values. SpO₂, T90 and ODI3 have no verified reference.",
+  "column": "Reference",
+  "footnote": "References are orientative reading aids, not targets, and do not replace your clinician's judgement. The sources are being confirmed.",
+  "leakJudgedResmed": "Judged on the 70th percentile ({{value}}): ResMed under {{limit}} L/min",
+  "leakJudgedPhilips": "Judged on the 70th percentile ({{value}}): Philips band {{min}} to {{max}} L/min, not yet sourced",
+  "leakJudgedOther": "Judged on the 70th percentile ({{value}}). No verified reference for this metric"
  }
 }

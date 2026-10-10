@@ -28,6 +28,7 @@ Reference products: OSCAR, SleepHQ, CPAP Clarity, AirwayLab (and Aerivue), Somni
 | 22 | Self-hosted mode (PostgreSQL/MySQL), MQTT/Home Assistant | CpapDash Desktop | 6 |
 | 23 | AI/LLM summaries (local by default) | SomniCharts (SomniDoc), CpapDash Desktop | 6 |
 | 24 | Installable PWA, offline use | Original | 2 |
+| 25 | Orientative reference ranges per device family (three-state badges, PDF column) | Original; ResMed 24 L/min line and OSCAR's large-leak default | 6+ |
 | 25 | Settings-change annotations on charts | Original | 3 |
 | 26 | Period comparator (before/after mask or pressure change) | Original (extends OSCAR/SleepHQ) | 3 |
 | 27 | Mask/consumables tracking with leak correlation | Original (inspired by myAir) | 3 |

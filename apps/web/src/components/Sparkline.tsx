@@ -1,5 +1,5 @@
 /** Tiny trend line for stat tiles: 2 px line, soft area wash, end dot with a surface ring. Missing values leave gaps. */
-export function Sparkline({ values, color, label }: { values: (number | null | undefined)[]; color: string; label: string }) {
+export function Sparkline({ values, color, label, guide }: { values: (number | null | undefined)[]; color: string; label: string; guide?: number }) {
   const pts = values.map((v, i) => (v == null || Number.isNaN(v) ? null : ([i, v] as const)));
   const defined = pts.filter((p): p is readonly [number, number] => p !== null);
   if (defined.length < 2) return null;
@@ -23,6 +23,7 @@ export function Sparkline({ values, color, label }: { values: (number | null | u
   return (
     <div className="spark">
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={label}>
+        {guide !== undefined && guide >= lo && guide <= hi && <line x1={pad} x2={W - pad} y1={y(guide)} y2={y(guide)} stroke="var(--border-strong)" strokeWidth="1" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />}
         <path d={area} fill={color} opacity="0.12" />
         <path d={d} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         <circle cx={x(last[0])} cy={y(last[1])} r="4" fill={color} stroke="var(--surface)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
