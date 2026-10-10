@@ -3,7 +3,7 @@
 Status: accepted (October 2026). Amends [ADR-0014](0014-static-hosting-with-nginx.md), which used plain HTTP on nginx.
 
 ## Context
-The web app is static files ([ADR-0014](0014-static-hosting-with-nginx.md)). Its service worker (offline use, install as an app) only registers in a secure context, so the app needs HTTPS to be fully usable. The host is a Debian LXC on a home Proxmox server. The maintainer's domain (`aptimait.com`) is managed by Cloudflare DNS.
+The web app is static files ([ADR-0014](0014-static-hosting-with-nginx.md)). Its service worker (offline use, install as an app) only registers in a secure context, so the app needs HTTPS to be fully usable. The host is a Debian LXC on a home Proxmox server. The domain of the deployment is managed by Cloudflare DNS.
 
 Options considered for HTTPS:
 - **Cloudflare Tunnel**: makes the service reachable from the internet. Not acceptable for an app whose users are health-related, when nothing needs external access.
@@ -15,7 +15,7 @@ Options considered for HTTPS:
 ## Decision
 - Serve the static build with **Caddy**, replacing nginx ([deploy/Caddyfile.template](../../deploy/Caddyfile.template), [deploy/caddy.service](../../deploy/caddy.service)).
 - Obtain the certificate with the **DNS-01 challenge** through the Cloudflare API, using the `caddy-dns/cloudflare` plugin. The token is stored only on the host, in `/etc/caddy/cloudflare.env`, readable by root.
-- Point a subdomain (for example `opencpap.aptimait.com`) at the host's **private address** with the Cloudflare proxy disabled. The service is reachable only from the local network (and from anything the operator adds later, such as Tailscale).
+- Point a subdomain (for example `opencpap.example.com`) at the host's **private address** with the Cloudflare proxy disabled. The service is reachable only from the local network (and from anything the operator adds later, such as Tailscale).
 - Keep the scripts and the guide in the repository. `provision.sh` installs Caddy and the configuration; `deploy.sh` keeps publishing the same web root.
 
 ## Consequences

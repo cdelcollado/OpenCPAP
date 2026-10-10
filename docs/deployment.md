@@ -29,7 +29,7 @@ On the **target host**:
 - Node.js is not needed on the host.
 
 Also needed:
-- A domain managed by Cloudflare DNS (the examples below use `opencpap.aptimait.com`, and `cpap.example.com` where the name is a placeholder).
+- A domain managed by Cloudflare DNS (the examples below use `opencpap.example.com`).
 - A Cloudflare API token that can edit the DNS of that zone.
 
 ## 1. Create the container
@@ -155,6 +155,68 @@ deploy/deploy.sh root@192.168.1.50 cpap.example.com
 ```
 
 Nothing is restarted: Caddy serves the new files directly. Re-run `provision.sh` only when the Caddyfile template, the service or the Caddy version changes.
+
+## Remote access with Tailscale (optional)
+
+Tailscale gives access to the host from outside the home network over a private, encrypted network (the *tailnet*), without opening any port on the router. It is the preferred route for remote access (see [ADR-0015](decisions/0015-https-caddy-cloudflare-dns.md)); the site keeps its valid HTTPS certificate, so nothing changes in the browser.
+
+Tailscale's documentation for running it in an LXC container is [Tailscale in LXC containers](https://tailscale.com/kb/1130/lxc) (unprivileged variant: [lxc-unprivileged](https://tailscale.com/kb/1130/lxc-unprivileged)).
+
+### 1. Give the container access to the TUN device
+
+An unprivileged LXC has no `/dev/net/tun` by default, and `tailscaled` needs it. Check first, inside the container:
+
+```bash
+ls -l /dev/net/tun
+```
+
+If it is missing, pass it through from the Proxmox host, as root, with the container stopped or restarted afterwards:
+
+```bash
+pct set <VMID> --dev0 /dev/net/tun
+```
+
+Alternatively, in the web interface: the container's **Resources** tab, **Add → Device Passthrough**, device path `/dev/net/tun`. Some Proxmox versions instead need these lines in `/etc/pve/lxc/<VMID>.conf`:
+
+```
+lxc.cgroup2.devices.allow: c 10:200 rwm
+lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
+```
+
+Restart the container after the change. Tailscale's documentation also lists `keyctl=1,nesting=1` among the container features; check it against the current docs for your Proxmox version. Userspace networking mode avoids the TUN device, but it cannot route a whole subnet, so it does not fit the setup below.
+
+### 2. Install and authenticate
+
+Install Tailscale from the official package repository for your Debian release (instructions at <https://tailscale.com/download>; *unverified for the current Debian release*), then:
+
+```bash
+tailscale up
+```
+
+The command prints a login URL. Open it in a browser and sign in with the account of your tailnet. Use an identity provider with two-factor authentication enabled.
+
+### 3. Reach the site over the tailnet
+
+The site certificate is issued for the public domain, and the domain points to the host's **private** address. A device on the tailnet can only use that name if it can reach the private address, so the host must **advertise its LAN subnet** as a *subnet router*. Documentation: [Subnet routers](https://tailscale.com/kb/1019/subnet-routers/).
+
+1. Enable IP forwarding on the host, as the documentation describes (a file under `/etc/sysctl.d/`, then `sysctl --system`).
+2. Advertise the narrowest subnet that holds the host: `tailscale set --advertise-routes=<LAN subnet>`, for example `<LAN subnet>` = your home network's CIDR.
+3. In the Tailscale admin console, open the machine and **approve** the advertised route under *Subnets*. Approval is a manual step unless an auto-approver is configured.
+4. On Linux client devices, accept the routes with `tailscale set --accept-routes`. The documentation notes that routes are not accepted by default on Linux clients.
+
+If another machine on your tailnet already advertises the home subnet, use that one and do not advertise it twice.
+
+Optionally, to keep the public name working from inside the tailnet without any routing, add a split-DNS entry in the admin console (**DNS → Nameservers → Add nameserver → Custom**, with the restriction to the domain). Documentation: [DNS in Tailscale](https://tailscale.com/kb/1054/dns). This is only needed when the public name resolves to something unreachable from the client; with the steps above it is not required.
+
+### 4. Check the access controls
+
+Tailscale's access rules (ACLs) decide which devices can reach the host and the subnet. The default policy allows all devices in the tailnet to reach each other; restrict it if you share the tailnet with other people. Keep the policy to the minimum needed: the device that serves the site, and the clients that should see it.
+
+### What this changes in the security model
+
+- The host stays unreachable from the internet. Access happens only from devices authenticated to the tailnet.
+- Anyone with access to the tailnet can reach the site, so the tailnet's own authentication (two-factor authentication on the identity provider) is the protection that matters.
+- The site itself still has no login; it only serves static files. The health data stays in each browser.
 
 ## Troubleshooting
 
