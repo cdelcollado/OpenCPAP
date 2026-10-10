@@ -125,8 +125,10 @@ export interface NightSummary {
   ahi?: number;
   /** RERA per hour (not part of the AHI) */
   reraIndex?: number;
-  /** total leak statistics in L/min, weighted by the time each interval covers (as OSCAR does) */
-  /** `p70` is the 70th percentile: the figure ResMed's own seal rule uses (see reference.ts) */
+  /**
+   * total leak statistics in L/min, weighted by the time each interval covers (as OSCAR does). `p70` is the
+   * 70th percentile, the figure ResMed's seal rule uses and the one the leak reference is judged on (see reference.ts).
+   */
   leak?: { average: number; median: number; p70: number; p95: number; max: number };
   /** which leak the figures above describe: `total` (includes the vent flow) or `unintentional` (vent flow subtracted) */
   leakKind?: 'total' | 'unintentional';

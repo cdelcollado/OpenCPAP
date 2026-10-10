@@ -1,9 +1,11 @@
 /**
- * Reference ranges shown next to a metric. They are orientative reading aids, not targets set for a patient, and the
- * sources are still being confirmed (see docs/reference-ranges.md): every value here is *unverified*.
+ * Reference ranges shown next to a metric. They are orientative reading aids, not targets set for a patient. Each
+ * value says where it stands in docs/reference-ranges.md: the ResMed leak rule has a primary source, the Philips band
+ * and the ODI bands do not (see that document's Sources section).
  *
- * A range only applies to the device family it was written for. The leak range is a ResMed figure (95th-percentile
- * unintentional leak); Philips reports total leak, which includes the intentional vent flow, so it has no range here.
+ * A range only applies to the device family it was written for. The leak range is judged on the night's 70th
+ * percentile: ResMed's unintentional leak against its seal rule (24 L/min, primary source); Philips reports total
+ * leak, which includes the intentional vent flow, and uses a working band that is not yet sourced.
  */
 
 /** Three-state status shown next to a metric that has a reference. */

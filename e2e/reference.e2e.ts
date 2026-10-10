@@ -29,7 +29,7 @@ test.describe('reference ranges (orientative, sources being confirmed)', () => {
     const oximetry = page.getByTestId('oximetry');
     await expect(oximetry.getByTestId('ref-badge')).toBeVisible();
     await expect(oximetry.getByText('Reference: under 5 per hour (adult sleep-lab bands)')).toBeVisible();
-    await expect(oximetry.getByText('No verified reference for this metric').first()).toBeVisible();
+    await expect(oximetry.getByText('SpO₂, T90 and ODI3 have no verified reference.')).toBeVisible();
   });
 
   test('a ResMed card shows the leak status against the 24 L/min reference', async ({ page }, info) => {
