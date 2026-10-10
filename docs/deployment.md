@@ -29,7 +29,7 @@ On the **target host**:
 - Node.js is not needed on the host.
 
 Also needed:
-- A domain managed by Cloudflare DNS (the example below uses `cpap.aptimait.com`).
+- A domain managed by Cloudflare DNS (the examples below use `opencpap.aptimait.com`, and `cpap.example.com` where the name is a placeholder).
 - A Cloudflare API token that can edit the DNS of that zone.
 
 ## 1. Create the container

@@ -15,7 +15,7 @@ Options considered for HTTPS:
 ## Decision
 - Serve the static build with **Caddy**, replacing nginx ([deploy/Caddyfile.template](../../deploy/Caddyfile.template), [deploy/caddy.service](../../deploy/caddy.service)).
 - Obtain the certificate with the **DNS-01 challenge** through the Cloudflare API, using the `caddy-dns/cloudflare` plugin. The token is stored only on the host, in `/etc/caddy/cloudflare.env`, readable by root.
-- Point a subdomain (`cpap.aptimait.com`) at the host's **private address** with the Cloudflare proxy disabled. The service is reachable only from the local network (and from anything the operator adds later, such as Tailscale).
+- Point a subdomain (for example `opencpap.aptimait.com`) at the host's **private address** with the Cloudflare proxy disabled. The service is reachable only from the local network (and from anything the operator adds later, such as Tailscale).
 - Keep the scripts and the guide in the repository. `provision.sh` installs Caddy and the configuration; `deploy.sh` keeps publishing the same web root.
 
 ## Consequences

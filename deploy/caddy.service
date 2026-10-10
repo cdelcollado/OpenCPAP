@@ -9,6 +9,8 @@ Type=notify
 # Holds CF_API_TOKEN for the Cloudflare DNS challenge. Created by the operator,
 # never committed (see docs/deployment.md).
 EnvironmentFile=/etc/caddy/cloudflare.env
+# Caddy keeps its certificates and autosaved config under $HOME; systemd does not set it.
+Environment=HOME=/root
 ExecStart=/usr/bin/caddy run --environ --config /etc/caddy/Caddyfile
 ExecReload=/usr/bin/caddy reload --config /etc/caddy/Caddyfile --force
 TimeoutStopSec=5s
