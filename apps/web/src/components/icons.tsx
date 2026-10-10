@@ -1,14 +1,18 @@
 import type { ReactNode } from 'react';
+import { CircleAlert, CircleCheck, CircleDot, TriangleAlert } from 'lucide-react';
 
-/** Small inline SVG icons (stroke = currentColor). Decorative: always paired with text. */
+/**
+ * Small inline SVG icons (stroke = currentColor). Decorative: always paired with text.
+ * Status icons come from Lucide, the one icon family used for state across the app (sizes come from CSS).
+ */
 const svg = (children: ReactNode, viewBox = '0 0 24 24') => (
   <svg viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{children}</svg>
 );
 
-export const IconCheck = () => svg(<path d="M5 12.5l4.5 4.5L19 7.5" />);
-export const IconWarn = () => svg(<><path d="M12 3.5l9.5 16.5h-19z" /><path d="M12 10v5M12 17.8v.2" /></>);
-export const IconAlert = () => svg(<><circle cx="12" cy="12" r="9.5" /><path d="M12 7v6M12 16.2v.2" /></>);
-export const IconDot = () => svg(<circle cx="12" cy="12" r="4" fill="currentColor" />);
+export const IconCheck = () => <CircleCheck aria-hidden="true" focusable="false" />;
+export const IconWarn = () => <TriangleAlert aria-hidden="true" focusable="false" />;
+export const IconAlert = () => <CircleAlert aria-hidden="true" focusable="false" />;
+export const IconDot = () => <CircleDot aria-hidden="true" focusable="false" />;
 export const IconUp = () => svg(<path d="M12 19V6M6 11.5l6-6 6 6" />);
 export const IconDown = () => svg(<path d="M12 5v13M6 12.5l6 6 6-6" />);
 export const IconFlat = () => svg(<path d="M5 12h14" />);
