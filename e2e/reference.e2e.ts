@@ -38,7 +38,33 @@ test.describe('reference ranges (orientative, sources being confirmed)', () => {
     await page.getByTestId('zip-input').setInputFiles(await resmedZip(info.outputPath('resmed-ref')));
     await expect(page.getByText('Imported 6 sessions.')).toBeVisible();
     await page.getByRole('link', { name: 'View dashboard' }).click();
-    await expect(page.getByText('Reference (ResMed): 70th percentile of the night under 24 L/min')).toBeVisible();
+    await expect(page.getByText('Judged on the 70th percentile', { exact: false }).first()).toBeVisible();
+    await expect(page.getByText('ResMed under 24 L/min')).toBeVisible();
     await expect(page.getByTestId('ref-badge').first()).toBeVisible();
+  });
+});
+
+test.describe('explainers (?)', () => {
+  test('only one explainer is open at a time, a click elsewhere closes it, Escape closes it', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    const tips = page.locator('details.info');
+    await tips.nth(0).locator('summary').click();
+    await expect(tips.nth(0)).toHaveAttribute('open', '');
+    await tips.nth(1).locator('summary').click();
+    await expect(tips.nth(1)).toHaveAttribute('open', '');
+    await expect(tips.nth(0)).not.toHaveAttribute('open', '');
+    await expect(page.locator('details.info[open]')).toHaveCount(1);
+    // a click on the page closes it
+    await page.getByRole('heading', { name: 'Trends' }).click();
+    await expect(page.locator('details.info[open]')).toHaveCount(0);
+    // Escape closes an open one
+    await tips.nth(0).locator('summary').click();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('details.info[open]')).toHaveCount(0);
+    // clicking the same explainer again still toggles it
+    await tips.nth(0).locator('summary').click();
+    await tips.nth(0).locator('summary').click();
+    await expect(tips.nth(0)).not.toHaveAttribute('open', '');
   });
 });

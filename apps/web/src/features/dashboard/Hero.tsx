@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { deviceFamily, leakReference, REFERENCE, type NightSummary } from '@opencpap/core';
 import { Badge } from '../../components/Badge';
-import { leakNote } from '../../components/leakNote';
+import { leakJudged, leakNote } from '../../components/leakNote';
 import { RefBadge } from '../../components/RefBadge';
 import { Delta } from '../../components/Delta';
 import { InfoTip } from '../../components/InfoTip';
@@ -38,7 +38,7 @@ export function Hero({ nights, last, base, heading }: { nights: NightSummary[]; 
           <Delta value={last.ahi} baseline={base.ahi} goodWhen="down" suffix={vs} lang={lang} />
         </div>
         <div className="sub">{t('reference.ahi', { normal: REFERENCE.ahi.normal })}</div>
-        <Sparkline values={recent.map((n) => n.ahi)} color="var(--m-ahi)" label={t('hero.trendAhi')} />
+        <Sparkline values={recent.map((n) => n.ahi)} color="var(--m-ahi)" label={t('hero.trendAhi')} guide={REFERENCE.ahi.normal} />
       </div>
 
       <div className="card tiles">
@@ -56,8 +56,7 @@ export function Hero({ nights, last, base, heading }: { nights: NightSummary[]; 
           <span className="sub">{t('metric.leakMedian')}: {formatNumber(last.leak?.median, lang)}</span>
           <Delta value={last.leak?.p95} baseline={base.leak} suffix={vs} lang={lang} />
           {leakRef && <span className="row"><RefBadge state={leakRef} /></span>}
-          <span className="sub">{t('reference.p70', { value: formatNumber(last.leak?.p70, lang) })}</span>
-          <span className="sub">{leakNote(t, family)}</span>
+          <span className="sub">{leakJudged(t, family, formatNumber(last.leak?.p70, lang))}</span>
           <Sparkline values={recent.map((n) => n.leak?.p95)} color="var(--m-leak)" label={t('hero.trendLeak')} />
         </div>
         <div className="tile">

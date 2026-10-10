@@ -108,12 +108,13 @@ select, input[type='text'], input[type='date'] { font: inherit; padding: 0.4rem 
 .banner.warn { background: var(--st-warn-bg); color: var(--st-warn); }
 
 /* ───────── Status badge (icon + text, never colour alone) ───────── */
-.badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.15rem 0.55rem 0.15rem 0.4rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.1rem 0.55rem 0.1rem 0.4rem; border-radius: 999px; border: 1px solid var(--border-strong); background: transparent; color: var(--text); font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
 .badge svg { width: 0.95rem; height: 0.95rem; flex: none; }
-.badge-good { background: var(--st-good-bg); color: var(--st-good); }
-.badge-warn { background: var(--st-warn-bg); color: var(--st-warn); }
-.badge-bad { background: var(--st-bad-bg); color: var(--st-bad); }
-.badge-neutral { background: var(--surface-2); color: var(--text-2); }
+/* outline chips: the icon carries the colour, the words stay in ink (state is never colour alone) */
+.badge-good svg { color: var(--st-good); }
+.badge-warn svg { color: var(--st-warn); }
+.badge-bad svg { color: var(--st-bad); }
+.badge-neutral svg { color: var(--text-2); }
 
 /* ───────── Hero + tiles ───────── */
 .hero { display: grid; grid-template-columns: minmax(280px, 1.15fr) 2fr; gap: 0.9rem; }
@@ -132,7 +133,7 @@ select, input[type='text'], input[type='date'] { font: inherit; padding: 0.4rem 
 .delta svg { width: 0.8rem; height: 0.8rem; }
 .delta.good { color: var(--st-good); } .delta.bad { color: var(--st-bad); }
 .spark svg { display: block; width: 100%; height: 36px; overflow: visible; }
-.hero-main .spark svg { height: 72px; }
+.hero-main .spark svg { height: 130px; }
 
 /* ───────── Meter ───────── */
 .meter { position: relative; height: 0.7rem; border-radius: 999px; background: var(--surface-3); margin: 0.6rem 0 0.3rem; }
@@ -321,7 +322,7 @@ tr.differs th, tr.differs td { background: var(--st-warn-bg); }
 .report-table.summary { table-layout: fixed; }
 .report-table.summary td.num { white-space: nowrap; }
 /* Status in the report: plain text, the icon alone carries the colour (no filled chip, so figures keep the weight) */
-.report .badge { background: none; padding: 0; color: #0f1b24; font-weight: 600; font-size: 0.85rem; white-space: normal; }
+.report .badge { background: none; border: 0; padding: 0; color: #0f1b24; font-weight: 600; font-size: 0.85rem; white-space: normal; }
 .report .badge svg { width: 0.85rem; height: 0.85rem; }
 .report .badge-good svg { color: #006300; } .report .badge-warn svg { color: #8a5300; } .report .badge-bad svg { color: #b42323; }
 .report-table.compact { font-size: 0.8rem; } .report-table.compact th, .report-table.compact td { padding: 0.15rem 0.4rem; }
