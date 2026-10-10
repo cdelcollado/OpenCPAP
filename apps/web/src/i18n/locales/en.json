@@ -648,6 +648,6 @@
   "oximetryNote": "The ODI bands come from sleep-lab (polysomnography) data. A home oximeter can give different values. SpO₂, T90 and ODI3 have no verified reference.",
   "column": "Reference",
   "footnote": "References are orientative reading aids, not targets, and do not replace your clinician's judgement. The sources are being confirmed.",
-  "p70": "70th percentile of the night: {{value}} L/min"
+  "p70": "Judged on the 70th percentile of the night: {{value}} L/min"
  }
 }
