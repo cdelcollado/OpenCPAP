@@ -12,13 +12,13 @@ Status: **implemented** in the web app, the oximetry card and the PDF report (Ph
 
 ## Three states
 
-| State | Label (en / ca / es) | Icon (Lucide) | Colour (light / dark text) |
+| State | Label | Icon (Lucide) | Colour (light / dark text) |
 |---|---|---|---|
-| Within range | Within range / Dins del rang / Dentro del rango | `CircleCheck` | green `#006300` / `#4ade80` |
-| Attention | Attention / Atenció / Atención | `TriangleAlert` | amber `#8a5300` / `#fbbf24` |
-| Out of range | Out of range / Fora de rang / Fuera de rango | `CircleX` | red `#b42323` / `#fca5a5` |
+| Within range | Within range | `CircleCheck` | green `#006300` / `#4ade80` |
+| Attention | Attention | `TriangleAlert` | amber `#8a5300` / `#fbbf24` |
+| Out of range | Out of range | `CircleAlert` | red `#b42323` / `#fca5a5` |
 
-- Icons come from `lucide-react` (ISC licence, compatible with GPL-3.0-or-later). The names were checked against the installed version (1.55.0). The existing `Badge` keeps its own icons and is unchanged.
+- Icons come from `lucide-react` (ISC licence, compatible with GPL-3.0-or-later). The names were checked against the installed version (1.55.0). All status icons in the app (the `Badge` and the reference badges) use the same Lucide set, defined in `components/icons.tsx`.
 - The colours are the existing status tokens (`--st-good`, `--st-warn`, `--st-bad`), so the badges match the rest of the app in both themes.
 - In the PDF the icon and the text carry the state, so it reads in black and white too.
 
@@ -109,4 +109,4 @@ Searched on 2026-10-10. *Primary* means the document itself was read (text extra
 - Decide whether the Philips large-leak percentage (its definition is sourced) can be shown next to the band.
 - Decide whether T90 / T88 should ever carry a status.
 - Add the reference badges to the night view and the Compare page if wanted.
-- Translations are in place for en / ca / es (parity is tested by `i18n.test.ts`); review the Catalan and Spanish wording with a native reader.
+- Translations live in the locale files `apps/web/src/i18n/locales/{en,ca,es}.json` (parity is tested by `i18n.test.ts`); review the Catalan and Spanish wording with a native reader.
