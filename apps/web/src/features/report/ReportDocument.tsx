@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ahiReference, deviceFamily, equipmentStatus, isMajor, leakReference, percentile, periodStats, REFERENCE, usageReference, type ChangeEvent, type EquipmentItem, type NightSummary, type PeriodStats } from '@opencpap/core';
-import { leakNote, RefBadge } from '../../components/RefBadge';
+import { leakNote } from '../../components/leakNote';
+import { RefBadge } from '../../components/RefBadge';
 import type { JournalRow } from '../../db/db';
 import { formatHours, formatNightDate, formatNumber } from '../../format';
 import { describeChanges, settingLabel, settingValue } from '../changes/format';

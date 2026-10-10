@@ -1,16 +1,8 @@
-import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, CircleX, TriangleAlert } from 'lucide-react';
-import { REFERENCE, type DeviceFamily, type RefState } from '@opencpap/core';
+import type { RefState } from '@opencpap/core';
 
 const ICON = { good: CircleCheck, warn: TriangleAlert, bad: CircleX };
-
-/** The leak reference line for a device family (the status itself comes from `leakReference`). */
-export function leakNote(t: TFunction, family: DeviceFamily): string {
-  if (family === 'resmed') return t('reference.leak', { limit: REFERENCE.leakResmed });
-  if (family === 'philips') return t('reference.leakPhilips', { min: REFERENCE.leakPhilips.min, max: REFERENCE.leakPhilips.max, problem: REFERENCE.leakPhilips.problem });
-  return t('reference.none');
-}
 
 /**
  * Three-state reference status (within range / attention / out of range) against a published reference.
