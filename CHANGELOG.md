@@ -3,6 +3,8 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Fixed (phone navigation)
+- On phones (up to 600 px wide) the six navigation links are laid out as a grid of three columns, two rows, instead of wrapping unevenly. Each link keeps the 44 px touch target.
 
 ## [1.1.0] - 2026-10-11
 ### Added (version and update button)
