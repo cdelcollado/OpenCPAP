@@ -3,6 +3,8 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-10-11
 ### Added (version and update button)
 - **Version and update button at the foot of the page**: the app version is shown there. The button is neutral when the app is current and takes the accent colour when a new version has been downloaded; pressing it activates that version. The floating banner remains.
 
