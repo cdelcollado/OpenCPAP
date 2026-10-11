@@ -38,4 +38,4 @@ Options considered:
 - Whether to approve the LXC as a standby router (redundancy) once the maintainer decides.
 - The ACL policy for the tailnet is not written down yet; it should be documented in [privacy-and-security.md](../privacy-and-security.md) once it is fixed.
 - Whether the other router's exit-node role affects the site's traffic: not checked.
-- Testing from a device outside the home network has not been recorded yet.
+- Tested once by the maintainer on 2026-10-11: a mobile phone on mobile data, with the Tailscale app connected to the tailnet, opened the site over HTTPS with a valid certificate. The check without Tailscale (expected to fail) and the client settings on other devices are not recorded.
