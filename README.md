@@ -76,7 +76,7 @@ npm run e2e        # build + end-to-end and accessibility tests in Chrome
 Requires Node.js 20+ (developed on Node 24) and, for the E2E tests, Google Chrome. See [docs/development.md](docs/development.md) and [docs/testing.md](docs/testing.md).
 
 ## Self-hosting
-The app is static files, so any web server can serve it. To run it on a Debian host or LXC on your network (Caddy with HTTPS through a Cloudflare DNS challenge, deployed over SSH): `deploy/provision.sh root@HOST DOMAIN` once, then `deploy/deploy.sh root@HOST DOMAIN` for each update. The host is not exposed to the internet. See [docs/deployment.md](docs/deployment.md). HTTPS is needed for the offline mode and the PWA install.
+The app is static files, so any web server can serve it. To run it on a Debian host or LXC on your network (Caddy with HTTPS through a Cloudflare DNS challenge, deployed over SSH): `deploy/provision.sh root@HOST DOMAIN` once, then `deploy/deploy.sh root@HOST DOMAIN` for each update. The host is not exposed to the internet. Remote access from outside the home is optional and goes through Tailscale, with the host as a subnet router ([ADR-0017](docs/decisions/0017-remote-access-tailscale-subnet-router.md)). See [docs/deployment.md](docs/deployment.md). HTTPS is needed for the offline mode and the PWA install.
 
 ## Using it
 1. Open the app, go to **Import** and choose the SD card's root folder (it contains `P-SERIES` for a Philips DreamStation 2, or `DATALOG` and `STR.edf` for a ResMed), drop it, or pick a ZIP of it.

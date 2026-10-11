@@ -6,7 +6,9 @@
 3. Any future network feature (sharing, sync, LLM) is opt-in, explained in the UI, and end-to-end encrypted where applicable.
 
 ## Self-hosting
-When the app is served from your own server ([deployment.md](deployment.md)), the server only delivers the static build over HTTPS. It receives no health data, runs no application code, and its access log records only requests for files, not any content the user has imported. The URL fragment (`#/…`) is never sent to the server, so hash routes and shared-snapshot payloads stay in the browser. The host is reachable only on the local network; its Cloudflare token is stored on the host with restricted permissions ([ADR-0015](decisions/0015-https-caddy-cloudflare-dns.md)).
+When the app is served from your own server ([deployment.md](deployment.md)), the server only delivers the static build over HTTPS. It receives no health data, runs no application code, and its access log records only requests for files, not any content the user has imported. The URL fragment (`#/…`) is never sent to the server, so hash routes and shared-snapshot payloads stay in the browser. The host is reachable only on the local network and, when Tailscale is set up, from the devices of your tailnet; it is never exposed to the internet. Its Cloudflare token is stored on the host with restricted permissions ([ADR-0015](decisions/0015-https-caddy-cloudflare-dns.md)).
+
+Remote access through Tailscale makes the whole home subnet reachable to every tailnet device the access rules allow, not only the site. Restrict the access rules to the devices that need the site, and protect the tailnet account with two-factor authentication. Tailscale's coordination server sees node metadata, not the traffic; this is *unverified* against its current documentation. See [ADR-0017](decisions/0017-remote-access-tailscale-subnet-router.md).
 
 ## Repository hygiene
 - `fixtures/raw/` contains real SD data and is git-ignored. Never force-add it.
