@@ -3,6 +3,11 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Added (app updates)
+- **Service worker waits for the user**: the registration changed from `autoUpdate` (the new version activated and reloaded the page by itself, which could lose unsaved text) to `prompt`.
+- **Update banner**: when a new version has been downloaded, the page shows *Update now*. The new version is activated only after that click, so text being typed is not lost by a surprise reload. The app checks for a new version hourly and when the tab becomes visible again. Decision: [ADR-0016](docs/decisions/0016-app-updates.md).
+
+## [1.0.0] - 2026-10-11
 ### Added (deployment)
 - **Self-hosting with HTTPS**: `deploy/provision.sh` (installs Caddy with the Cloudflare DNS plugin, the Caddyfile and the systemd service on a Debian host or LXC over SSH, idempotent), `deploy/deploy.sh` (builds the web app, syncs it with `rsync --delete`, checks the site over HTTPS from the host). The certificate is issued by a DNS challenge, so the host is not exposed to the internet. Guide: [docs/deployment.md](docs/deployment.md); decisions: [ADR-0014](docs/decisions/0014-static-hosting-with-nginx.md) (static hosting) and [ADR-0015](docs/decisions/0015-https-caddy-cloudflare-dns.md) (HTTPS).
 

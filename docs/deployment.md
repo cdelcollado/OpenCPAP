@@ -156,6 +156,15 @@ deploy/deploy.sh root@192.168.1.50 cpap.example.com
 
 Nothing is restarted: Caddy serves the new files directly. Re-run `provision.sh` only when the Caddyfile template, the service or the Caddy version changes.
 
+**Release steps.** Before deploying a release:
+
+1. Move the `[Unreleased]` entries in [CHANGELOG.md](../CHANGELOG.md) under a new `## [X.Y.Z] - YYYY-MM-DD` heading.
+2. Set the same `version` in `apps/web/package.json` and the root `package.json` (see [ADR-0016](decisions/0016-app-updates.md) for the rules: patch, minor, major).
+3. Commit, then tag the commit: `git tag -a vX.Y.Z -m "vX.Y.Z"` and `git push --tags`.
+4. Deploy with the commands above.
+
+**What users see.** The version is shown at the bottom of *Settings*. Users who already have the app open get a banner at the bottom of the page within an hour (or when they return to the tab) with an *Update now* button. Nothing changes until they press it, and their data stays in their browser. Users who open the app for the first time get the new version directly.
+
 ## Remote access with Tailscale (optional)
 
 Tailscale gives access to the host from outside the home network over a private, encrypted network (the *tailnet*), without opening any port on the router. It is the preferred route for remote access (see [ADR-0015](decisions/0015-https-caddy-cloudflare-dns.md)); the site keeps its valid HTTPS certificate, so nothing changes in the browser.
