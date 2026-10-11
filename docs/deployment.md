@@ -208,12 +208,22 @@ The command prints a login URL. Open it in a browser and sign in with the accoun
 
 The site certificate is issued for the public domain, and the domain points to the host's **private** address. A device on the tailnet can only use that name if it can reach the private address, so the host must **advertise its LAN subnet** as a *subnet router*. Documentation: [Subnet routers](https://tailscale.com/kb/1019/subnet-routers/).
 
-1. Enable IP forwarding on the host, as the documentation describes (a file under `/etc/sysctl.d/`, then `sysctl --system`).
+1. Enable IP forwarding on the host, persistently:
+
+   ```bash
+   cat > /etc/sysctl.d/99-tailscale.conf <<'EOF'
+   net.ipv4.ip_forward = 1
+   net.ipv6.conf.all.forwarding = 1
+   EOF
+   sysctl -p /etc/sysctl.d/99-tailscale.conf
+   ```
+
 2. Advertise the narrowest subnet that holds the host: `tailscale set --advertise-routes=<LAN subnet>`, for example `<LAN subnet>` = your home network's CIDR.
 3. In the Tailscale admin console, open the machine and **approve** the advertised route under *Subnets*. Approval is a manual step unless an auto-approver is configured.
-4. On Linux client devices, accept the routes with `tailscale set --accept-routes`. The documentation notes that routes are not accepted by default on Linux clients.
+4. Check which router is primary: `tailscale status --json` on the host shows `PrimaryRoutes` for each node. Tailscale uses one approved router at a time; a second approved router is a standby.
+5. On Linux client devices, accept the routes with `tailscale set --accept-routes`. The documentation notes that routes are not accepted by default on Linux clients.
 
-If another machine on your tailnet already advertises the home subnet, use that one and do not advertise it twice.
+If another machine on your tailnet already advertises the home subnet, you can use it as the primary and keep this host as a standby (approve the route here, and do not remove the other router's approval). To make the other router primary, approve the route there first and only then remove the approval on this host, so that the subnet is never without a router. The design is recorded in [ADR-0017](decisions/0017-remote-access-tailscale-subnet-router.md).
 
 Optionally, to keep the public name working from inside the tailnet without any routing, add a split-DNS entry in the admin console (**DNS → Nameservers → Add nameserver → Custom**, with the restriction to the domain). Documentation: [DNS in Tailscale](https://tailscale.com/kb/1054/dns). This is only needed when the public name resolves to something unreachable from the client; with the steps above it is not required.
 

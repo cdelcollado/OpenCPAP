@@ -3,6 +3,10 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Added (remote access)
+- **Remote access through Tailscale**: the deployment host advertises the home subnet as a subnet router, so the site is reachable from the tailnet without opening any port. The subnet route is approved in the Tailscale admin console; another router on the tailnet is the primary. Decision: [ADR-0017](docs/decisions/0017-remote-access-tailscale-subnet-router.md); guide: [docs/deployment.md](docs/deployment.md#remote-access-with-tailscale-optional).
+- Documentation: access rules and the whole-subnet exposure of a subnet router in [privacy-and-security.md](docs/privacy-and-security.md).
+
 ### Added (app updates)
 - **Service worker waits for the user**: the registration changed from `autoUpdate` (the new version activated and reloaded the page by itself, which could lose unsaved text) to `prompt`.
 - **Update banner**: when a new version has been downloaded, the page shows *Update now*. The new version is activated only after that click, so text being typed is not lost by a surprise reload. The app checks for a new version hourly and when the tab becomes visible again. Decision: [ADR-0016](docs/decisions/0016-app-updates.md).
