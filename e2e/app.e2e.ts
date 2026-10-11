@@ -202,6 +202,46 @@ test.describe('responsive layout', () => {
       expect(overflow).toBeLessThanOrEqual(1);
     });
   }
+
+  test('segmented options never break a word and touch targets are at least 44 px high', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await resetApp(page);
+    await loadDemo(page);
+    // every option of every segmented control renders on one line (one client rect for its text)
+    const broken = await page.evaluate(() => [...document.querySelectorAll('.seg label')].filter((label) => {
+      // measure the text nodes only: the hidden radio input is absolutely positioned over the label
+      const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
+      const tops = new Set<number>();
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        for (const r of range.getClientRects()) tops.add(Math.round(r.top));
+      }
+      return tops.size > 1;
+    }).map((l) => l.textContent));
+    expect(broken).toEqual([]);
+    const small = await page.locator('.icon-btn, .app-header nav a').evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().height)).filter((h) => h < 44));
+    expect(small).toEqual([]);
+  });
+
+  test('the nights table keeps dates and bar values on one line', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await resetApp(page);
+    await loadDemo(page);
+    // measure the visible text nodes only: the decorative mini bar and the screen-reader-only text are not part of the line
+    const lines = await page.locator('.nights-wrap tbody th[scope="row"] a, .nights-wrap .bar-cell').evaluateAll((els) => els.map((el) => {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: (n) => (n.parentElement?.closest('.sr-only') || !n.textContent?.trim() ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT) });
+      const tops = new Set<number>();
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        for (const r of range.getClientRects()) tops.add(Math.round(r.top));
+      }
+      return tops.size;
+    }));
+    expect(lines.length).toBeGreaterThan(0);
+    expect(Math.max(...lines)).toBe(1);
+  });
 });
 
 test.describe('accessibility (axe, WCAG 2.1 A/AA)', () => {

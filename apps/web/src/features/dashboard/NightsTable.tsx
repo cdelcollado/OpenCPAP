@@ -12,7 +12,7 @@ export function NightsTable({ nights }: { nights: NightSummary[] }) {
   const { journal } = useData();
   if (nights.length === 0) return <p>{t('dashboard.noNightsInRange')}</p>;
   return (
-    <div className="table-wrap">
+    <div className="table-wrap nights-wrap">
       <table>
         <caption className="sr-only">{t('dashboard.nightsTable')}</caption>
         <thead>

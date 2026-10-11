@@ -42,7 +42,7 @@ export function ReportDocument({ r }: { r: ReportInput }) {
     <td className="ref">{state && <RefBadge state={state} />}{text && <div className="muted">{text}</div>}</td>
   );
   const n1 = (v: number | undefined, d = 1) => formatNumber(v, lang, d);
-  const pct = (v: number | undefined) => (v === undefined ? '—' : `${formatNumber(v * 100, lang, 0)} %`);
+  const pct = (v: number | undefined) => (v === undefined ? '—' : `${formatNumber(v * 100, lang, 0)} %`);
   const hrs = (v: number | undefined) => (v === undefined ? '—' : formatHours(v));
   const changesInRange = r.changes.filter((c) => c.date >= r.from && c.date <= r.to);
   const markers = changesInRange.map((c) => c.date);

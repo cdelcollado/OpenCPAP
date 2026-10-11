@@ -79,8 +79,8 @@
   "rangeAll": "Todo",
   "compliance": "Cumplimiento (30 noches)",
   "complianceDetail": "{{ok}} de {{total}} noches con al menos 4 h",
-  "meets": "Cumple la regla habitual de 4 h / 70 %",
-  "notMeets": "Por debajo de la regla habitual de 4 h / 70 %",
+  "meets": "Cumple la regla habitual de 4 h / 70 %",
+  "notMeets": "Por debajo de la regla habitual de 4 h / 70 %",
   "trends": "Tendencias",
   "usageChart": "Horas de uso por noche",
   "ahiChart": "IAH por noche",
@@ -91,7 +91,7 @@
   "tableHint": "Selecciona una noche para ver los detalles.",
   "subtitle": "{{count}} noches guardadas · última {{date}}",
   "emptyPrivacy": "Tus datos se leen en el navegador y se quedan en este dispositivo.",
-  "complianceRule": "Objetivo habitual: 4 h el 70 % de las noches",
+  "complianceRule": "Objetivo habitual: 4 h el 70 % de las noches",
   "calendar": "Calendario",
   "calendarMeasure": "Medida mostrada en el calendario",
   "chartHint": "Pasa el ratón para ver los valores; haz clic en una barra para abrir esa noche.",
@@ -121,7 +121,7 @@
  "metric": {
   "usage": "Uso",
   "ahi": "IAH",
-  "leakP95": "Fuga (95 %)",
+  "leakP95": "Fuga (95 %)",
   "leakMedian": "Fuga (mediana)",
   "pressure": "Presión",
   "events": "Eventos",
@@ -156,7 +156,7 @@
  },
  "explain": {
   "ahi": "Índice de apneas–hipopneas: apneas e hipopneas por hora de uso. Muchas guías consideran bien controlado un valor inferior a 5 por hora, pero lo adecuado para ti lo decide tu profesional sanitario.",
-  "usage": "Horas con la mascarilla puesta. Muchas aseguradoras y clínicas piden al menos 4 horas en al menos el 70 % de las noches.",
+  "usage": "Horas con la mascarilla puesta. Muchas aseguradoras y clínicas piden al menos 4 horas en al menos el 70 % de las noches.",
   "leak": "Fuga de aire, en litros por minuto. Los equipos Philips informan de la fuga total, que incluye la fuga deliberada de las salidas de la mascarilla, por lo que un valor estable distinto de cero es normal. Los ResMed informan de la fuga no intencionada, con el flujo de ventilación ya restado, por eso sus valores son más bajos y parten de casi cero. Picos altos sostenidos pueden indicar un mal sellado. Los dos tipos no deben compararse entre sí.",
   "pressure": "Presión de la terapia en cmH₂O, fijada en el dispositivo o elegida automáticamente.",
   "compliance": "Proporción de noches con al menos 4 horas de uso durante las últimas 30 noches.",
@@ -168,7 +168,7 @@
   "periodic": "Proporción de la noche con un aumento y disminución regular y sostenido del tamaño de la respiración (periodos de 20 a 120 s durante varios minutos), como en la respiración periódica. Los episodios breves, como los pocos minutos que a veces informa el propio dispositivo, no se detectan: sus eventos de respiración periódica siguen siendo la referencia.",
   "ie": "Cuánto más dura la espiración que la inspiración (habitualmente entre 1,2 y 2).",
   "odi": "Índice de desaturación de oxígeno: cuántas veces por hora la SpO₂ bajó al menos 3 (o 4) puntos por debajo de su nivel reciente durante 10 s a 3 min. Depende del sensor y de cómo promedia; compáralo con tus noches anteriores.",
-  "t90": "Proporción del registro válido con la SpO₂ por debajo del 90 %.",
+  "t90": "Proporción del registro válido con la SpO₂ por debajo del 90 %.",
   "spo2": "Saturación de oxígeno en sangre medida por tu oxímetro."
  },
  "night": {
@@ -251,7 +251,7 @@
   "vsAvg": "vs media de {{n}} noches",
   "trendAhi": "IAH de las últimas 30 noches",
   "trendUsage": "Horas de uso de las últimas 30 noches",
-  "trendLeak": "Fuga (95 %) de las últimas 30 noches"
+  "trendLeak": "Fuga (95 %) de las últimas 30 noches"
  },
  "status": {
   "ahiGood": "Menos de 5 por hora",
@@ -355,7 +355,7 @@
   "ahiHigh": "Tu IAH fue de {{ahi}} eventos por hora, 15 o más.",
   "ahiAboveUsual": "Es más alto que tu habitual, {{usual}}.",
   "ahiBelowUsual": "Es más bajo que tu habitual, {{usual}}.",
-  "leakHigh": "La fuga (95 %) fue de {{leak}} L/min, por encima de tu habitual, {{usual}} L/min.",
+  "leakHigh": "La fuga (95 %) fue de {{leak}} L/min, por encima de tu habitual, {{usual}} L/min.",
   "largeLeak": "El dispositivo informó de fugas grandes durante unos {{minutes}} min.",
   "maskOff_one": "La mascarilla se quitó {{count}} vez (unos {{minutes}} min en total).",
   "maskOff_other": "La mascarilla se quitó {{count}} veces (unos {{minutes}} min en total).",
@@ -363,11 +363,11 @@
   "reraHigh": "El índice de RERA fue de {{index}} por hora.",
   "settingsChanged_one": "Esta noche cambió {{count}} ajuste de la terapia.",
   "settingsChanged_other": "Esta noche cambiaron {{count}} ajustes de la terapia.",
-  "flatHigh": "Las respiraciones aplanadas fueron el {{share}} % de las respiraciones, por encima de tu habitual, {{usual}} %.",
-  "periodicPattern": "Se vio un patrón respiratorio de aumento y disminución durante aproximadamente el {{percent}} % de la noche.",
+  "flatHigh": "Las respiraciones aplanadas fueron el {{share}} % de las respiraciones, por encima de tu habitual, {{usual}} %.",
+  "periodicPattern": "Se vio un patrón respiratorio de aumento y disminución durante aproximadamente el {{percent}} % de la noche.",
   "desatFrequent": "El oxímetro registró {{odi}} desaturaciones de 3 puntos o más por hora.",
-  "lowOxygenTime": "La SpO₂ estuvo por debajo del 90 % durante el {{percent}} % del registro.",
-  "oxygenSteady": "El oxímetro mostró niveles de oxígeno estables (mínimo {{min}} %)."
+  "lowOxygenTime": "La SpO₂ estuvo por debajo del 90 % durante el {{percent}} % del registro.",
+  "oxygenSteady": "El oxímetro mostró niveles de oxígeno estables (mínimo {{min}} %)."
  },
  "changes": {
   "title": "Cambios de ajustes",
@@ -420,7 +420,7 @@
   "deleteConfirm": "¿Eliminar {{name}}?",
   "save": "Guardar cambios",
   "leakTitle": "Fuga y edad",
-  "leakChart": "Fuga (95 %) según los días de uso",
+  "leakChart": "Fuga (95 %) según los días de uso",
   "leakNeedMore": "Aún no hay suficientes noches con datos de fuga (hacen falta al menos 6).",
   "leakEarly": "Primera semana: {{value}} L/min",
   "leakLate": "Última semana: {{value}} L/min",
@@ -457,7 +457,7 @@
   "over4": "Noches con 4 h o más",
   "ahi": "IAH (todos los eventos / todas las horas)",
   "ahiMedian": "IAH mediano por noche",
-  "leakP95": "Fuga (95 %), mediana de las noches",
+  "leakP95": "Fuga (95 %), mediana de las noches",
   "leakMedian": "Fuga, mediana de las noches",
   "change": "Cambio (B − A)",
   "rates": "Eventos por hora de uso",
@@ -511,9 +511,9 @@
   "limits": "Las cifras proceden de los registros del propio dispositivo. La fuga es la cifra del propio equipo: fuga total, incluida la ventilación intencionada de la mascarilla, en Philips; fuga no intencionada en ResMed. Este resumen no es un diagnóstico.",
   "refHint": "Las líneas horizontales discontinuas marcan 4 horas de uso y 5 eventos por hora.",
   "oximetry": "Oximetría (tu propio oxímetro)",
-  "oximetryLine": "{{count}} noche(s) con datos: SpO₂ media {{mean}} %, mínima {{min}} %, tiempo por debajo del 90 % {{t90}} % (mediana), desaturaciones ≥ 3 % {{odi}} por hora (media).",
+  "oximetryLine": "{{count}} noche(s) con datos: SpO₂ media {{mean}} %, mínima {{min}} %, tiempo por debajo del 90 % {{t90}} % (mediana), desaturaciones ≥ 3 % {{odi}} por hora (media).",
   "breathing": "Respiración (experimental, a partir del flujo a 5 Hz)",
-  "breathingLine": "{{count}} noche(s) con flujo detallado: frecuencia respiratoria {{rate}} por minuto (mediana), respiraciones aplanadas {{flat}} % (mediana), variación de la duración de la respiración {{cv}} %."
+  "breathingLine": "{{count}} noche(s) con flujo detallado: frecuencia respiratoria {{rate}} por minuto (mediana), respiraciones aplanadas {{flat}} % (mediana), variación de la duración de la respiración {{cv}} %."
  },
  "breathing": {
   "title": "Respiración (experimental)",
@@ -527,12 +527,12 @@
   "ie": "Espiración : inspiración",
   "breaths": "{{count}} respiraciones analizadas",
   "unitPerMin": "/min",
-  "vsUsual": "habitual {{value}} %"
+  "vsUsual": "habitual {{value}} %"
  },
  "anomaly": {
   "missedNights": "{{missed}} de las últimas {{days}} noches no tienen datos.",
   "shortRun": "Las últimas {{nights}} noches fueron todas de menos de 4 h.",
-  "leakRise": "La fuga (95 %) de las últimas 3 noches ({{now}} L/min) está muy por encima de tu habitual, {{usual}} L/min.",
+  "leakRise": "La fuga (95 %) de las últimas 3 noches ({{now}} L/min) está muy por encima de tu habitual, {{usual}} L/min.",
   "ahiRise": "Tu IAH de las últimas 7 noches ({{now}} por hora) es aproximadamente el doble de tu habitual ({{usual}} por hora).",
   "note": "Estos avisos te comparan con tu propio historial reciente. No son un diagnóstico; si te preocupa, coméntalo con tu profesional sanitario.",
   "open": "Abrir el {{date}}"
@@ -573,9 +573,9 @@
   "pulseChart": "Frecuencia del pulso (/min)",
   "mean": "SpO₂ media",
   "min": "SpO₂ mínima",
-  "t90": "Tiempo por debajo del 90 %",
-  "odi3": "Desaturaciones ≥ 3 %",
-  "odi4": "Desaturaciones ≥ 4 %",
+  "t90": "Tiempo por debajo del 90 %",
+  "odi3": "Desaturaciones ≥ 3 %",
+  "odi4": "Desaturaciones ≥ 4 %",
   "pulseRange": "Pulso",
   "source": "De {{source}}",
   "note": "Registrado por tu propio oxímetro, no por la CPAP. Los relojes se comparan tal como están escritos; usa la corrección del reloj al importar si difieren.",
@@ -641,7 +641,7 @@
   },
   "ahi": "Referencia: menos de {{normal}} por hora",
   "usage": "Referencia: al menos {{hours}} h por noche",
-  "compliance": "Referencia: al menos {{hours}} h en el {{share}} % de las noches",
+  "compliance": "Referencia: al menos {{hours}} h en el {{share}} % de las noches",
   "leak": "Referencia (ResMed): percentil 70 de la noche por debajo de {{limit}} L/min",
   "leakPhilips": "Fuga total de Philips (incluye el flujo del vent). Referencia de trabajo: de 30 a 50 L/min dentro del rango, por encima de 60 L/min fuera de rango; aún sin fuente.",
   "odi4": "Referencia: menos de {{normal}} por hora (bandas de adultos de polisomnografía)",

@@ -79,8 +79,8 @@
   "rangeAll": "All",
   "compliance": "Compliance (30 nights)",
   "complianceDetail": "{{ok}} of {{total}} nights with at least 4 h",
-  "meets": "Meets the common 4 h / 70 % rule",
-  "notMeets": "Below the common 4 h / 70 % rule",
+  "meets": "Meets the common 4 h / 70 % rule",
+  "notMeets": "Below the common 4 h / 70 % rule",
   "trends": "Trends",
   "usageChart": "Hours of use per night",
   "ahiChart": "AHI per night",
@@ -91,7 +91,7 @@
   "tableHint": "Select a night to see details.",
   "subtitle": "{{count}} nights stored · latest {{date}}",
   "emptyPrivacy": "Your data is read in your browser and stays on this device.",
-  "complianceRule": "Common target: 4 h on 70 % of nights",
+  "complianceRule": "Common target: 4 h on 70 % of nights",
   "calendar": "Calendar",
   "calendarMeasure": "Measure shown in the calendar",
   "chartHint": "Hover for values, click a bar to open that night.",
@@ -121,7 +121,7 @@
  "metric": {
   "usage": "Use",
   "ahi": "AHI",
-  "leakP95": "Leak (95 %)",
+  "leakP95": "Leak (95 %)",
   "leakMedian": "Leak (median)",
   "pressure": "Pressure",
   "events": "Events",
@@ -156,7 +156,7 @@
  },
  "explain": {
   "ahi": "Apnea–Hypopnea Index: apneas and hypopneas per hour of use. Many guidelines treat under 5 per hour as well controlled, but what is right for you is a decision for your clinician.",
-  "usage": "Hours with the mask on. Many insurers and clinics look for at least 4 hours on at least 70 % of nights.",
+  "usage": "Hours with the mask on. Many insurers and clinics look for at least 4 hours on at least 70 % of nights.",
   "leak": "Air leak, in litres per minute. Philips devices report total leak, which includes the deliberate leak of the mask vents, so a steady non-zero value is normal. ResMed devices report unintentional leak, with the vent flow already subtracted, so their values are lower and start near zero. Sustained high peaks may mean a poor mask seal. The two kinds should not be compared with each other.",
   "pressure": "Therapy pressure in cmH₂O set on the device or chosen automatically.",
   "compliance": "Share of nights with at least 4 hours of use over the last 30 nights.",
@@ -168,7 +168,7 @@
   "periodic": "Share of the night with a sustained, regular waxing and waning of breath size (periods of 20 to 120 s lasting several minutes), as in periodic breathing. Brief episodes, like the few minutes the device itself sometimes reports, are not detected: its own periodic-breathing events remain the reference.",
   "ie": "How much longer expiration lasts than inspiration (typically 1.2 to 2).",
   "odi": "Oxygen desaturation index: how many times per hour SpO₂ fell by at least 3 (or 4) points below its recent level for 10 s to 3 min. It depends on the sensor and its averaging; compare it with your own earlier nights.",
-  "t90": "Share of the valid recording with SpO₂ under 90 %.",
+  "t90": "Share of the valid recording with SpO₂ under 90 %.",
   "spo2": "Blood oxygen saturation measured by your oximeter."
  },
  "night": {
@@ -251,7 +251,7 @@
   "vsAvg": "vs {{n}}-night avg",
   "trendAhi": "AHI over the last 30 nights",
   "trendUsage": "Hours of use over the last 30 nights",
-  "trendLeak": "95 % leak over the last 30 nights"
+  "trendLeak": "95 % leak over the last 30 nights"
  },
  "status": {
   "ahiGood": "Under 5 per hour",
@@ -355,7 +355,7 @@
   "ahiHigh": "Your AHI was {{ahi}} events per hour, 15 or more.",
   "ahiAboveUsual": "That is higher than your usual {{usual}}.",
   "ahiBelowUsual": "That is lower than your usual {{usual}}.",
-  "leakHigh": "Leak (95 %) was {{leak}} L/min, above your usual {{usual}} L/min.",
+  "leakHigh": "Leak (95 %) was {{leak}} L/min, above your usual {{usual}} L/min.",
   "largeLeak": "The device reported large leaks for about {{minutes}} min.",
   "maskOff_one": "The mask was taken off {{count}} time (about {{minutes}} min in total).",
   "maskOff_other": "The mask was taken off {{count}} times (about {{minutes}} min in total).",
@@ -363,11 +363,11 @@
   "reraHigh": "The RERA index was {{index}} per hour.",
   "settingsChanged_one": "{{count}} therapy setting changed on this night.",
   "settingsChanged_other": "{{count}} therapy settings changed on this night.",
-  "flatHigh": "Flat-topped breaths were {{share}} % of breaths, above your usual {{usual}} %.",
-  "periodicPattern": "A waxing-and-waning breathing pattern was seen in about {{percent}} % of the night.",
+  "flatHigh": "Flat-topped breaths were {{share}} % of breaths, above your usual {{usual}} %.",
+  "periodicPattern": "A waxing-and-waning breathing pattern was seen in about {{percent}} % of the night.",
   "desatFrequent": "The oximeter recorded {{odi}} desaturations of 3 points or more per hour.",
-  "lowOxygenTime": "SpO₂ was under 90 % for {{percent}} % of the recording.",
-  "oxygenSteady": "The oximeter showed steady oxygen levels (lowest {{min}} %)."
+  "lowOxygenTime": "SpO₂ was under 90 % for {{percent}} % of the recording.",
+  "oxygenSteady": "The oximeter showed steady oxygen levels (lowest {{min}} %)."
  },
  "changes": {
   "title": "Setting changes",
@@ -420,7 +420,7 @@
   "deleteConfirm": "Delete {{name}}?",
   "save": "Save changes",
   "leakTitle": "Leak and age",
-  "leakChart": "Leak (95 %) by days of use",
+  "leakChart": "Leak (95 %) by days of use",
   "leakNeedMore": "Not enough nights with leak data yet (at least 6 are needed).",
   "leakEarly": "First week: {{value}} L/min",
   "leakLate": "Latest week: {{value}} L/min",
@@ -457,7 +457,7 @@
   "over4": "Nights with 4 h or more",
   "ahi": "AHI (all events / all hours)",
   "ahiMedian": "Median nightly AHI",
-  "leakP95": "Leak (95 %), median of nights",
+  "leakP95": "Leak (95 %), median of nights",
   "leakMedian": "Leak, median of nights",
   "change": "Change (B − A)",
   "rates": "Events per hour of use",
@@ -511,9 +511,9 @@
   "limits": "Figures come from the device's own records. Leak is the device's own figure: total leak including the mask's intentional vent flow for Philips, unintentional leak for ResMed. This summary is not a diagnosis.",
   "refHint": "Dashed horizontal lines mark 4 hours of use and 5 events per hour.",
   "oximetry": "Oximetry (your own oximeter)",
-  "oximetryLine": "{{count}} night(s) with data: average SpO₂ {{mean}} %, lowest {{min}} %, time under 90 % {{t90}} % (median), desaturations ≥ 3 % {{odi}} per hour (mean).",
+  "oximetryLine": "{{count}} night(s) with data: average SpO₂ {{mean}} %, lowest {{min}} %, time under 90 % {{t90}} % (median), desaturations ≥ 3 % {{odi}} per hour (mean).",
   "breathing": "Breathing (experimental, from 5 Hz flow)",
-  "breathingLine": "{{count}} night(s) with detailed flow: breath rate {{rate}} per minute (median), flat-topped breaths {{flat}} % (median), variation of breath length {{cv}} %."
+  "breathingLine": "{{count}} night(s) with detailed flow: breath rate {{rate}} per minute (median), flat-topped breaths {{flat}} % (median), variation of breath length {{cv}} %."
  },
  "breathing": {
   "title": "Breathing (experimental)",
@@ -527,12 +527,12 @@
   "ie": "Expiration : inspiration",
   "breaths": "{{count}} breaths analysed",
   "unitPerMin": "/min",
-  "vsUsual": "usual {{value}} %"
+  "vsUsual": "usual {{value}} %"
  },
  "anomaly": {
   "missedNights": "{{missed}} of the last {{days}} nights have no data.",
   "shortRun": "The last {{nights}} nights were all under 4 h.",
-  "leakRise": "Leak (95 %) over the last 3 nights ({{now}} L/min) is well above your usual {{usual}} L/min.",
+  "leakRise": "Leak (95 %) over the last 3 nights ({{now}} L/min) is well above your usual {{usual}} L/min.",
   "ahiRise": "Your AHI over the last 7 nights ({{now}} per hour) is about double your usual ({{usual}} per hour).",
   "note": "These prompts compare you with your own recent history. They are not a diagnosis; if you are worried, talk to your clinician.",
   "open": "Open {{date}}"
@@ -573,9 +573,9 @@
   "pulseChart": "Pulse rate (/min)",
   "mean": "Average SpO₂",
   "min": "Lowest SpO₂",
-  "t90": "Time under 90 %",
-  "odi3": "Desaturations ≥ 3 %",
-  "odi4": "Desaturations ≥ 4 %",
+  "t90": "Time under 90 %",
+  "odi3": "Desaturations ≥ 3 %",
+  "odi4": "Desaturations ≥ 4 %",
   "pulseRange": "Pulse",
   "source": "From {{source}}",
   "note": "Recorded by your own oximeter, not by the CPAP. Clocks are compared as written; use the clock correction at import if they differ.",
@@ -641,7 +641,7 @@
   },
   "ahi": "Reference: under {{normal}} per hour",
   "usage": "Reference: at least {{hours}} h per night",
-  "compliance": "Reference: at least {{hours}} h on {{share}} % of nights",
+  "compliance": "Reference: at least {{hours}} h on {{share}} % of nights",
   "leak": "Reference (ResMed): 70th percentile of the night under {{limit}} L/min",
   "leakPhilips": "Philips total leak (vent flow included). Working reference: 30 to 50 L/min within range, above 60 L/min out of range; not yet sourced.",
   "odi4": "Reference: under {{normal}} per hour (adult sleep-lab bands)",
