@@ -174,9 +174,9 @@ export function NightView({ date }: { date: string }) {
                 {chart.leak && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-leak)' }} />{t('night.leakShort')} <b className="num">{fmt(read.leak)}</b></span>}
                 {chart.pressure && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-pressure)' }} />{t('night.pressureShort')} <b className="num">{fmt(read.pressure)}</b></span>}
                 {chart.snore && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-snore)' }} />{t('night.snoreShort')} <b className="num">{fmt(read.snore, 0)}</b></span>}
-                {chart.flat && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-flat)' }} />{t('night.flatShort')} <b className="num">{fmt(read.flat, 0)} %</b></span>}
+                {chart.flat && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-flat)' }} />{t('night.flatShort')} <b className="num">{fmt(read.flat, 0)} %</b></span>}
                 {chart.rate && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-rate)' }} />{t('night.rateShort')} <b className="num">{fmt(read.rate, 1)}</b></span>}
-                {chart.spo2 && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-spo2)' }} />{t('oximetry.spo2Short')} <b className="num">{fmt(read.spo2, 0)} %</b></span>}
+                {chart.spo2 && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-spo2)' }} />{t('oximetry.spo2Short')} <b className="num">{fmt(read.spo2, 0)} %</b></span>}
                 {chart.pulse && <span className="rv"><span className="key" style={{ borderTopColor: 'var(--m-pulse)' }} />{t('oximetry.pulseShort')} <b className="num">{fmt(read.pulse, 0)}</b></span>}
               </>
             )}

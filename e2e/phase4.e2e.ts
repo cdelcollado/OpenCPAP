@@ -105,7 +105,7 @@ test.describe('trends and alerts', () => {
     });
     await page.reload();
     const panel = page.getByTestId('anomalies');
-    await expect(panel).toContainText(/Leak \(95 %\) over the last 3 nights \(\d+ L\/min\) is well above your usual \d+ L\/min/);
+    await expect(panel).toContainText(/Leak \(95\s%\) over the last 3 nights \(\d+ L\/min\) is well above your usual \d+ L\/min/);
     await expect(panel).toContainText('not a diagnosis');
     await panel.getByRole('link').first().click();
     await expect(page).toHaveURL(/#\/night\//);

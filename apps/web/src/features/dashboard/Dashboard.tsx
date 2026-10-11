@@ -86,9 +86,9 @@ export function Dashboard() {
           <h2 id="comp" style={{ margin: 0 }}>{t('dashboard.compliance')} <InfoTip text={t('explain.compliance')} /></h2>
           <Badge level={comp.meetsCommonRule ? 'good' : 'warn'}>{comp.meetsCommonRule ? t('dashboard.meets') : t('dashboard.notMeets')}</Badge>
         </div>
-        <Meter ratio={comp.ratio} target={0.7} label={`${Math.round(comp.ratio * 100)} %`} />
+        <Meter ratio={comp.ratio} target={0.7} label={`${Math.round(comp.ratio * 100)} %`} />
         <div className="meter-labels">
-          <span><b className="num">{Math.round(comp.ratio * 100)} %</b> · {t('dashboard.complianceDetail', { ok: comp.compliantNights, total: comp.nights })}</span>
+          <span><b className="num">{Math.round(comp.ratio * 100)} %</b> · {t('dashboard.complianceDetail', { ok: comp.compliantNights, total: comp.nights })}</span>
           <span>{t('dashboard.complianceRule')}</span>
         </div>
       </section>

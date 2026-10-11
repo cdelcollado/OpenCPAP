@@ -6,6 +6,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 ### Added (deployment)
 - **Self-hosting with HTTPS**: `deploy/provision.sh` (installs Caddy with the Cloudflare DNS plugin, the Caddyfile and the systemd service on a Debian host or LXC over SSH, idempotent), `deploy/deploy.sh` (builds the web app, syncs it with `rsync --delete`, checks the site over HTTPS from the host). The certificate is issued by a DNS challenge, so the host is not exposed to the internet. Guide: [docs/deployment.md](docs/deployment.md); decisions: [ADR-0014](docs/decisions/0014-static-hosting-with-nginx.md) (static hosting) and [ADR-0015](docs/decisions/0015-https-caddy-cloudflare-dns.md) (HTTPS).
 
+### Fixed (phone layout)
+- Segmented controls no longer break words on phones ("nigh/ts", "A/ll", "Cust/om"): options wrap as whole items in a 2×2 grid.
+- The nights table keeps each date and usage value (for example "7 h 22 min") on one line; the date column stays visible while the other columns scroll.
+- Touch targets on phones: header links, buttons, selects and segmented options are at least 44 px high; `?` explainers and checkboxes at least 24 px.
+- Settings: language and theme labels are stacked, one per line.
+- Percent values use a non-breaking space before `%` so they never split across lines (all three locales; the text is unchanged).
+
 ### Changed
 - **UI redesign.** Hierarchy: AHI as the single hero figure with status chip and change versus the 30-night average; tiles with sparklines; compliance meter with a 70 % marker; calendar heatmap; nights table with mini bars. Charts: hover tooltips, click-through to a night, thin marks, validated per-measure colours. Night view: event timeline and flow/leak/pressure/snore tracks aligned on one time axis with a shared cursor readout, event bars and the therapy settings of the night. Header with language selector and theme button; mobile layout for the tracks.
 - Status and trend are always shown with an icon and text (never colour alone); event types no longer reuse status colours; large figures use proportional digits.

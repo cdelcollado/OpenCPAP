@@ -68,7 +68,7 @@ export function Settings() {
     <div className="stack">
       <h1>{t('settings.title')}</h1>
 
-      <section className="card stack" aria-labelledby="s-look">
+      <section className="card stack settings-look" aria-labelledby="s-look">
         <h2 id="s-look">{t('settings.language')} / {t('settings.theme')}</h2>
         <label>{t('settings.language')}{' '}
           <select value={i18n.language} onChange={(e) => setLanguage(e.target.value as LanguageCode)}>

@@ -79,8 +79,8 @@
   "rangeAll": "Tot",
   "compliance": "Compliment (30 nits)",
   "complianceDetail": "{{ok}} de {{total}} nits amb almenys 4 h",
-  "meets": "Compleix la regla habitual de 4 h / 70 %",
-  "notMeets": "Per sota de la regla habitual de 4 h / 70 %",
+  "meets": "Compleix la regla habitual de 4 h / 70 %",
+  "notMeets": "Per sota de la regla habitual de 4 h / 70 %",
   "trends": "Tendències",
   "usageChart": "Hores d'ús per nit",
   "ahiChart": "IAH per nit",
@@ -91,7 +91,7 @@
   "tableHint": "Selecciona una nit per veure'n els detalls.",
   "subtitle": "{{count}} nits desades · darrera {{date}}",
   "emptyPrivacy": "Les teves dades es llegeixen al navegador i es queden en aquest dispositiu.",
-  "complianceRule": "Objectiu habitual: 4 h el 70 % de les nits",
+  "complianceRule": "Objectiu habitual: 4 h el 70 % de les nits",
   "calendar": "Calendari",
   "calendarMeasure": "Mesura mostrada al calendari",
   "chartHint": "Passa el ratolí per veure els valors; fes clic en una barra per obrir aquella nit.",
@@ -121,7 +121,7 @@
  "metric": {
   "usage": "Ús",
   "ahi": "IAH",
-  "leakP95": "Fuita (95 %)",
+  "leakP95": "Fuita (95 %)",
   "leakMedian": "Fuita (mediana)",
   "pressure": "Pressió",
   "events": "Esdeveniments",
@@ -156,7 +156,7 @@
  },
  "explain": {
   "ahi": "Índex d'apnees–hipopnees: apnees i hipopnees per hora d'ús. Moltes guies consideren ben controlat un valor inferior a 5 per hora, però el que és adequat per a tu ho ha de decidir el teu professional sanitari.",
-  "usage": "Hores amb la mascareta posada. Moltes asseguradores i clíniques demanen almenys 4 hores en almenys el 70 % de les nits.",
+  "usage": "Hores amb la mascareta posada. Moltes asseguradores i clíniques demanen almenys 4 hores en almenys el 70 % de les nits.",
   "leak": "Fuita d'aire, en litres per minut. Els aparells Philips informen de la fuita total, que inclou la fuita deliberada de les ventilacions de la mascareta, per tant un valor estable diferent de zero és normal. Els ResMed informen de la fuita no intencionada, amb el flux de ventilació ja restat, per això els valors són més baixos i parteixen de prop de zero. Pics alts sostinguts poden indicar un mal segellat. Els dos tipus no s'han de comparar entre si.",
   "pressure": "Pressió de la teràpia en cmH₂O, fixada al dispositiu o triada automàticament.",
   "compliance": "Proporció de nits amb almenys 4 hores d'ús durant les darreres 30 nits.",
@@ -168,7 +168,7 @@
   "periodic": "Proporció de la nit amb un augment i disminució regular i sostingut de la mida de la respiració (períodes de 20 a 120 s durant diversos minuts), com en la respiració periòdica. Els episodis breus, com els pocs minuts que de vegades informa el propi aparell, no es detecten: els seus esdeveniments de respiració periòdica continuen sent la referència.",
   "ie": "Quant més dura l'expiració que la inspiració (habitualment entre 1,2 i 2).",
   "odi": "Índex de desaturació d'oxigen: quantes vegades per hora la SpO₂ ha baixat almenys 3 (o 4) punts per sota del seu nivell recent durant 10 s a 3 min. Depèn del sensor i de com fa la mitjana; compara'l amb les teves nits anteriors.",
-  "t90": "Proporció del registre vàlid amb la SpO₂ per sota del 90 %.",
+  "t90": "Proporció del registre vàlid amb la SpO₂ per sota del 90 %.",
   "spo2": "Saturació d'oxigen de la sang mesurada pel teu oxímetre."
  },
  "night": {
@@ -251,7 +251,7 @@
   "vsAvg": "vs mitjana de {{n}} nits",
   "trendAhi": "IAH de les darreres 30 nits",
   "trendUsage": "Hores d'ús de les darreres 30 nits",
-  "trendLeak": "Fuita (95 %) de les darreres 30 nits"
+  "trendLeak": "Fuita (95 %) de les darreres 30 nits"
  },
  "status": {
   "ahiGood": "Menys de 5 per hora",
@@ -355,7 +355,7 @@
   "ahiHigh": "El teu IAH ha estat de {{ahi}} esdeveniments per hora, 15 o més.",
   "ahiAboveUsual": "És més alt que el teu habitual, {{usual}}.",
   "ahiBelowUsual": "És més baix que el teu habitual, {{usual}}.",
-  "leakHigh": "La fuita (95 %) ha estat de {{leak}} L/min, per sobre de la teva habitual, {{usual}} L/min.",
+  "leakHigh": "La fuita (95 %) ha estat de {{leak}} L/min, per sobre de la teva habitual, {{usual}} L/min.",
   "largeLeak": "El dispositiu ha informat de fuites grans durant uns {{minutes}} min.",
   "maskOff_one": "La mascareta s'ha tret {{count}} vegada (uns {{minutes}} min en total).",
   "maskOff_other": "La mascareta s'ha tret {{count}} vegades (uns {{minutes}} min en total).",
@@ -363,11 +363,11 @@
   "reraHigh": "L'índex de RERA ha estat de {{index}} per hora.",
   "settingsChanged_one": "Aquesta nit ha canviat {{count}} ajust de la teràpia.",
   "settingsChanged_other": "Aquesta nit han canviat {{count}} ajustos de la teràpia.",
-  "flatHigh": "Les respiracions aplanades han estat el {{share}} % de les respiracions, per sobre del teu habitual, {{usual}} %.",
-  "periodicPattern": "S'ha vist un patró respiratori d'augment i disminució durant aproximadament el {{percent}} % de la nit.",
+  "flatHigh": "Les respiracions aplanades han estat el {{share}} % de les respiracions, per sobre del teu habitual, {{usual}} %.",
+  "periodicPattern": "S'ha vist un patró respiratori d'augment i disminució durant aproximadament el {{percent}} % de la nit.",
   "desatFrequent": "L'oxímetre ha registrat {{odi}} desaturacions de 3 punts o més per hora.",
-  "lowOxygenTime": "La SpO₂ ha estat per sota del 90 % durant el {{percent}} % del registre.",
-  "oxygenSteady": "L'oxímetre ha mostrat nivells d'oxigen estables (mínim {{min}} %)."
+  "lowOxygenTime": "La SpO₂ ha estat per sota del 90 % durant el {{percent}} % del registre.",
+  "oxygenSteady": "L'oxímetre ha mostrat nivells d'oxigen estables (mínim {{min}} %)."
  },
  "changes": {
   "title": "Canvis d'ajustos",
@@ -420,7 +420,7 @@
   "deleteConfirm": "Vols eliminar {{name}}?",
   "save": "Desa els canvis",
   "leakTitle": "Fuita i edat",
-  "leakChart": "Fuita (95 %) segons els dies d'ús",
+  "leakChart": "Fuita (95 %) segons els dies d'ús",
   "leakNeedMore": "Encara no hi ha prou nits amb dades de fuita (en calen almenys 6).",
   "leakEarly": "Primera setmana: {{value}} L/min",
   "leakLate": "Darrera setmana: {{value}} L/min",
@@ -457,7 +457,7 @@
   "over4": "Nits amb 4 h o més",
   "ahi": "IAH (tots els esdeveniments / totes les hores)",
   "ahiMedian": "IAH mitjà per nit (mediana)",
-  "leakP95": "Fuita (95 %), mediana de les nits",
+  "leakP95": "Fuita (95 %), mediana de les nits",
   "leakMedian": "Fuita, mediana de les nits",
   "change": "Canvi (B − A)",
   "rates": "Esdeveniments per hora d'ús",
@@ -511,9 +511,9 @@
   "limits": "Les xifres provenen dels registres del propi dispositiu. La fuita és la xifra del propi aparell: fuita total, inclosa la ventilació intencionada de la mascareta, en Philips; fuita no intencionada en ResMed. Aquest resum no és un diagnòstic.",
   "refHint": "Les línies horitzontals discontínues marquen 4 hores d'ús i 5 esdeveniments per hora.",
   "oximetry": "Oximetria (el teu propi oxímetre)",
-  "oximetryLine": "{{count}} nit(s) amb dades: SpO₂ mitjana {{mean}} %, mínima {{min}} %, temps per sota del 90 % {{t90}} % (mediana), desaturacions ≥ 3 % {{odi}} per hora (mitjana).",
+  "oximetryLine": "{{count}} nit(s) amb dades: SpO₂ mitjana {{mean}} %, mínima {{min}} %, temps per sota del 90 % {{t90}} % (mediana), desaturacions ≥ 3 % {{odi}} per hora (mitjana).",
   "breathing": "Respiració (experimental, a partir del flux a 5 Hz)",
-  "breathingLine": "{{count}} nit(s) amb flux detallat: freqüència respiratòria {{rate}} per minut (mediana), respiracions aplanades {{flat}} % (mediana), variació de la durada de la respiració {{cv}} %."
+  "breathingLine": "{{count}} nit(s) amb flux detallat: freqüència respiratòria {{rate}} per minut (mediana), respiracions aplanades {{flat}} % (mediana), variació de la durada de la respiració {{cv}} %."
  },
  "breathing": {
   "title": "Respiració (experimental)",
@@ -527,12 +527,12 @@
   "ie": "Expiració : inspiració",
   "breaths": "{{count}} respiracions analitzades",
   "unitPerMin": "/min",
-  "vsUsual": "habitual {{value}} %"
+  "vsUsual": "habitual {{value}} %"
  },
  "anomaly": {
   "missedNights": "{{missed}} de les darreres {{days}} nits no tenen dades.",
   "shortRun": "Les darreres {{nights}} nits han estat totes per sota de 4 h.",
-  "leakRise": "La fuita (95 %) de les darreres 3 nits ({{now}} L/min) és molt per sobre de la teva habitual, {{usual}} L/min.",
+  "leakRise": "La fuita (95 %) de les darreres 3 nits ({{now}} L/min) és molt per sobre de la teva habitual, {{usual}} L/min.",
   "ahiRise": "El teu IAH de les darreres 7 nits ({{now}} per hora) és aproximadament el doble de l'habitual ({{usual}} per hora).",
   "note": "Aquests avisos et comparen amb el teu propi historial recent. No són un diagnòstic; si et preocupa, parla-ho amb el teu professional sanitari.",
   "open": "Obre el {{date}}"
@@ -573,9 +573,9 @@
   "pulseChart": "Freqüència del pols (/min)",
   "mean": "SpO₂ mitjana",
   "min": "SpO₂ mínima",
-  "t90": "Temps per sota del 90 %",
-  "odi3": "Desaturacions ≥ 3 %",
-  "odi4": "Desaturacions ≥ 4 %",
+  "t90": "Temps per sota del 90 %",
+  "odi3": "Desaturacions ≥ 3 %",
+  "odi4": "Desaturacions ≥ 4 %",
   "pulseRange": "Pols",
   "source": "De {{source}}",
   "note": "Registrat pel teu propi oxímetre, no per la CPAP. Els rellotges es comparen tal com estan escrits; fes servir la correcció del rellotge en importar si difereixen.",
@@ -641,7 +641,7 @@
   },
   "ahi": "Referència: menys de {{normal}} per hora",
   "usage": "Referència: almenys {{hours}} h per nit",
-  "compliance": "Referència: almenys {{hours}} h en el {{share}} % de les nits",
+  "compliance": "Referència: almenys {{hours}} h en el {{share}} % de les nits",
   "leak": "Referència (ResMed): percentil 70 de la nit per sota de {{limit}} L/min",
   "leakPhilips": "Fuga total de Philips (inclou el flux del vent). Referència de treball: de 30 a 50 L/min dins del rang, per sobre de 60 L/min fora de rang; encara sense font.",
   "odi4": "Referència: menys de {{normal}} per hora (bandes adultes de polisomnografia)",

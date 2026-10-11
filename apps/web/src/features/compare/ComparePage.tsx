@@ -11,7 +11,7 @@ import { EVENT_COLOR, EVENT_ORDER } from '../night/Timeline';
 import { IconWarn } from '../../components/icons';
 
 const go = (a: DateRange, b: DateRange) => { window.location.hash = href.compare(a, b); };
-const pct = (v: number | undefined, lang: string) => (v === undefined ? '—' : `${formatNumber(v * 100, lang, 0)} %`);
+const pct = (v: number | undefined, lang: string) => (v === undefined ? '—' : `${formatNumber(v * 100, lang, 0)} %`);
 
 export function ComparePage() {
   const { t, i18n } = useTranslation();
