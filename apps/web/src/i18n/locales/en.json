@@ -652,5 +652,9 @@
   "leakJudgedResmed": "Judged on the 70th percentile ({{value}}): ResMed under {{limit}} L/min",
   "leakJudgedPhilips": "Judged on the 70th percentile ({{value}}): Philips band {{min}} to {{max}} L/min, not yet sourced",
   "leakJudgedOther": "Judged on the 70th percentile ({{value}}). No verified reference for this metric"
- }
+ },
+  "update": {
+    "available": "A new version of OpenCPAP is available.",
+    "install": "Update now"
+  }
 }

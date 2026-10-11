@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { failOnConsoleErrors, loadDemo, resetApp, scrollToCenter } from './helpers';
 
 test.describe('app shell', () => {
@@ -186,6 +188,28 @@ test.describe('night view', () => {
     await expect(page.locator('#jump')).not.toHaveValue(date);
     await page.locator('#jump').fill(date);
     await expect(page).toHaveURL(new RegExp(`night/${date}$`));
+  });
+});
+
+test.describe('app updates', () => {
+  // The build's service worker is replaced by a copy with one extra comment line, which the browser sees as a new version.
+  const swPath = join(process.cwd(), 'apps', 'web', 'dist', 'sw.js');
+  const original = readFileSync(swPath, 'utf8');
+  test.afterEach(() => writeFileSync(swPath, original));
+
+  test('a downloaded new version shows the update banner and the button reloads the page', async ({ page }) => {
+    await resetApp(page);
+    await loadDemo(page);
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    // a new worker only waits (instead of activating at once) when the page is already controlled by the current one
+    await page.reload();
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    writeFileSync(swPath, `${original}\n// e2e: new version\n`);
+    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.update());
+    const banner = page.getByRole('status').filter({ hasText: 'A new version of OpenCPAP is available.' });
+    await expect(banner).toBeVisible({ timeout: 30_000 });
+    await Promise.all([page.waitForEvent('load'), banner.getByRole('button', { name: 'Update now' }).click()]);
+    await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
   });
 });
 
