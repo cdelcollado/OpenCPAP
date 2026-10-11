@@ -13,6 +13,8 @@
   "report": "Informe"
  },
  "footer": {
+  "version": "Versió {{version}}",
+  "upToDate": "Al dia",
   "disclaimer": "OpenCPAP és una eina informativa, no un producte sanitari. No diagnostica ni recomana canvis de teràpia. Parla de les teves dades amb el teu professional sanitari.",
   "privacy": "Tot el processament es fa al teu navegador. No es puja res.",
   "source": "Codi font a GitHub"

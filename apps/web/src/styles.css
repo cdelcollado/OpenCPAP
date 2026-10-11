@@ -72,6 +72,10 @@ nav a[aria-current='page'] { background: var(--accent-soft); color: var(--accent
 .icon-btn:hover { background: var(--surface-2); }
 .header-tools select { height: 2.4rem; padding: 0 0.4rem; }
 main { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1rem 2rem; }
+.app-version { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.version-update { font: inherit; font-size: 0.85rem; min-height: 2.75rem; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: transparent; color: var(--text-2); cursor: default; }
+.version-update.ready { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); font-weight: 550; cursor: pointer; }
+.version-update.ready:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
 .app-footer { max-width: 1180px; margin: 0 auto; padding: 1rem 1rem 2.5rem; color: var(--text-2); font-size: 0.85rem; display: grid; gap: 0.35rem; }
 main[aria-busy='true'] { opacity: 0.6; transition: opacity 0.15s; }
 

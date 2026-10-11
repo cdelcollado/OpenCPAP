@@ -3,6 +3,9 @@
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/) once a first release exists.
 
 ## [Unreleased]
+### Added (version and update button)
+- **Version and update button at the foot of the page**: the app version is shown there. The button is neutral when the app is current and takes the accent colour when a new version has been downloaded; pressing it activates that version. The floating banner remains.
+
 ### Added (remote access)
 - **Remote access through Tailscale**: the deployment host advertises the home subnet as a subnet router, so the site is reachable from the tailnet without opening any port. The subnet route is approved in the Tailscale admin console; another router on the tailnet is the primary. Decision: [ADR-0017](docs/decisions/0017-remote-access-tailscale-subnet-router.md); guide: [docs/deployment.md](docs/deployment.md#remote-access-with-tailscale-optional).
 - Documentation: access rules and the whole-subnet exposure of a subnet router in [privacy-and-security.md](docs/privacy-and-security.md).
