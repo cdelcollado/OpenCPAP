@@ -13,6 +13,8 @@
   "report": "Report"
  },
  "footer": {
+  "version": "Version {{version}}",
+  "upToDate": "Up to date",
   "disclaimer": "OpenCPAP is an informational tool, not a medical device. It does not diagnose or recommend therapy changes. Talk to your clinician about your data.",
   "privacy": "All processing happens in your browser. Nothing is uploaded.",
   "source": "Source code on GitHub"

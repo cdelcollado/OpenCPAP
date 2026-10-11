@@ -8,9 +8,8 @@ import { db } from '../../db/db';
 import { exportBackup, importBackup, type BackupCounts } from '../../db/backup';
 import { useData } from '../../state';
 import { LlmSettings } from '../llm/LlmSettings';
+import { APP_VERSION as version } from '../../version';
 
-declare const __APP_VERSION__: string;
-const version = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : 'dev';
 
 export function Settings() {
   const { t, i18n } = useTranslation();

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Header } from './components/Header';
 import { UpdateBanner } from './components/UpdateBanner';
+import { UpdateButton } from './components/UpdateButton';
 import { ComparePage } from './features/compare/ComparePage';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { EquipmentPage } from './features/equipment/EquipmentPage';
@@ -42,6 +43,7 @@ export function App() {
         <p>{t('footer.privacy')}</p>
         <p>{t('footer.disclaimer')}</p>
         <p><a href="https://github.com/cdelcollado/OpenCPAP" target="_blank" rel="noopener noreferrer">{t('footer.source')}</a></p>
+        <UpdateButton />
       </footer>
       <UpdateBanner />
     </DataProvider>
