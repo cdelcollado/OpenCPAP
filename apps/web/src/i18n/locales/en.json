@@ -250,6 +250,8 @@
  },
  "chart": {},
  "hero": {
+  "ahiRange_one": "Last night only: {{min}} per hour",
+  "ahiRange_other": "Range over the last {{count}} nights: {{min}}–{{max}} per hour",
   "vsAvg": "vs {{n}}-night avg",
   "trendAhi": "AHI over the last 30 nights",
   "trendUsage": "Hours of use over the last 30 nights",

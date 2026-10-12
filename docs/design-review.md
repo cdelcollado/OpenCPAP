@@ -37,10 +37,10 @@ Each finding cites where it was seen. Severity is a judgement: **high** blocks o
 | # | Finding | Where | Severity |
 |---|---|---|---|
 | F1 | The flow waveform at one-second resolution renders as a solid blue mass, so the breath shape cannot be read at normal zoom. | `night.png`, `NightView.tsx` (`flow` track) | High |
-| F2 | The "Last night" hero card has a large empty gap between the AHI chip and the sparkline. | `dashboard.png`, `features/dashboard/Hero.tsx` | Medium |
+| F2 | The "Last night" hero card has a large empty gap between the AHI chip and the sparkline. The sparkline is pushed to the bottom by `margin-top: auto` in a stretched grid row. | `dashboard.png`, `features/dashboard/Hero.tsx` | Medium |
 | F3 | On phones, six navigation links use two rows before any content. | `night-mobile.png`, `Header.tsx` | Medium |
 | F4 | The import page offers several entry points at once (folder, ZIP, drop zone, oximetry, demo) with equal visual weight. The first step is not obvious. | `ImportPanel.tsx` | Medium |
-| F5 | The night legend in the header is a dense row of eight coloured values. | `night.png`, `NightView.tsx` | Medium |
+| F5 | The row of eight coloured values in the night header is the cursor readout, not a legend. It appears only while the cursor is over the charts, so it is not a permanent crowding problem. Hiding tracks would be a new feature rather than a fix. *Corrected after implementation review.* | `night.png`, `NightView.tsx` (`data-testid="readout"`) | Low (corrected from Medium) |
 | F6 | Many `?` explainer buttons appear across cards and add visual noise. | `InfoTip.tsx`, all cards | Low–medium |
 | F7 | Charts cannot be navigated with a keyboard. Tables are the only keyboard path. | ADR-0008, "Consequences" | Medium |
 | F8 | Surfaces use similar weight: cards, borders and shadows look the same at every level, so the hierarchy depends mainly on size. | `styles.css` tokens | Low |
@@ -127,8 +127,8 @@ Each phase is independent and can be reviewed alone.
 
 ### Phase A: low risk, no structural change
 
-- Anchor the sparkline and add the 30-night range to the hero (F2).
-- Turn the night legend into toggle chips (F5).
+- Anchor the sparkline and add the 30-night range to the hero (F2). *Partly done: the 30-night AHI range line is added; the sparkline keeps its bottom anchor.*
+- ~~Turn the night legend into toggle chips (F5).~~ Dropped: the row is the cursor readout, not a legend (see F5).
 - Add the flow envelope as an option, with the raw line kept (F1).
 - Add the keyboard cursor to the night tracks (F7, first part).
 
