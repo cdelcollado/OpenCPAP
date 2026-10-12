@@ -23,6 +23,8 @@ export function Hero({ nights, last, base, heading }: { nights: NightSummary[]; 
   const family = deviceFamily(last.manufacturer);
   const leakRef = leakReference(last.leak?.p70, family);
   const ahiBadge = { good: t('status.ahiGood'), warn: t('status.ahiWarn'), bad: t('status.ahiBad'), neutral: '' }[ahiLevel(last.ahi)];
+  const ahiValues = recent.map((n) => n.ahi).filter((v): v is number => v != null && !Number.isNaN(v));
+  const ahiRange = ahiValues.length ? t('hero.ahiRange', { count: ahiValues.length, min: formatNumber(Math.min(...ahiValues), lang), max: formatNumber(Math.max(...ahiValues), lang) }) : null;
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -38,6 +40,7 @@ export function Hero({ nights, last, base, heading }: { nights: NightSummary[]; 
           <Delta value={last.ahi} baseline={base.ahi} goodWhen="down" suffix={vs} lang={lang} />
         </div>
         <div className="sub">{t('reference.ahi', { normal: REFERENCE.ahi.normal })}</div>
+        {ahiRange && <div className="sub">{ahiRange}</div>}
         <Sparkline values={recent.map((n) => n.ahi)} color="var(--m-ahi)" label={t('hero.trendAhi')} guide={REFERENCE.ahi.normal} />
       </div>
 

@@ -250,6 +250,8 @@
  },
  "chart": {},
  "hero": {
+  "ahiRange_one": "Només l'última nit: {{min}} per hora",
+  "ahiRange_other": "Rang de les darreres {{count}} nits: {{min}}–{{max}} per hora",
   "vsAvg": "vs mitjana de {{n}} nits",
   "trendAhi": "IAH de les darreres 30 nits",
   "trendUsage": "Hores d'ús de les darreres 30 nits",
