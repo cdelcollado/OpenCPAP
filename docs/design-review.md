@@ -36,7 +36,7 @@ Each finding cites where it was seen. Severity is a judgement: **high** blocks o
 
 | # | Finding | Where | Severity |
 |---|---|---|---|
-| F1 | The flow waveform at one-second resolution renders as a solid blue mass, so the breath shape cannot be read at normal zoom. | `night.png`, `NightView.tsx` (`flow` track) | High |
+| F1 | At full-night zoom the flow waveform is a solid blue mass: each pixel column holds several breaths, so the breath shape cannot be read. Zoomed in, the raw line is readable. *Diagnosis corrected after testing: a min/max envelope per column spans the same full amplitude, and a translucent line only produces a uniform pale band (tested, reverted).* | `night.png`, `NightView.tsx` (`flow` track) | High |
 | F2 | The "Last night" hero card has a large empty gap between the AHI chip and the sparkline. The sparkline is pushed to the bottom by `margin-top: auto` in a stretched grid row. | `dashboard.png`, `features/dashboard/Hero.tsx` | Medium |
 | F3 | On phones, six navigation links use two rows before any content. | `night-mobile.png`, `Header.tsx` | Medium |
 | F4 | The import page offers several entry points at once (folder, ZIP, drop zone, oximetry, demo) with equal visual weight. The first step is not obvious. | `ImportPanel.tsx` | Medium |
@@ -78,7 +78,8 @@ Each finding cites where it was seen. Severity is a judgement: **high** blocks o
 
 ### Night view (addresses F1, F5)
 
-- Flow: draw a min/max envelope per pixel column, or a thinner line with a density option. The raw waveform stays available as a zoom level.
+- Flow at full zoom: show the amplitude of each breath (peak in and peak out per cycle) as a line, instead of the raw samples. This needs cycle detection in `packages/core` and an ADR. The raw waveform stays available as a zoom level.
+- Rejected after testing: a min/max envelope per pixel column (it spans the full amplitude, so it is as solid as the raw line) and a translucent line (it stacks to a uniform pale band with no shape).
 - Legend: replace the header row with toggle chips. A chip shows or hides its track, which also reduces the number of tracks on small screens.
 - A sticky readout bar appears when the user scrolls past the header.
 
@@ -119,7 +120,7 @@ This relaxes the rule in [design-system.md](design-system.md) that forbids decor
 1. Replacing the system font with a bundled font (supersedes the typography section of [design-system.md](design-system.md)).
 2. Relaxing the rule against decorative motion.
 3. Changing the primary navigation layout, which moves links between the bar and a "More" menu.
-4. Changing how the night flow track is drawn (envelope instead of raw samples).
+4. Changing how the night flow track is drawn at full zoom (per-breath amplitude instead of raw samples).
 
 ## Phased plan
 
@@ -129,7 +130,7 @@ Each phase is independent and can be reviewed alone.
 
 - Anchor the sparkline and add the 30-night range to the hero (F2). *Partly done: the 30-night AHI range line is added; the sparkline keeps its bottom anchor.*
 - ~~Turn the night legend into toggle chips (F5).~~ Dropped: the row is the cursor readout, not a legend (see F5).
-- Add the flow envelope as an option, with the raw line kept (F1).
+- ~~Add the flow envelope as an option, with the raw line kept (F1).~~ Replaced: a per-column envelope and a translucent line were both tested and do not show the breath shape at full zoom. The per-breath amplitude view moves to Phase B or later, pending an ADR.
 - Add the keyboard cursor to the night tracks (F7, first part).
 
 ### Phase B: navigation and import
@@ -152,7 +153,7 @@ Each phase is independent and can be reviewed alone.
 ## Success criteria
 
 - Importing a card from the import page takes one step to start, with no need to read the other options.
-- The flow track of a night shows breath shape without zooming.
+- The flow track of a night shows breath shape without zooming (per-breath amplitude view, after its ADR).
 - On a 390 px screen, the first content is visible without scrolling past navigation.
 - Every existing axe check still passes in both themes.
 - No existing text, colour or data element is removed.
@@ -168,4 +169,4 @@ Each phase is independent and can be reviewed alone.
 
 - Is a bundled font acceptable for the privacy statement in [privacy-and-security.md](privacy-and-security.md)? *Unverified: the statement was not read for this review.*
 - Do the touch tap behaviours of the charts work as expected? *Unverified (F10).*
-- Is the current demo dataset representative of a typical user's data volume, which affects F1? *Unverified.*
+- Is the current demo dataset representative of a typical user's data volume, which affects F1? *Unverified.* The screenshots and test images used here are from demo data only.
