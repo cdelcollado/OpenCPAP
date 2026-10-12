@@ -10,3 +10,8 @@ test-results
 # OSCAR exports contain health data
 oscar-*.csv
 *oscar*.csv
+
+# Skills installed locally with `npx skills add` (third-party, not part of the repo)
+.agents/
+.claude/skills/
+skills-lock.json
